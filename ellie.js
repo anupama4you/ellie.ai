@@ -256,8 +256,9 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessWebsite: val }),
+        signal: AbortSignal.timeout(13000),
       });
-      if (!res.ok) throw new Error('fetch failed');
+      if (!res.ok) throw new Error(`server error ${res.status}`);
       const data = await res.json();
       briefedConfig = { ...data, _websiteUrl: val };
       setDemoUrlStatus('ready', `✓ Details fetched for ${data.businessName || getCompanyDomain(val)}`);
@@ -278,11 +279,13 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
           description:   data.businessDescription || '',
         }).toString(),
       }).catch(() => {});
-    } catch {
-      // Still show manual form, just empty
+    } catch (err) {
       briefedConfig = null;
-      setDemoUrlStatus('error', 'Could not read website — fill in details manually');
-      showEditStep({}, val);
+      const isTimeout = err?.name === 'TimeoutError' || err?.name === 'AbortError';
+      setDemoUrlStatus('error', isTimeout
+        ? '⚠ Website took too long — try again or click "Enter manually" below'
+        : '⚠ Could not read website — try again or click "Enter manually" below');
+      // Stay on URL step so the error is visible; user can retry or go manual
     } finally {
       setBtnLoading(false);
     }

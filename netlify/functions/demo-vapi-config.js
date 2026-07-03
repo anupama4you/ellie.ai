@@ -2,16 +2,18 @@
 //  Helpers
 // ─────────────────────────────────────────────────────────────
 
-/** Fetch Jina-cleaned markdown for a URL. Returns '' on failure. */
-async function fetchJina(url, timeoutMs = 7000) {
+/** Fetch via Jina reader (renders JS, strips nav/ads). Returns '' on failure. */
+async function fetchJina(url) {
   try {
+    const headers = {
+      Accept: 'application/json',
+      'X-Remove-Selector': 'nav,footer,header,.cookie,.popup,.overlay,.banner',
+      'X-Timeout': '3',
+    };
+    if (process.env.JINA_API_KEY) headers['Authorization'] = `Bearer ${process.env.JINA_API_KEY}`;
     const res = await fetch(`https://r.jina.ai/${url}`, {
-      headers: {
-        Accept: 'application/json',
-        'X-Remove-Selector': 'nav,footer,header,.cookie,.popup,.overlay,.banner',
-        'X-Timeout': '6',
-      },
-      signal: AbortSignal.timeout(timeoutMs),
+      headers,
+      signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) return '';
     const j = await res.json();
@@ -19,46 +21,33 @@ async function fetchJina(url, timeoutMs = 7000) {
   } catch { return ''; }
 }
 
-/** Fetch raw HTML (for link discovery only). Returns '' on failure. */
-async function fetchHtml(url, timeoutMs = 4000) {
+/** Directly fetch page HTML and strip tags. Returns '' on failure. */
+async function fetchDirect(url) {
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EllieBot/1.0)' },
-      signal: AbortSignal.timeout(timeoutMs),
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+        'Accept': 'text/html',
+      },
+      signal: AbortSignal.timeout(4000),
     });
-    return res.ok ? await res.text() : '';
+    if (!res.ok) return '';
+    const html = await res.text();
+    return html
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&')
+      .replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
+      .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'")
+      .replace(/\s{3,}/g, '\n')
+      .trim()
+      .slice(0, 5000);
   } catch { return ''; }
 }
 
-/** Score an internal URL path — higher = more likely to have business details. */
-function pageScore(pathname) {
-  const p = pathname.toLowerCase();
-  if (/\/(contact|get-in-touch|find-us|reach-us|location)/.test(p)) return 100;
-  if (/\/(about|our-story|who-we-are|team|company)/.test(p))        return 80;
-  if (/\/(services|treatments|menu|what-we-do|our-work)/.test(p))   return 70;
-  if (/\/(faq|pricing|book|appointment|hours)/.test(p))             return 50;
-  return 0;
-}
-
-/** Pull unique internal links from raw HTML, scored by relevance. */
-function discoverPages(html, origin, limit = 3) {
-  const seen = new Set();
-  const pages = [];
-  for (const [, href] of html.matchAll(/href=["']([^"'#?]{2,})["']/gi)) {
-    try {
-      const u = new URL(href, origin);
-      if (u.origin !== origin || seen.has(u.pathname)) continue;
-      const score = pageScore(u.pathname);
-      if (score === 0) continue;
-      seen.add(u.pathname);
-      pages.push({ url: u.href, score });
-    } catch {}
-  }
-  return pages.sort((a, b) => b.score - a.score).slice(0, limit).map(p => p.url);
-}
-
-/** Use Claude Haiku to extract structured business info from crawled content. */
-async function extractWithClaude(siteUrl, combinedContent, apiKey) {
+/** Use Claude Haiku to extract structured business info. */
+async function extractWithClaude(siteUrl, content, apiKey) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -66,18 +55,18 @@ async function extractWithClaude(siteUrl, combinedContent, apiKey) {
       'anthropic-version': '2023-06-01',
       'content-type':      'application/json',
     },
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(5000),
     body: JSON.stringify({
       model:      'claude-haiku-4-5-20251001',
-      max_tokens: 700,
+      max_tokens: 400,
       messages: [{
         role: 'user',
         content: `Extract business information from this website content for an AI phone receptionist. Return ONLY valid JSON, no markdown, no explanation.
 
 Website: ${siteUrl}
 
-Content from multiple pages:
-${combinedContent.slice(0, 4000)}
+Content:
+${content.slice(0, 4000)}
 
 Return this exact JSON (use empty string if unknown):
 {
@@ -103,46 +92,28 @@ Return this exact JSON (use empty string if unknown):
 }
 
 // ─────────────────────────────────────────────────────────────
-//  Main crawler
+//  Main crawler — fires Jina + direct fetch in parallel,
+//  uses whichever returns content first
 // ─────────────────────────────────────────────────────────────
 
 async function crawlSite(siteUrl, anthropicKey) {
-  const origin = new URL(siteUrl).origin;
+  // Race Jina against direct HTML fetch — fastest non-empty result wins
+  const content = await Promise.any([
+    fetchJina(siteUrl).then(r => r || Promise.reject()),
+    fetchDirect(siteUrl).then(r => r || Promise.reject()),
+  ]).catch(() => '');
 
-  // Step 1 — fetch homepage HTML (for link discovery) + homepage Jina in parallel
-  const [homeHtml, homeJina] = await Promise.all([
-    fetchHtml(siteUrl),
-    fetchJina(siteUrl),
-  ]);
-
-  // Step 2 — discover sub-pages from the raw HTML
-  const subUrls = discoverPages(homeHtml, origin);
-
-  // Step 3 — fetch sub-pages via Jina in parallel (renders JS, removes noise)
-  const subJina = await Promise.all(subUrls.map(u => fetchJina(u, 6000)));
-
-  // Step 4 — combine all content
-  const pageSections = [
-    homeJina && `=== Homepage (${siteUrl}) ===\n${homeJina}`,
-    ...subUrls.map((u, i) => subJina[i] && `=== ${u} ===\n${subJina[i]}`),
-  ].filter(Boolean);
-
-  const combinedContent = pageSections.join('\n\n').slice(0, 5000);
-
-  if (!combinedContent) {
+  if (!content) {
     return { name: '', description: '', phone: '', email: '', location: '', hours: '', businessType: '', services: '', bookingInfo: '' };
   }
 
-  // Step 5 — extract structured data with GPT-4o-mini
   try {
-    const info = await extractWithClaude(siteUrl, combinedContent, anthropicKey);
-    return info;
+    return await extractWithClaude(siteUrl, content, anthropicKey);
   } catch {
-    // Fallback: return raw Jina snippet so at least some context exists
     return {
       name: '', description: '', phone: '', email: '', location: '',
       hours: '', businessType: '', services: '', bookingInfo: '',
-      _rawContent: combinedContent.slice(0, 1500),
+      _rawContent: content.slice(0, 1500),
     };
   }
 }
@@ -181,8 +152,8 @@ How to handle the conversation:
 2. Tell them it only takes a few seconds — just pop in their website or fill in a couple of fields on the page.
 3. Once they do that and call back, you'll instantly know their business and demo exactly how you'd sound to their customers — completely free.
 4. If they have questions about what Ellie does: answer briefly, then bring it back to "the best way to see it is to enter your details and call me back."
-5. If they ask about pricing: plans start from $99 AUD/month, no lock-in contracts.
-6. At the end of the conversation — or if they seem interested — invite them to book a free 30-minute setup call at anupama.dev.
+5. If they ask about pricing: plans start from $199 AUD/month, no lock-in contracts.
+6. At the end of the conversation — or if they seem interested — invite them to request a free callback at ellie.anupama.dev.
 
 Guardrails:
 - Never pretend to be their receptionist without their business details — you don't have them yet.
@@ -197,7 +168,6 @@ Guardrails:
       ? businessWebsite
       : `https://${businessWebsite}`;
 
-    // Fallback name from domain while crawling
     try {
       businessName = new URL(siteUrl).hostname.replace(/^www\./i, '');
     } catch {
@@ -214,7 +184,6 @@ Guardrails:
     if (info.services)     businessServices    = info.services;
     if (info.hours)        businessHours       = info.hours;
 
-    // Build receptionist context
     const contextLines = [];
     if (info.description)  contextLines.push(info.description);
     if (info.businessType) contextLines.push(`Business type: ${info.businessType}`);

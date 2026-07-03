@@ -168,6 +168,26 @@
     [data-theme="light"] .demo-brief-chip { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.08); color: #475569; }
     [data-theme="light"] .demo-edit-back { color: #64748b; }
     [data-theme="light"] .demo-edit-back:hover { color: #334155; }
+    /* Demo edit step — field inputs */
+    [data-theme="light"] .demo-edit-step {
+      background: #fff; border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.08);
+      padding: 18px 18px 14px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.06);
+    }
+    [data-theme="light"] .demo-edit-header { padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,.07); margin-bottom: 14px; }
+    [data-theme="light"] .demo-brief-domain { color: #64748b !important; }
+    [data-theme="light"] .demo-briefed-badge { background: rgba(16,185,129,.08); border-color: rgba(16,185,129,.2); color: #059669; }
+    [data-theme="light"] .demo-field label { color: #64748b; }
+    [data-theme="light"] .demo-field input,
+    [data-theme="light"] .demo-field textarea {
+      background: #f8fafc; border-color: rgba(0,0,0,.12);
+      color: #0f172a;
+    }
+    [data-theme="light"] .demo-field input::placeholder,
+    [data-theme="light"] .demo-field textarea::placeholder { color: #94a3b8; }
+    [data-theme="light"] .demo-field input:focus,
+    [data-theme="light"] .demo-field textarea:focus { background: #fff; border-color: var(--violet); }
     /* Live / book-a-call section */
     [data-theme="light"] .live-copy h2 { color: #0f172a; }
     [data-theme="light"] .live-card-head-info p:first-child { color: #0f172a; }
@@ -3140,7 +3160,7 @@
             </div>
             <div class="demo-field">
               <label for="edit-description">About</label>
-              <textarea id="edit-description" rows="2" placeholder="What does your business do?"></textarea>
+              <textarea id="edit-description" rows="5" placeholder="What does your business do?"></textarea>
             </div>
           </div>
           <button class="demo-generate-btn" id="demo-generate-btn" type="button">
