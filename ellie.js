@@ -256,7 +256,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessWebsite: val }),
-        signal: AbortSignal.timeout(13000),
+        signal: AbortSignal.timeout(30000),
       });
       if (!res.ok) throw new Error(`server error ${res.status}`);
       const data = await res.json();

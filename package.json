@@ -1,0 +1,18 @@
+{
+  "name": "ellie.ai",
+  "version": "1.0.0",
+  "description": "Ellie answers every call your business receives — 24 hours a day, 7 days a week — books appointments, and sends SMS confirmations, all without you lifting a finger.",
+  "main": "ellie.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}

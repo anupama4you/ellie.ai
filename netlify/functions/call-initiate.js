@@ -1,3 +1,5 @@
+const { normalizeWebsiteUrl, fetchWebsiteContent, getBusinessWebsiteInput } = require('./_website-fetch');
+
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -21,10 +23,11 @@ exports.handler = async (event) => {
   }
 
   let body;
-  try { body = JSON.parse(event.body); }
-  catch { return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request.' }) }; }
+  try { body = event.body ? JSON.parse(event.body) : {}; }
+  catch { body = {}; }
 
-  const { phone, businessType, businessWebsite } = body;
+  const { phone, businessType } = body;
+  const businessWebsite = getBusinessWebsiteInput(event) || body.businessWebsite || '';
   if (!phone) return { statusCode: 400, headers, body: JSON.stringify({ error: 'Phone number is required.' }) };
 
   // Build assistant overrides when a business website is supplied
@@ -43,47 +46,19 @@ exports.handler = async (event) => {
     }
 
     try {
-      const siteRes = await fetch(siteUrl, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EllieAI/1.0; +https://newcallings.com)' },
-        signal: AbortSignal.timeout(5000),
-      });
+      const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
+      const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 5000 });
 
-      if (siteRes.ok) {
-        const html = await siteRes.text();
-
-        const extract = (patterns) => {
-          for (const re of patterns) {
-            const m = html.match(re);
-            if (m && m[1] && m[1].trim()) return m[1].trim().slice(0, 300);
-          }
-          return '';
-        };
-
-        const title = extract([
-          /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i,
-          /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i,
-          /<title[^>]*>([^<]+)<\/title>/i,
-        ]);
-
-        const desc = extract([
-          /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i,
-          /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i,
-          /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i,
-          /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i,
-        ]);
-
-        const phone_raw = extract([
-          /(?:tel:|phone:|call us)[:\s"'>]*([+\d\s\-().]{7,20})/i,
-        ]);
-
+      if (fetched.content || fetched.metadata.title || fetched.metadata.description || fetched.metadata.phone) {
         const parts = [];
-        if (title) {
-          businessName = title;
-          parts.push(`Business name / brand: "${title}"`);
+        if (fetched.metadata.title) {
+          businessName = fetched.metadata.title;
+          parts.push(`Business name / brand: "${fetched.metadata.title}"`);
         }
-        if (desc)  parts.push(`About the business: ${desc}`);
-        if (phone_raw) parts.push(`Business phone found on site: ${phone_raw}`);
-        parts.push(`Website: ${siteUrl}`);
+        if (fetched.metadata.description) parts.push(`About the business: ${fetched.metadata.description}`);
+        if (fetched.metadata.phone) parts.push(`Business phone found on site: ${fetched.metadata.phone}`);
+        if (fetched.content) parts.push(`Website content summary: ${fetched.content.slice(0, 1800)}`);
+        parts.push(`Website: ${normalizedSiteUrl}`);
 
         businessContext = parts.join('. ');
       }

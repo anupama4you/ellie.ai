@@ -2,52 +2,11 @@
 //  Helpers
 // ─────────────────────────────────────────────────────────────
 
-/** Fetch via Jina reader (renders JS, strips nav/ads). Returns '' on failure. */
-async function fetchJina(url) {
-  try {
-    const headers = {
-      Accept: 'application/json',
-      'X-Remove-Selector': 'nav,footer,header,.cookie,.popup,.overlay,.banner',
-      'X-Timeout': '3',
-    };
-    if (process.env.JINA_API_KEY) headers['Authorization'] = `Bearer ${process.env.JINA_API_KEY}`;
-    const res = await fetch(`https://r.jina.ai/${url}`, {
-      headers,
-      signal: AbortSignal.timeout(4000),
-    });
-    if (!res.ok) return '';
-    const j = await res.json();
-    return (j.data?.content || '').replace(/\n{4,}/g, '\n\n').trim();
-  } catch { return ''; }
-}
-
-/** Directly fetch page HTML and strip tags. Returns '' on failure. */
-async function fetchDirect(url) {
-  try {
-    const res = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        'Accept': 'text/html',
-      },
-      signal: AbortSignal.timeout(4000),
-    });
-    if (!res.ok) return '';
-    const html = await res.text();
-    return html
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&')
-      .replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
-      .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'")
-      .replace(/\s{3,}/g, '\n')
-      .trim()
-      .slice(0, 5000);
-  } catch { return ''; }
-}
+const { normalizeWebsiteUrl, fetchWebsiteContent, getBusinessWebsiteInput } = require('./_website-fetch');
 
 /** Use Claude Haiku to extract structured business info. */
 async function extractWithClaude(siteUrl, content, apiKey) {
+  if (!apiKey) throw new Error('Missing Anthropic API key');
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -92,28 +51,35 @@ Return this exact JSON (use empty string if unknown):
 }
 
 // ─────────────────────────────────────────────────────────────
-//  Main crawler — fires Jina + direct fetch in parallel,
-//  uses whichever returns content first
+//  Main crawler — fetches the site content and uses Claude when available
 // ─────────────────────────────────────────────────────────────
 
 async function crawlSite(siteUrl, anthropicKey) {
-  // Race Jina against direct HTML fetch — fastest non-empty result wins
-  const content = await Promise.any([
-    fetchJina(siteUrl).then(r => r || Promise.reject()),
-    fetchDirect(siteUrl).then(r => r || Promise.reject()),
-  ]).catch(() => '');
+  const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
+  const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 5000 });
+  const content = fetched.content || '';
 
   if (!content) {
-    return { name: '', description: '', phone: '', email: '', location: '', hours: '', businessType: '', services: '', bookingInfo: '' };
+    return {
+      name: '', description: '', phone: '', email: '', location: '', hours: '', businessType: '', services: '', bookingInfo: '',
+      _rawContent: '',
+      _metadata: fetched.metadata,
+    };
   }
 
   try {
-    return await extractWithClaude(siteUrl, content, anthropicKey);
+    const extracted = anthropicKey ? await extractWithClaude(normalizedSiteUrl, content, anthropicKey) : {};
+    return {
+      ...extracted,
+      _rawContent: content.slice(0, 1500),
+      _metadata: fetched.metadata,
+    };
   } catch {
     return {
       name: '', description: '', phone: '', email: '', location: '',
       hours: '', businessType: '', services: '', bookingInfo: '',
       _rawContent: content.slice(0, 1500),
+      _metadata: fetched.metadata,
     };
   }
 }
@@ -131,8 +97,7 @@ exports.handler = async (event) => {
 
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
 
-  let businessWebsite;
-  try { businessWebsite = JSON.parse(event.body || '{}').businessWebsite; } catch {}
+  const businessWebsite = getBusinessWebsiteInput(event);
 
   let systemPrompt, firstMessage;
   let businessName = '', businessDescription = '', businessPhone = '', businessLocation = '', businessType = '', businessServices = '', businessHours = '';
@@ -176,7 +141,7 @@ Guardrails:
 
     const info = await crawlSite(siteUrl, process.env.ANTHROPIC_API_KEY);
 
-    if (info.name)         businessName        = info.name;
+    if (info.name || info._metadata?.title) businessName = info.name || info._metadata.title;
     if (info.description)  businessDescription = info.description;
     if (info.phone)        businessPhone       = info.phone;
     if (info.location)     businessLocation    = info.location;
@@ -186,6 +151,7 @@ Guardrails:
 
     const contextLines = [];
     if (info.description)  contextLines.push(info.description);
+    if (info._metadata?.description) contextLines.push(`About the business: ${info._metadata.description}`);
     if (info.businessType) contextLines.push(`Business type: ${info.businessType}`);
     if (info.services)     contextLines.push(`Services: ${info.services}`);
     if (info.phone)        contextLines.push(`Phone: ${info.phone}`);
