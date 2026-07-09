@@ -801,56 +801,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     });
   });
 
-  // ── Voice comparison players ──────────────────────────────
-  function setupVcmpAudio(btnId, audioId) {
-    const btn   = document.getElementById(btnId);
-    const audio = document.getElementById(audioId);
-    if (!btn || !audio) return;
-    const iconPlay  = btn.querySelector('.vcmp-icon-play');
-    const iconPause = btn.querySelector('.vcmp-icon-pause');
-    btn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play().catch(() => {});
-        iconPlay.style.display  = 'none';
-        iconPause.style.display = '';
-      } else {
-        audio.pause();
-        iconPlay.style.display  = '';
-        iconPause.style.display = 'none';
-      }
-    });
-    audio.addEventListener('ended', () => {
-      iconPlay.style.display  = '';
-      iconPause.style.display = 'none';
-    });
-  }
-
-  function setupVcmpVideo(btnId, videoId) {
-    const btn   = document.getElementById(btnId);
-    const video = document.getElementById(videoId);
-    if (!btn || !video) return;
-    const iconPlay  = btn.querySelector('.vcmp-icon-play');
-    const iconPause = btn.querySelector('.vcmp-icon-pause');
-    btn.addEventListener('click', () => {
-      if (video.paused) {
-        video.play().catch(() => {});
-        iconPlay.style.display  = 'none';
-        iconPause.style.display = '';
-      } else {
-        video.pause();
-        iconPlay.style.display  = '';
-        iconPause.style.display = 'none';
-      }
-    });
-    video.addEventListener('ended', () => {
-      iconPlay.style.display  = '';
-      iconPause.style.display = 'none';
-    });
-  }
-
-  setupVcmpAudio('vcmp-play-old', 'vcmp-audio-old');
-  setupVcmpVideo('vcmp-play-new', 'vcmp-video-new');
-
   // ── Free trial callback form ──────────────────────────────
   const trialForm      = document.getElementById('trial-form');
   const trialFlipInner = document.getElementById('trial-flip-inner');
@@ -903,30 +853,47 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     });
   }
 
-  // ── Dashboard tabs ────────────────────────────────────────
-  document.querySelectorAll('.dash-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      const panel = document.getElementById('dp-' + tab.dataset.tab);
-      if (panel) panel.classList.add('active');
-    });
-  });
+  // ── Dashboard gallery stack (hover on desktop, tap on touch) ──
+  const dashGalleryStack = document.getElementById('dash-gallery-stack');
+  const dashLightbox     = document.getElementById('dash-lightbox');
+  const dashLightboxImg  = document.getElementById('dash-lightbox-img');
+  const dashLightboxTag  = document.getElementById('dash-lightbox-tag');
+  const dashLightboxClose = document.getElementById('dash-lightbox-close');
 
-  // ── Dashboard stat counters ───────────────────────────────
-  function countUp(el, target, prefix, duration) {
-    if (!el) return;
-    let start = null;
-    const step = ts => {
-      if (!start) start = ts;
-      const pct = Math.min((ts - start) / duration, 1);
-      const val = Math.round(pct * target);
-      el.textContent = prefix + (target >= 1000 ? val.toLocaleString() : val);
-      if (pct < 1) requestAnimationFrame(step);
-      else el.textContent = prefix + target.toLocaleString();
-    };
-    requestAnimationFrame(step);
+  function openDashLightbox(card) {
+    const img = card.querySelector('img');
+    if (!img || !dashLightbox) return;
+    dashLightboxImg.src = img.src;
+    dashLightboxImg.alt = img.alt;
+    dashLightboxTag.textContent = card.querySelector('.dash-gallery-tag')?.textContent || '';
+    dashLightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDashLightbox() {
+    dashLightbox?.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  dashLightboxClose?.addEventListener('click', closeDashLightbox);
+  dashLightbox?.addEventListener('click', e => { if (e.target === dashLightbox) closeDashLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDashLightbox(); });
+
+  if (dashGalleryStack) {
+    const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const dashCards = dashGalleryStack.querySelectorAll('.dash-gallery-card');
+
+    // Any card click opens it full-size — on desktop that's on top of the hover
+    // fan, on touch it's on top of native horizontal swipe scrolling.
+    dashCards.forEach(card => card.addEventListener('click', () => openDashLightbox(card)));
+
+    if (canHover) {
+      dashGalleryStack.addEventListener('mouseenter', () => dashGalleryStack.classList.add('is-spread'));
+      dashGalleryStack.addEventListener('mouseleave', () => dashGalleryStack.classList.remove('is-spread'));
+      dashGalleryStack.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dashGalleryStack.classList.toggle('is-spread'); }
+      });
+      dashGalleryStack.addEventListener('focus', () => dashGalleryStack.classList.add('is-spread'));
+      dashGalleryStack.addEventListener('blur', () => dashGalleryStack.classList.remove('is-spread'));
+    }
   }
 
   // ── Problem section loss counter ─────────────────────────
@@ -961,77 +928,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       }
     }, { threshold: 0.5 }).observe(probLossEl);
   }
-
-  const dashStatsEl = document.querySelector('.dash-stats');
-  if (dashStatsEl) {
-    let counted = false;
-    new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !counted) {
-        counted = true;
-        countUp(document.getElementById('ds-calls'),    142, '',   1400);
-        countUp(document.getElementById('ds-bookings'),  89, '',   1200);
-        countUp(document.getElementById('ds-revenue'),  4200, '$', 1600);
-      }
-    }, { threshold: 0.4 }).observe(dashStatsEl);
-  }
-
-  // ── Dashboard bar chart ───────────────────────────────────
-  const CHART_DATA = [
-    { day: 'Mon', calls: 18, bookings: 11 },
-    { day: 'Tue', calls: 24, bookings: 15 },
-    { day: 'Wed', calls: 16, bookings: 9  },
-    { day: 'Thu', calls: 28, bookings: 18 },
-    { day: 'Fri', calls: 32, bookings: 20 },
-    { day: 'Sat', calls: 14, bookings: 9  },
-    { day: 'Sun', calls: 10, bookings: 6  },
-  ];
-  const chartEl = document.getElementById('dash-chart');
-  if (chartEl) {
-    const maxVal = Math.max(...CHART_DATA.map(d => d.calls));
-    const MAX_PX = 75;
-    CHART_DATA.forEach(d => {
-      const callsH    = Math.round(d.calls    / maxVal * MAX_PX);
-      const bookingsH = Math.round(d.bookings / maxVal * MAX_PX);
-      const col = document.createElement('div');
-      col.className = 'bar-col';
-      col.innerHTML = `
-        <div class="bar-val-lbl">${d.calls}</div>
-        <div class="bar-pair">
-          <div class="bar-fill bar-fill-v" data-h="${callsH}" style="height:0px"></div>
-          <div class="bar-fill bar-fill-r" data-h="${bookingsH}" style="height:0px"></div>
-        </div>
-        <div class="bar-day-lbl">${d.day}</div>`;
-      chartEl.appendChild(col);
-    });
-    let barAnimated = false;
-    new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !barAnimated) {
-        barAnimated = true;
-        chartEl.querySelectorAll('.bar-fill').forEach(bar => {
-          bar.style.height = bar.dataset.h + 'px';
-        });
-      }
-    }, { threshold: 0.3 }).observe(chartEl);
-  }
-
-  // ── Play / pause buttons (calls + recordings) ─────────────
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.call-play-btn');
-    if (!btn) return;
-    const wasPlaying = btn.classList.contains('playing');
-    document.querySelectorAll('.call-play-btn.playing').forEach(b => {
-      b.classList.remove('playing'); b.textContent = '▶';
-    });
-    document.querySelectorAll('.rec-row.playing').forEach(r => r.classList.remove('playing'));
-    if (!wasPlaying) {
-      btn.classList.add('playing'); btn.textContent = '⏸';
-      if (btn.classList.contains('rec-play-btn')) btn.closest('.rec-row').classList.add('playing');
-      setTimeout(() => {
-        btn.classList.remove('playing'); btn.textContent = '▶';
-        btn.closest('.rec-row')?.classList.remove('playing');
-      }, 8000);
-    }
-  });
 
   // ── Integrations hub ─────────────────────────────────────
   (function buildIntHub() {
