@@ -1436,9 +1436,6 @@
       animation: navShimmer 6s linear infinite;
     }
     .trial-cta:hover { box-shadow: 0 0 40px rgba(167,139,250,.5); transform: translateY(-1px); animation: none; }
-    .trial-fine {
-      font-size: .88rem; color: var(--muted); letter-spacing: .01em; margin: 0;
-    }
     /* ── Card flip ── */
     .trial-flip-wrap { max-width: 520px; margin: 0 auto; perspective: 1200px; }
     .trial-flip-inner {
@@ -1478,19 +1475,9 @@
       cursor: pointer; transition: border-color .2s, color .2s;
     }
     .trial-resubmit:hover { border-color: var(--violet); color: var(--violet); }
-    @keyframes shimmerGrad {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .trial-price-line span {
-      background: linear-gradient(90deg, #a78bfa, #ec4899, #f97316, #a78bfa);
-      background-size: 300% 300%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmerGrad 3s ease infinite;
-    }
+    .trial-trust-line { font-size: .85rem; color: var(--muted); letter-spacing: .01em; margin: 10px 0 4px; }
+    .trial-trust-line .trial-trust-stars { color: #fbbf24; font-weight: 600; }
+    .trial-trust-line .trial-trust-stars b { color: var(--text); font-weight: 700; margin-left: 2px; }
 
     /* ── VOICE COMPARISON ── */
     /* ── TESTIMONIALS ── */
@@ -1795,13 +1782,13 @@
     .dashboard-hd { text-align:center;max-width:560px;margin:0 auto 2.5rem; }
     .dashboard-hd h2 { font-size:clamp(1.75rem,3vw,2.4rem);color:#fff;margin-bottom:.8rem; }
     .dashboard-hd p  { font-size:.95rem;color:var(--muted);line-height:1.7; }
-    /* Dashboard gallery — hover-to-fan stack on desktop, swipeable strip on touch */
+    /* Dashboard gallery — auto-scrolling carousel on desktop, swipeable strip on touch */
     .dash-gallery { margin-bottom:3rem; }
+    .dash-gallery-viewport { width:100%; }
     .dash-gallery-stack { width:100%;margin:0 auto; }
     .dash-gallery-card {
       border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.09);
       box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 1px rgba(167,139,250,.05);
-      cursor:zoom-in;
     }
     .dash-gallery-card img { width:100%;height:100%;object-fit:cover;display:block;pointer-events:none; }
     .dash-gallery-tag {
@@ -1813,46 +1800,63 @@
     }
     .dash-gallery-hint { text-align:center;font-size:.72rem;color:rgba(255,255,255,.32);margin-top:22px;letter-spacing:.01em; }
     .dash-gallery-hint--swipe { display:none; }
+    .dash-hover-preview { display:none; }
 
-    /* Desktop / non-touch: hover-to-fan stack */
+    /* Desktop / non-touch: continuously auto-scrolling carousel, all cards clearly visible */
     @media (hover:hover) and (pointer:fine) {
+      .dash-gallery-viewport {
+        overflow:hidden;max-width:1120px;margin:0 auto;padding:34px 0;
+        -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+                mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+      }
       .dash-gallery-stack {
-        position:relative;max-width:1040px;aspect-ratio:2.35/1;cursor:pointer;
+        display:flex;align-items:flex-start;gap:24px;width:max-content;
+        animation:dash-marquee 30s linear infinite;
       }
-      .dash-gallery-stack:focus-visible { outline:2px solid #a78bfa;outline-offset:6px; }
+      .dash-gallery-stack:hover { animation-play-state:paused; }
       .dash-gallery-card {
-        position:absolute;width:42%;aspect-ratio:1536/1024;
-        transition:left .6s cubic-bezier(.16,1,.3,1),top .6s cubic-bezier(.16,1,.3,1),
-                   transform .6s cubic-bezier(.16,1,.3,1),box-shadow .5s ease;
+        position:relative;flex:0 0 380px;aspect-ratio:1536/1024;cursor:zoom-in;
+        transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s ease;
       }
-      /* At-rest: near-centered stack, slight cascade so edges peek out */
-      .dash-gallery-card:nth-child(1) { left:31%;top:17%;transform:rotate(-3deg);z-index:4; }
-      .dash-gallery-card:nth-child(2) { left:27%;top:13%;transform:rotate(2deg); z-index:3; }
-      .dash-gallery-card:nth-child(3) { left:33%;top:9%; transform:rotate(-2deg);z-index:2; }
-      .dash-gallery-card:nth-child(4) { left:29%;top:5%; transform:rotate(4deg); z-index:1; }
-      /* Spread: fan out left-to-right with a gentle rise in the middle.
-         z-index ascends left-to-right here (opposite of the at-rest stack) so
-         each card's own tag, sitting at its own top-left corner, is never the
-         part a neighbour overlaps — only the trailing edge gets covered. */
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(1) { left:2%; top:10%;transform:rotate(-11deg) scale(1.03); z-index:1; }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(2) { left:20%;top:2%; transform:rotate(-3deg)  scale(1.03); z-index:2; }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(3) { left:38%;top:2%; transform:rotate(4deg)   scale(1.03); z-index:3; }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(4) { left:56%;top:10%;transform:rotate(11deg)  scale(1.03); z-index:4; }
-      .dash-gallery-stack.is-spread .dash-gallery-card:hover {
-        z-index:5;box-shadow:0 45px 100px rgba(0,0,0,.6),0 0 0 1px rgba(167,139,250,.15);
+      .dash-gallery-card:hover {
+        transform:translateY(-6px) scale(1.03);z-index:2;
+        box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px rgba(167,139,250,.2);
       }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(1):hover { transform:rotate(-11deg) scale(1.09); }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(2):hover { transform:rotate(-3deg)  scale(1.09); }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(3):hover { transform:rotate(4deg)   scale(1.09); }
-      .dash-gallery-stack.is-spread .dash-gallery-card:nth-child(4):hover { transform:rotate(11deg)  scale(1.09); }
-      .dash-gallery-tag { opacity:0;transform:translateY(-4px);transition:opacity .35s ease .1s,transform .35s ease .1s; }
-      .dash-gallery-stack.is-spread .dash-gallery-tag { opacity:1;transform:translateY(0); }
+      @keyframes dash-marquee {
+        from { transform:translateX(0); }
+        to   { transform:translateX(-50%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .dash-gallery-stack { animation:none; }
+      }
+
+      /* Huge centred preview shown while hovering any card — escapes the
+         clipped/animated carousel track entirely via position:fixed. */
+      .dash-hover-preview {
+        position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+        padding:8vh 6vw;background:rgba(3,4,10,.82);backdrop-filter:blur(10px);
+        opacity:0;pointer-events:none;transition:opacity .28s ease;
+      }
+      .dash-hover-preview.is-active { opacity:1; }
+      .dash-hover-preview-img {
+        max-width:100%;max-height:100%;object-fit:contain;border-radius:16px;
+        box-shadow:0 60px 140px rgba(0,0,0,.7);
+        transform:scale(.92);transition:transform .32s cubic-bezier(.16,1,.3,1);
+      }
+      .dash-hover-preview.is-active .dash-hover-preview-img { transform:scale(1); }
+      .dash-hover-preview-tag {
+        position:absolute;top:28px;left:28px;font-size:.72rem;font-weight:700;
+        letter-spacing:.06em;text-transform:uppercase;color:#fff;
+        background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+        border-radius:100px;padding:5px 13px;
+      }
     }
 
-    /* Touch / no hover: horizontally swipeable strip, no fan */
+    /* Touch / no hover: horizontally swipeable strip, no fan, no duplicated cards */
     @media (hover:none), (pointer:coarse) {
       .dash-gallery-hint--hover { display:none; }
       .dash-gallery-hint--swipe { display:inline; }
+      .dash-gallery-card--dup { display:none; }
       .dash-gallery-stack {
         position:relative;display:flex;gap:14px;overflow-x:auto;
         scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
@@ -1864,36 +1868,6 @@
       }
     }
 
-    /* Lightbox — click a card to see it full-size */
-    .dash-lightbox {
-      position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
-      background:rgba(3,4,10,.86);backdrop-filter:blur(8px);padding:8vh 5vw;
-      opacity:0;transition:opacity .25s ease;cursor:zoom-out;
-    }
-    .dash-lightbox.is-open { display:flex;opacity:1; }
-    .dash-lightbox-img {
-      max-width:100%;max-height:100%;border-radius:14px;object-fit:contain;
-      box-shadow:0 40px 100px rgba(0,0,0,.65);
-      transform:scale(.96);transition:transform .25s ease;cursor:default;
-    }
-    .dash-lightbox.is-open .dash-lightbox-img { transform:scale(1); }
-    .dash-lightbox-close {
-      position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;flex-shrink:0;
-      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;
-      font-size:1.3rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      transition:background .2s;
-    }
-    .dash-lightbox-close:hover { background:rgba(255,255,255,.18); }
-    .dash-lightbox-tag {
-      position:absolute;top:28px;left:28px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-      color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
-      border-radius:100px;padding:5px 13px;
-    }
-    @media (max-width:600px) {
-      .dash-lightbox { padding:12vh 4vw; }
-      .dash-lightbox-tag { top:16px;left:16px; }
-      .dash-lightbox-close { top:12px;right:12px;width:36px;height:36px; }
-    }
     .dash-bullets { display:grid;grid-template-columns:repeat(3,1fr);gap:24px; }
     .dash-bullet { display:flex;align-items:flex-start;gap:13px; }
     .dash-bullet-icon {
@@ -3091,7 +3065,7 @@
             </div>
             <div>
               <p class="live-label">Your mobile number</p>
-              <input type="tel" id="live-phone" class="live-phone-input" placeholder="+61 412 345 678" autocomplete="tel" aria-label="Phone number">
+              <input type="tel" id="live-phone" class="live-phone-input" placeholder="+61 412 345 678" inputmode="tel" autocomplete="tel" aria-label="Phone number" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678">
             </div>
             <button id="live-call-btn" class="live-call-btn">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l1.06-.97a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -3119,35 +3093,53 @@
     </div>
 
     <div class="dash-gallery reveal">
-      <div class="dash-gallery-stack" id="dash-gallery-stack" tabindex="0" role="button" aria-label="Ellie dashboard preview — expand to see the dashboard, appointments, and analytics views">
-        <div class="dash-gallery-card">
-          <img src="assets/dashboard/1.png" alt="Ellie dashboard — recent calls, bookings made, and revenue booked today" loading="lazy">
-          <span class="dash-gallery-tag">Dashboard</span>
-        </div>
-        <div class="dash-gallery-card">
-          <img src="assets/dashboard/2.png" alt="Ellie appointments view — everything Ellie has booked into the calendar this week" loading="lazy">
-          <span class="dash-gallery-tag">Appointments</span>
-        </div>
-        <div class="dash-gallery-card">
-          <img src="assets/dashboard/3.png" alt="Ellie analytics — call volume over the last 30 days and how calls ended" loading="lazy">
-          <span class="dash-gallery-tag">Analytics</span>
-        </div>
-        <div class="dash-gallery-card">
-          <img src="assets/dashboard/4.png" alt="Ellie analytics insights — booking conversion, peak call times, and top questions asked" loading="lazy">
-          <span class="dash-gallery-tag">Insights</span>
+      <div class="dash-gallery-viewport">
+        <div class="dash-gallery-stack" id="dash-gallery-stack" aria-label="Ellie dashboard preview — the dashboard, appointments, and analytics views">
+          <div class="dash-gallery-card">
+            <img src="assets/dashboard/1.png" alt="Ellie dashboard — recent calls, bookings made, and revenue booked today" loading="lazy">
+            <span class="dash-gallery-tag">Dashboard</span>
+          </div>
+          <div class="dash-gallery-card">
+            <img src="assets/dashboard/2.png" alt="Ellie appointments view — everything Ellie has booked into the calendar this week" loading="lazy">
+            <span class="dash-gallery-tag">Appointments</span>
+          </div>
+          <div class="dash-gallery-card">
+            <img src="assets/dashboard/3.png" alt="Ellie analytics — call volume over the last 30 days and how calls ended" loading="lazy">
+            <span class="dash-gallery-tag">Analytics</span>
+          </div>
+          <div class="dash-gallery-card">
+            <img src="assets/dashboard/4.png" alt="Ellie analytics insights — booking conversion, peak call times, and top questions asked" loading="lazy">
+            <span class="dash-gallery-tag">Insights</span>
+          </div>
+          <!-- Duplicate set — desktop-only, feeds the seamless auto-scroll loop; hidden on touch -->
+          <div class="dash-gallery-card dash-gallery-card--dup" aria-hidden="true">
+            <img src="assets/dashboard/1.png" alt="" loading="lazy">
+            <span class="dash-gallery-tag">Dashboard</span>
+          </div>
+          <div class="dash-gallery-card dash-gallery-card--dup" aria-hidden="true">
+            <img src="assets/dashboard/2.png" alt="" loading="lazy">
+            <span class="dash-gallery-tag">Appointments</span>
+          </div>
+          <div class="dash-gallery-card dash-gallery-card--dup" aria-hidden="true">
+            <img src="assets/dashboard/3.png" alt="" loading="lazy">
+            <span class="dash-gallery-tag">Analytics</span>
+          </div>
+          <div class="dash-gallery-card dash-gallery-card--dup" aria-hidden="true">
+            <img src="assets/dashboard/4.png" alt="" loading="lazy">
+            <span class="dash-gallery-tag">Insights</span>
+          </div>
         </div>
       </div>
       <p class="dash-gallery-hint">
-        <span class="dash-gallery-hint--hover">Hover to explore</span>
+        <span class="dash-gallery-hint--hover">Hover to zoom in</span>
         <span class="dash-gallery-hint--swipe">Swipe to explore →</span>
       </p>
     </div>
 
-    <!-- Lightbox: click a dashboard card to see it full-size -->
-    <div class="dash-lightbox" id="dash-lightbox" role="dialog" aria-modal="true" aria-label="Dashboard screenshot preview">
-      <span class="dash-lightbox-tag" id="dash-lightbox-tag"></span>
-      <button type="button" class="dash-lightbox-close" id="dash-lightbox-close" aria-label="Close preview">&times;</button>
-      <img class="dash-lightbox-img" id="dash-lightbox-img" src="" alt="">
+    <!-- Huge hover preview (desktop only) — filled in by JS on hover -->
+    <div class="dash-hover-preview" id="dash-hover-preview" aria-hidden="true">
+      <span class="dash-hover-preview-tag" id="dash-hover-preview-tag"></span>
+      <img class="dash-hover-preview-img" id="dash-hover-preview-img" src="" alt="">
     </div>
 
     <!-- Feature bullets -->
@@ -3762,7 +3754,7 @@
             <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
             <div class="trial-fields">
               <input type="text" name="name" class="trial-input" placeholder="Your name" required>
-              <input type="tel" name="phone" class="trial-input" placeholder="Phone number" required>
+              <input type="tel" name="phone" class="trial-input" placeholder="04XX XXX XXX" inputmode="tel" autocomplete="tel" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678" required>
               <input type="email" name="email" class="trial-input" placeholder="Email address">
               <input type="text" name="business_url" class="trial-input" placeholder="Website or Facebook / Instagram URL">
               <select name="business_type" class="trial-input trial-select" required>
@@ -3782,8 +3774,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
               Get a free callback
             </button>
-            <p class="trial-price-line" style="font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);margin:10px 0 4px;">Packages starting from just <span>$199/month</span></p>
-            <p class="trial-fine">Cancel anytime &nbsp;&middot;&nbsp; No credit card</p>
+            <p class="trial-trust-line"><span class="trial-trust-stars">★★★★★ <b>5.0</b></span> on Google &nbsp;&middot;&nbsp; Trusted by 200+ SA businesses</p>
           </form>
         </div>
 

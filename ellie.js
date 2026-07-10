@@ -240,6 +240,13 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     }
   }
 
+  // Australian landline/mobile only — accepts 04xx xxx xxx, 0[2378] xxxx xxxx,
+  // or the +61 equivalents, with any spaces/dashes/parens stripped first.
+  function isValidAuPhone(val) {
+    const digits = String(val || '').trim().replace(/[\s()-]/g, '');
+    return /^(?:\+?61|0)[2-478]\d{8}$/.test(digits);
+  }
+
   async function fetchAndBrief() {
     const val = demoBizUrlInput ? demoBizUrlInput.value.trim() : '';
     if (!val) return;
@@ -737,7 +744,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       const biz     = liveBiz   ? liveBiz.value.trim()   : '';
       const phone   = livePhone ? livePhone.value.trim() : '';
       const website = liveWebsiteUrl ? liveWebsiteUrl.value.trim() : '';
-      if (!phone) { flashInvalid(livePhone); return; }
+      if (!isValidAuPhone(phone)) { flashInvalid(livePhone); return; }
 
       liveCallBtn.disabled = true;
       liveStatus.hidden = false;
@@ -809,8 +816,15 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
   const trialResubmit  = document.getElementById('trial-resubmit');
 
   if (trialForm) {
+    const trialPhone = trialForm.querySelector('input[name="phone"]');
+
     trialForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      if (trialPhone && !isValidAuPhone(trialPhone.value)) {
+        flashInvalid(trialPhone);
+        return;
+      }
 
       if (typeof confetti === 'function') {
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#a78bfa','#ec4899','#34d399','#fbbf24','#60a5fa'] });
@@ -855,47 +869,25 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     });
   }
 
-  // ── Dashboard gallery stack (hover on desktop, tap on touch) ──
-  const dashGalleryStack = document.getElementById('dash-gallery-stack');
-  const dashLightbox     = document.getElementById('dash-lightbox');
-  const dashLightboxImg  = document.getElementById('dash-lightbox-img');
-  const dashLightboxTag  = document.getElementById('dash-lightbox-tag');
-  const dashLightboxClose = document.getElementById('dash-lightbox-close');
+  // ── Dashboard gallery: huge hover preview (desktop only) ──
+  const dashPreview    = document.getElementById('dash-hover-preview');
+  const dashPreviewImg = document.getElementById('dash-hover-preview-img');
+  const dashPreviewTag = document.getElementById('dash-hover-preview-tag');
 
-  function openDashLightbox(card) {
-    const img = card.querySelector('img');
-    if (!img || !dashLightbox) return;
-    dashLightboxImg.src = img.src;
-    dashLightboxImg.alt = img.alt;
-    dashLightboxTag.textContent = card.querySelector('.dash-gallery-tag')?.textContent || '';
-    dashLightbox.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeDashLightbox() {
-    dashLightbox?.classList.remove('is-open');
-    document.body.style.overflow = '';
-  }
-  dashLightboxClose?.addEventListener('click', closeDashLightbox);
-  dashLightbox?.addEventListener('click', e => { if (e.target === dashLightbox) closeDashLightbox(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDashLightbox(); });
-
-  if (dashGalleryStack) {
-    const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const dashCards = dashGalleryStack.querySelectorAll('.dash-gallery-card');
-
-    // Any card click opens it full-size — on desktop that's on top of the hover
-    // fan, on touch it's on top of native horizontal swipe scrolling.
-    dashCards.forEach(card => card.addEventListener('click', () => openDashLightbox(card)));
-
-    if (canHover) {
-      dashGalleryStack.addEventListener('mouseenter', () => dashGalleryStack.classList.add('is-spread'));
-      dashGalleryStack.addEventListener('mouseleave', () => dashGalleryStack.classList.remove('is-spread'));
-      dashGalleryStack.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dashGalleryStack.classList.toggle('is-spread'); }
+  if (dashPreview && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.dash-gallery-card').forEach(card => {
+      const img = card.querySelector('img');
+      const tag = card.querySelector('.dash-gallery-tag');
+      card.addEventListener('mouseenter', () => {
+        dashPreviewImg.src = img.src;
+        dashPreviewImg.alt = img.alt;
+        dashPreviewTag.textContent = tag?.textContent || '';
+        dashPreview.classList.add('is-active');
       });
-      dashGalleryStack.addEventListener('focus', () => dashGalleryStack.classList.add('is-spread'));
-      dashGalleryStack.addEventListener('blur', () => dashGalleryStack.classList.remove('is-spread'));
-    }
+      card.addEventListener('mouseleave', () => {
+        dashPreview.classList.remove('is-active');
+      });
+    });
   }
 
   // ── Problem section loss counter ─────────────────────────
