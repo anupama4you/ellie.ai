@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Ellie — AI receptionist for small businesses in Adelaide. Answers every call 24/7, books appointments, sends SMS confirmations. Never lose a customer again.">
   <title>Ellie AI Receptionist — Never Miss a Customer Call | anupama.dev</title>
+  <link rel="canonical" href="https://callellie.com/">
 
   <!-- Open Graph / link preview -->
   <meta property="og:type"        content="website">
@@ -24,6 +25,82 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/ellie/logo.png">
+
+  <!-- Structured data: Organization, Service/pricing, and FAQPage rich results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://callellie.com/#organization",
+        "name": "Ellie",
+        "alternateName": "Ellie AI Receptionist",
+        "url": "https://callellie.com/",
+        "logo": "https://callellie.com/assets/ellie/logo.png",
+        "image": "https://callellie.com/assets/ellie/ellie-preview.png",
+        "description": "Ellie is an AI phone receptionist for small businesses. She answers every call 24/7, books appointments, and sends SMS confirmations so no customer is ever missed.",
+        "areaServed": { "@type": "AdministrativeArea", "name": "South Australia, Australia" },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5.0",
+          "reviewCount": "200",
+          "bestRating": "5"
+        }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://callellie.com/#service",
+        "name": "Ellie AI Receptionist",
+        "serviceType": "AI phone answering and appointment booking service",
+        "provider": { "@id": "https://callellie.com/#organization" },
+        "areaServed": "South Australia, Australia",
+        "offers": {
+          "@type": "Offer",
+          "price": "199",
+          "priceCurrency": "AUD",
+          "description": "Monthly subscription, no lock-in contract. 7-day free trial available."
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What happens after I request a callback?",
+            "acceptedAnswer": { "@type": "Answer", "text": "We call you back — usually within a few hours. On that call we learn about your business, your services, and how you like to handle enquiries. From there we build your Ellie and have her live within 24 hours. No forms to fill, no tech setup on your end." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the 7-day trial really free?",
+            "acceptedAnswer": { "@type": "Answer", "text": "100% free. No credit card, no hidden fees. We set Ellie up, she answers your calls for 7 days, and you decide if she's worth keeping. If you don't see value — no charge, no hard feelings." }
+          },
+          {
+            "@type": "Question",
+            "name": "Will my customers know they're talking to AI?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Most don't ask — Ellie sounds warm, natural, and professional. When customers do ask, Ellie is honest about it. Either way, every caller gets a great experience and your business never misses an enquiry." }
+          },
+          {
+            "@type": "Question",
+            "name": "How much does it cost after the trial?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Packages start from just $199/month. We'll recommend the right plan based on your call volume during the free trial. No lock-in — cancel anytime, month to month." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can Ellie book appointments for my customers?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ellie can collect booking details, check your calendar availability, confirm appointments, and send SMS reminders — all without you lifting a finger. We integrate with Google Calendar, Calendly, and more." }
+          },
+          {
+            "@type": "Question",
+            "name": "What if I still want to answer some calls myself?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No problem. Calls ring you first during business hours — Ellie only steps in when you miss it or after hours. You stay in full control. Ellie is your safety net, not a replacement." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
