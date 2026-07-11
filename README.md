@@ -62,7 +62,7 @@ The customer often can't tell it's AI. That's the point.
 
 Before committing, business owners can try Ellie for themselves:
 
-1. Visit **ellie.anupama.dev**
+1. Visit **callellie.com**
 2. Enter your website URL
 3. Ellie reads your site and personalises herself to your business in real time
 4. Start a live voice call — talk to Ellie as if she's your receptionist
@@ -117,6 +117,6 @@ Compare that to a part-time human receptionist at $3,500–$5,000/month includin
 
 Ready to stop missing calls?
 
-**[Book a free 30-minute setup call →](https://ellie.anupama.dev/#book)**
+**[Book a free 30-minute setup call →](https://callellie.com/#book)**
 
 Ellie is built and supported by [anupama.dev](https://anupama.dev).
