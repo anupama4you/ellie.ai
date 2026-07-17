@@ -142,6 +142,7 @@
   const editDesc         = document.getElementById('edit-description');
   const demoGenerateBtn  = document.getElementById('demo-generate-btn');
   const demoGenerateName = document.getElementById('demo-generate-name');
+  const demoGenerateLabel = document.getElementById('demo-generate-label');
 
   let briefedConfig = null; // stores full API response incl. publicKey + assistantOverrides
 
@@ -315,7 +316,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     setDemoUrlStatus('', '');
   });
 
-  if (demoGenerateBtn) demoGenerateBtn.addEventListener('click', () => {
+  if (demoGenerateBtn) demoGenerateBtn.addEventListener('click', async () => {
     const name     = editName?.value.trim()     || 'Ellie';
     const phone    = editPhone?.value.trim()    || '';
     const location = editLocation?.value.trim() || '';
@@ -323,8 +324,37 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     const hours    = editHours?.value.trim()    || '';
     const desc     = editDesc?.value.trim()     || '';
 
-    const systemPrompt = buildSystemPrompt(name, { description: desc, phone, location, services, hours });
-    const firstMessage = `Thanks for calling ${name}, this is Ellie. How can I help you today?`;
+    demoGenerateBtn.disabled = true;
+    demoGenerateBtn.classList.add('loading');
+    if (demoGenerateLabel) demoGenerateLabel.textContent = "Designing Ellie's persona…";
+
+    // Ask AI to infer the business type and design a whole persona/flow suited to it —
+    // not just drop these fields into one fixed template. Falls back to the generic
+    // template below if the call fails, times out, or returns something malformed,
+    // so the demo never breaks even if generation is unavailable.
+    let systemPrompt, firstMessage, businessType = '';
+    try {
+      const res = await fetch('/.netlify/functions/generate-demo-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, location, services, hours, description: desc }),
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!res.ok) throw new Error(`server error ${res.status}`);
+      const data = await res.json();
+      if (!data.systemPrompt || !data.firstMessage) throw new Error('malformed response');
+      systemPrompt = data.systemPrompt;
+      firstMessage = data.firstMessage;
+      businessType = data.businessType || '';
+    } catch (err) {
+      console.error('AI persona generation failed, using fallback template:', err);
+      systemPrompt = buildSystemPrompt(name, { description: desc, phone, location, services, hours });
+      firstMessage = `Thanks for calling ${name}, this is Ellie. How can I help you today?`;
+    }
+
+    demoGenerateBtn.disabled = false;
+    demoGenerateBtn.classList.remove('loading');
+    if (demoGenerateLabel) demoGenerateLabel.textContent = 'Generate Your Own Ellie';
 
     // Store generated prompt separately — startDemo() always fetches fresh VAPI config
     // and patches these in, so we never pass stale session data to VAPI.
@@ -333,6 +363,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       _generated:    true,
       _systemPrompt: systemPrompt,
       _firstMessage: firstMessage,
+      _businessType: businessType,
     };
 
     // Silently save demo lead to Netlify Forms
@@ -349,13 +380,14 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
           services,
           hours,
           description:   desc,
+          business_type: businessType,
         }).toString(),
       }).catch(() => {});
     } catch {}
 
     // Update phone UI to show ready state
     if (demoContactName)  demoContactName.textContent  = name;
-    if (demoContactLabel) demoContactLabel.textContent = 'Ellie · AI Receptionist';
+    if (demoContactLabel) demoContactLabel.textContent = businessType ? `Ellie · ${businessType}` : 'Ellie · AI Receptionist';
     if (demoPhoneNote)    demoPhoneNote.textContent    = `${name}'s Ellie is ready — press Call`;
 
     // Vibrate call button + show bubble

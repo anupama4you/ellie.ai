@@ -198,8 +198,6 @@
     [data-theme="light"] .step { background: #f8fafc; border-color: rgba(0,0,0,.08); }
     [data-theme="light"] .step:hover { background: rgba(124,58,237,.04); border-color: rgba(124,58,237,.18); }
     [data-theme="light"] .step h3 { color: #0f172a; }
-    [data-theme="light"] .how-tagline-accent { background: linear-gradient(135deg,var(--violet),var(--rose)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    [data-theme="light"] .how-dash-chip { background: rgba(124,58,237,.06); border-color: rgba(124,58,237,.18); color: #334155; }
     [data-theme="light"] .ellie-tech { background: #f8fafc; }
     [data-theme="light"] .ellie-tech-feats { border-color: rgba(0,0,0,.08); }
     [data-theme="light"] .ellie-tech-feat { border-color: rgba(0,0,0,.07); }
@@ -939,35 +937,18 @@
     .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
     .step {
       background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
-      border-radius: 18px; padding: 28px 20px 24px; text-align: center;
-      transition: border-color .2s, background .2s;
+      border-radius: 18px; overflow: hidden; text-align: center;
+      transition: border-color .2s, background .2s, transform .3s;
     }
-    .step:hover { background: rgba(167,139,250,.05); border-color: rgba(167,139,250,.22); }
-    .step-icon {
-      width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 14px;
-      background: var(--violet); display: flex; align-items: center; justify-content: center;
-      color: #fff; box-shadow: 0 4px 20px rgba(167,139,250,.35);
-    }
+    .step:hover { background: rgba(167,139,250,.05); border-color: rgba(167,139,250,.22); transform: translateY(-4px); }
+    .step-media { aspect-ratio: 2 / 3; background: rgba(167,139,250,.06); }
+    .step-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .step-body { padding: 20px 18px 24px; }
     .step-label { display: block; font-size: .65rem; font-weight: 700; color: var(--violet); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
     .step h3 { font-size: .9rem; color: #fff; margin-bottom: .45rem; font-weight: 600; line-height: 1.35; }
     .step p  { font-size: .8rem; color: var(--muted); line-height: 1.65; margin: 0; }
     /* Tagline + dashboard blurb */
-    .how-tagline { text-align: center; margin-top: 3.5rem; }
-    .how-tagline-accent {
-      display: block; font-size: clamp(1.15rem, 2.4vw, 1.55rem); font-weight: 800; letter-spacing: -.02em;
-      background: linear-gradient(135deg, var(--violet) 0%, #818cf8 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: .75rem;
-    }
-    .how-tagline p { color: var(--muted); font-size: .9rem; max-width: 520px; margin: 0 auto 2rem; line-height: 1.75; }
-    .how-dash-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .how-dash-chip {
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(167,139,250,.08); border: 1px solid rgba(167,139,250,.2);
-      border-radius: 100px; padding: 7px 16px;
-      font-size: .78rem; color: rgba(255,255,255,.7);
-    }
-    .how-dash-chip svg { color: var(--violet); flex-shrink: 0; }
+    .how-hd p { color: var(--muted); font-size: .95rem; line-height: 1.7; margin-top: .8rem; }
 
     /* ── FEATURES ── */
     .features { background: var(--bg); }
@@ -1173,6 +1154,14 @@
     }
     .demo-generate-btn:hover { opacity: .9; }
     .demo-generate-btn:active { transform: scale(.98); }
+    .demo-generate-btn:disabled { opacity:.75; cursor:not-allowed; }
+    .demo-generate-btn .btn-spinner {
+      width:15px; height:15px; border-radius:50%; flex-shrink:0;
+      border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+      animation:spin .7s linear infinite; display:none;
+    }
+    .demo-generate-btn.loading .btn-spinner { display:block; }
+    .demo-generate-btn.loading .btn-icon    { display:none; }
 
     /* Phone shell */
     .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
@@ -2098,8 +2087,6 @@
       .hero-in { grid-template-columns:1fr;gap:32px;padding-top:24px; }
       .hero-url-btn { font-size:.75rem; padding:8px 14px; }
       .steps { grid-template-columns: repeat(2,1fr); gap: 12px; }
-      .how-tagline { margin-top: 2.4rem; }
-      .how-tagline-accent { font-size: 1.15rem; }
       .feat-grid { grid-template-columns:1fr 1fr; }
       .demo-in { grid-template-columns:1fr; gap: 32px; }
       .demo-copy h2 { font-size: 1.6rem; }
@@ -2737,69 +2724,55 @@
     <div class="how-hd reveal">
       <div class="sec-tag">How It Works</div>
       <h2 class="sec-h2">How <span class="h2-grad">Ellie works.</span></h2>
+      <p>We set it up, Ellie runs it — you just do the work. Here's exactly what happens on every call.</p>
     </div>
 
     <div class="steps">
 
       <div class="step reveal">
-        <div class="step-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div class="step-media">
+          <img src="assets/ellie/1.png" alt="A customer smiling while calling a business on her phone" loading="lazy">
         </div>
-        <span class="step-label">Step 1</span>
-        <h3>Customer calls your business</h3>
-        <p>They dial your number — Ellie picks up every time, wherever you are.</p>
+        <div class="step-body">
+          <span class="step-label">Step 1</span>
+          <h3>Customer calls your business</h3>
+          <p>They dial your number — Ellie picks up every time, wherever you are.</p>
+        </div>
       </div>
 
       <div class="step reveal">
-        <div class="step-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="step-media">
+          <img src="assets/ellie/2.png" alt="A small business owner relaxed, checking his phone in his workshop" loading="lazy">
         </div>
-        <span class="step-label">Step 2</span>
-        <h3>Ellie answers in 2 seconds</h3>
-        <p>Warm, professional, sounding just like your business — answered before the second ring.</p>
+        <div class="step-body">
+          <span class="step-label">Step 2</span>
+          <h3>Ellie answers in 2 seconds</h3>
+          <p>Warm, professional, sounding just like your business — answered before the second ring.</p>
+        </div>
       </div>
 
       <div class="step reveal">
-        <div class="step-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="step-media">
+          <img src="assets/ellie/3.png" alt="A customer smiling on a call in her car, chatting with Ellie" loading="lazy">
         </div>
-        <span class="step-label">Step 3</span>
-        <h3>Handles questions politely</h3>
-        <p>Tells callers about your services, answers FAQs, and guides them through what they need.</p>
+        <div class="step-body">
+          <span class="step-label">Step 3</span>
+          <h3>Handles questions politely</h3>
+          <p>Tells callers about your services, answers FAQs, and guides them through what they need.</p>
+        </div>
       </div>
 
       <div class="step reveal">
-        <div class="step-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>
+        <div class="step-media">
+          <img src="assets/ellie/4.png" alt="A customer holding up her phone showing a text booking confirmation from Ellie" loading="lazy">
         </div>
-        <span class="step-label">Step 4</span>
-        <h3>Books &amp; sends details instantly</h3>
-        <p>Takes their first name and sends full booking details straight to their phone number.</p>
-      </div>
-
-    </div>
-
-    <div class="how-tagline reveal">
-      <span class="how-tagline-accent">We set it up. Ellie runs it. You just do the work.</span>
-      <p>Then see exactly how your day went — all in one simple dashboard.</p>
-      <div class="how-dash-chips">
-        <div class="how-dash-chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-          Call recordings
-        </div>
-        <div class="how-dash-chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Text conversations
-        </div>
-        <div class="how-dash-chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Bookings scheduled
-        </div>
-        <div class="how-dash-chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-          New enquiries
+        <div class="step-body">
+          <span class="step-label">Step 4</span>
+          <h3>Books &amp; sends details instantly</h3>
+          <p>Takes their first name and sends full booking details straight to their phone number.</p>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -2995,8 +2968,9 @@
             </div>
           </div>
           <button class="demo-generate-btn" id="demo-generate-btn" type="button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-            Generate Your Own Ellie
+            <span class="btn-spinner"></span>
+            <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            <span id="demo-generate-label">Generate Your Own Ellie</span>
           </button>
         </div>
       </div>
@@ -3996,6 +3970,7 @@
   <input type="hidden" name="services">
   <input type="hidden" name="hours">
   <input type="hidden" name="description">
+  <input type="hidden" name="business_type">
 </form>
 
 </body>
