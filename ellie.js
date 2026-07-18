@@ -848,13 +848,66 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
   const trialResubmit  = document.getElementById('trial-resubmit');
 
   if (trialForm) {
-    const trialPhone = trialForm.querySelector('input[name="phone"]');
+    const trialName      = trialForm.querySelector('input[name="name"]');
+    const trialPhone     = trialForm.querySelector('input[name="phone"]');
+    const trialEmail     = trialForm.querySelector('input[name="email"]');
+    const trialUrl       = trialForm.querySelector('input[name="business_url"]');
+    const trialType      = trialForm.querySelector('select[name="business_type"]');
+    const trialHoneypot  = trialForm.querySelector('input[name="bot-field"]');
+    const trialRecaptcha = document.getElementById('trial-recaptcha');
+    const trialLoadedAt  = Date.now();
+
+    // A person can't fill a 5-field form in under 1.5s — bots that skip the honeypot
+    // usually skip this too. Silently drop instead of flashing errors, so scripts
+    // don't learn what tripped the filter.
+    const MIN_HUMAN_FILL_MS = 1500;
+    const NAME_RE = /^[a-zA-ZÀ-ɏ' .-]{2,80}$/;
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     trialForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      if ((trialHoneypot && trialHoneypot.value) || (Date.now() - trialLoadedAt) < MIN_HUMAN_FILL_MS) {
+        return;
+      }
+
+      const name = trialName ? trialName.value.trim() : '';
+      if (!NAME_RE.test(name)) {
+        flashInvalid(trialName);
+        return;
+      }
+
       if (trialPhone && !isValidAuPhone(trialPhone.value)) {
         flashInvalid(trialPhone);
+        return;
+      }
+
+      const email = trialEmail ? trialEmail.value.trim() : '';
+      if (email && (email.length > 254 || !EMAIL_RE.test(email))) {
+        flashInvalid(trialEmail);
+        return;
+      }
+
+      const businessUrl = trialUrl ? trialUrl.value.trim() : '';
+      if (businessUrl && (businessUrl.length > 200 || !isValidWebsite(businessUrl))) {
+        flashInvalid(trialUrl);
+        return;
+      }
+
+      if (trialType && !trialType.value) {
+        flashInvalid(trialType);
+        return;
+      }
+
+      // Netlify injects the actual reCAPTCHA widget (with this field) at deploy
+      // time — it won't exist when testing locally against raw source.
+      const recaptchaResponse = trialForm.querySelector('[name="g-recaptcha-response"]');
+      if (recaptchaResponse && !recaptchaResponse.value) {
+        if (trialRecaptcha) {
+          trialRecaptcha.classList.add('trial-recaptcha--invalid');
+          trialRecaptcha.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => trialRecaptcha.classList.remove('trial-recaptcha--invalid'), 1800);
+        }
         return;
       }
 
@@ -880,7 +933,10 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
   if (trialResubmit) {
     trialResubmit.addEventListener('click', () => {
       trialFlipInner.classList.remove('flipped');
-      setTimeout(() => trialForm.reset(), 400);
+      setTimeout(() => {
+        trialForm.reset();
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) grecaptcha.reset();
+      }, 400);
     });
   }
 
