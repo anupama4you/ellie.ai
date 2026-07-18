@@ -248,6 +248,41 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     return /^(?:\+?61|0)[2-478]\d{8}$/.test(digits);
   }
 
+  // Meta's Advanced Matching wants E.164 digits with no leading "+" (e.g.
+  // "61412345678"). Assumes val already passed isValidAuPhone.
+  function toE164Digits(val) {
+    const digits = String(val || '').trim().replace(/[\s()-]/g, '').replace(/^\+/, '');
+    return digits.startsWith('0') ? '61' + digits.slice(1) : digits;
+  }
+
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : undefined;
+  }
+
+  // Strips anything that isn't a phone character as the user types, and caps
+  // digit count at 11 (the most an AU number ever needs: +61 + 9 significant
+  // digits) — so the field can't grow past what a real phone number holds.
+  const MAX_PHONE_DIGITS = 11;
+  function limitPhoneInput(el) {
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const original = el.value;
+      let out = '';
+      let digits = 0;
+      for (const ch of original) {
+        if (ch === '+') {
+          if (out.length === 0) out += ch;
+        } else if (/\d/.test(ch)) {
+          if (digits < MAX_PHONE_DIGITS) { out += ch; digits++; }
+        } else if (/[\s\-()]/.test(ch)) {
+          out += ch;
+        }
+      }
+      if (out !== original) el.value = out;
+    });
+  }
+
   async function fetchAndBrief() {
     const val = demoBizUrlInput ? demoBizUrlInput.value.trim() : '';
     if (!val) return;
@@ -764,6 +799,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
   const livePhone   = document.getElementById('live-phone');
   const liveCallBtn = document.getElementById('live-call-btn');
   const liveStatus  = document.getElementById('live-status');
+  limitPhoneInput(livePhone);
 
   function flashInvalid(el) {
     el.style.borderColor = '#ef4444';
@@ -856,6 +892,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     const trialHoneypot  = trialForm.querySelector('input[name="bot-field"]');
     const trialRecaptcha = document.getElementById('trial-recaptcha');
     const trialLoadedAt  = Date.now();
+    limitPhoneInput(trialPhone);
 
     // A person can't fill a 5-field form in under 1.5s — bots that skip the honeypot
     // usually skip this too. Silently drop instead of flashing errors, so scripts
@@ -911,7 +948,38 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         return;
       }
 
-      if (typeof fbq === 'function') fbq('track', 'Lead');
+      // Shared between the browser pixel and the server-side Conversions API call
+      // below so Meta dedupes them into one Lead instead of counting it twice.
+      const fbEventId = (crypto.randomUUID ? crypto.randomUUID() : `lead-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+      const fbPhone = trialPhone && trialPhone.value.trim() ? toE164Digits(trialPhone.value) : '';
+
+      if (typeof fbq === 'function') {
+        // Feed Meta known identity signals right before the conversion fires, so
+        // it can match the Lead to a real account instead of relying on cookies
+        // alone — this is what makes Custom/Lookalike Audiences built off this
+        // event actually reach people who look like our real leads.
+        const advancedMatching = {};
+        if (fbPhone) advancedMatching.ph = fbPhone;
+        if (email) advancedMatching.em = email.toLowerCase();
+        if (Object.keys(advancedMatching).length) fbq('init', '1377367451165227', advancedMatching);
+        fbq('track', 'Lead', {}, { eventID: fbEventId });
+      }
+
+      // Server-side copy via Meta's Conversions API — catches the leads the
+      // browser pixel misses to ad blockers or Safari's tracking prevention.
+      // Fire-and-forget: it must never hold up the form's UI.
+      fetch('/.netlify/functions/meta-capi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          em: email || undefined,
+          ph: fbPhone || undefined,
+          eventId: fbEventId,
+          eventSourceUrl: location.href,
+          fbp: getCookie('_fbp'),
+          fbc: getCookie('_fbc'),
+        }),
+      }).catch(() => {});
 
       if (typeof confetti === 'function') {
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#a78bfa','#ec4899','#34d399','#fbbf24','#60a5fa'] });
