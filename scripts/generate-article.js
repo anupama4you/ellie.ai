@@ -124,11 +124,11 @@ async function generateArticle(prompt) {
 // 3b. Fetch a hero image from Pexels (optional — article still
 //     generates fine without one if this fails or isn't configured)
 // ---------------------------------------------------------------
-async function fetchHeroImage(query) {
+async function fetchHeroImage(query, usedPhotoIds) {
   if (!PEXELS_API_KEY) return null;
   try {
     const res = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=landscape`,
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=15&orientation=landscape`,
       { headers: { Authorization: PEXELS_API_KEY }, signal: AbortSignal.timeout(8000) }
     );
     if (!res.ok) {
@@ -136,9 +136,14 @@ async function fetchHeroImage(query) {
       return null;
     }
     const data = await res.json();
-    const photo = data.photos && data.photos[0];
+    const photos = data.photos || [];
+    // Similar queries across articles (e.g. "receptionist answering phone") tend to
+    // rank the same stock photo first every time — skip anything already in use so
+    // articles don't end up sharing an image.
+    const photo = photos.find((p) => !usedPhotoIds.has(p.id)) || photos[0];
     if (!photo) return null;
     return {
+      id: photo.id,
       url: photo.src.large2x,
       alt: photo.alt || query,
       photographer: photo.photographer,
@@ -148,6 +153,13 @@ async function fetchHeroImage(query) {
     console.warn(`Pexels fetch failed (${err.message}) — publishing without a hero image.`);
     return null;
   }
+}
+
+// Extracts the numeric photo ID from a stored Pexels URL, e.g.
+// ".../photos/8682791/pexels-photo-8682791.jpeg?..." -> 8682791
+function pexelsIdFromUrl(url) {
+  const match = url && url.match(/\/photos\/(\d+)\//);
+  return match ? Number(match[1]) : null;
 }
 
 // ---------------------------------------------------------------
@@ -265,9 +277,11 @@ ${urls}
 
   // Gather recent titles for internal linking + de-duplication
   const indexFile = path.join(BLOG_DIR, "index.json");
-  const recent = fs.existsSync(indexFile)
-    ? JSON.parse(fs.readFileSync(indexFile, "utf8")).slice(0, 10)
-    : [];
+  const fullIndex = fs.existsSync(indexFile) ? JSON.parse(fs.readFileSync(indexFile, "utf8")) : [];
+  const recent = fullIndex.slice(0, 10);
+  const usedPhotoIds = new Set(
+    fullIndex.map((a) => pexelsIdFromUrl(a.image)).filter((id) => id !== null)
+  );
 
   const article = await generateArticle(buildPrompt(next, recent));
 
@@ -278,7 +292,7 @@ ${urls}
 
   if (!fs.existsSync(BLOG_DIR)) fs.mkdirSync(BLOG_DIR, { recursive: true });
 
-  const heroImage = await fetchHeroImage(article.imageQuery || next.keyword);
+  const heroImage = await fetchHeroImage(article.imageQuery || next.keyword, usedPhotoIds);
 
   const html = renderPage(article, next, heroImage);
   const outPath = path.join(BLOG_DIR, `${article.slug}.html`);
