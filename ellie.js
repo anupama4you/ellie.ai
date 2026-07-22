@@ -887,7 +887,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     const trialName      = trialForm.querySelector('input[name="name"]');
     const trialPhone     = trialForm.querySelector('input[name="phone"]');
     const trialEmail     = trialForm.querySelector('input[name="email"]');
-    const trialUrl       = trialForm.querySelector('input[name="business_url"]');
+    const trialBizName   = trialForm.querySelector('input[name="business_name"]');
     const trialType      = trialForm.querySelector('select[name="business_type"]');
     const trialHoneypot  = trialForm.querySelector('input[name="bot-field"]');
     const trialLoadedAt  = Date.now();
@@ -924,9 +924,9 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         return;
       }
 
-      const businessUrl = trialUrl ? trialUrl.value.trim() : '';
-      if (businessUrl && (businessUrl.length > 200 || !isValidWebsite(businessUrl))) {
-        flashInvalid(trialUrl);
+      const businessName = trialBizName ? trialBizName.value.trim() : '';
+      if (businessName.length > 100) {
+        flashInvalid(trialBizName);
         return;
       }
 
