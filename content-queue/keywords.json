@@ -36,7 +36,9 @@
       "keyword": "AI receptionist vs hiring a receptionist",
       "intent": "commercial - direct cost and capability comparison",
       "audience": "businesses deciding between human and AI",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-22",
+      "slug": "ai-receptionist-vs-hiring-a-receptionist"
     },
     {
       "keyword": "phone answering service for tradies",
