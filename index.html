@@ -40,6 +40,7 @@
         "logo": "https://callellie.com/assets/ellie/logo.png",
         "image": "https://callellie.com/assets/ellie/ellie-preview.png",
         "description": "Ellie is an AI phone receptionist for small businesses. She answers every call 24/7, books appointments, and sends SMS confirmations so no customer is ever missed.",
+        "email": "hello@callellie.com",
         "areaServed": { "@type": "AdministrativeArea", "name": "South Australia, Australia" },
         "aggregateRating": {
           "@type": "AggregateRating",
@@ -1504,11 +1505,6 @@
     .trial-input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px var(--violet-b); }
     .trial-select { cursor: pointer; }
     .trial-select option { background: var(--bg2); color: var(--text); }
-    .trial-recaptcha {
-      width: 100%; display: flex; justify-content: center;
-      margin-bottom: 14px; border-radius: 10px; transition: box-shadow .2s;
-    }
-    .trial-recaptcha--invalid { box-shadow: 0 0 0 2px #ef4444; }
     .trial-cta {
       width: 100%; padding: 15px 24px;
       display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -3825,7 +3821,7 @@
           <h2 class="book-h2">Try Ellie <span class="h2-grad">free for 7 days.</span></h2>
           <p class="book-sub" style="margin-bottom:1.8rem;">We'll build your Ellie within 24 hours. Leave your details and we'll call you back to get started.</p>
 
-          <form class="trial-form" id="trial-form" name="free-trial" method="POST" data-netlify="true" data-netlify-recaptcha="true" netlify-honeypot="bot-field">
+          <form class="trial-form" id="trial-form" name="free-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field">
             <input type="hidden" name="form-name" value="free-trial">
             <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
             <div class="trial-fields">
@@ -3846,7 +3842,6 @@
                 <option>Other</option>
               </select>
             </div>
-            <div class="trial-recaptcha" id="trial-recaptcha" data-netlify-recaptcha="true"></div>
             <button type="submit" class="trial-cta" id="trial-submit">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
               Get a free callback
@@ -3957,6 +3952,7 @@
   <div class="foot-copy">
     <span>© 2026 anupama.dev. All rights reserved.</span>
     <span><a href="privacy.html" style="color:inherit;">Privacy Policy</a> · <a href="terms.html" style="color:inherit;">Terms of Service</a></span>
+    <span><a href="mailto:hello@callellie.com" style="color:inherit;">hello@callellie.com</a></span>
     <span>Adelaide, South Australia 🇦🇺</span>
   </div>
 </footer>

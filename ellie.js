@@ -890,7 +890,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     const trialUrl       = trialForm.querySelector('input[name="business_url"]');
     const trialType      = trialForm.querySelector('select[name="business_type"]');
     const trialHoneypot  = trialForm.querySelector('input[name="bot-field"]');
-    const trialRecaptcha = document.getElementById('trial-recaptcha');
     const trialLoadedAt  = Date.now();
     limitPhoneInput(trialPhone);
 
@@ -933,18 +932,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
 
       if (trialType && !trialType.value) {
         flashInvalid(trialType);
-        return;
-      }
-
-      // Netlify injects the actual reCAPTCHA widget (with this field) at deploy
-      // time — it won't exist when testing locally against raw source.
-      const recaptchaResponse = trialForm.querySelector('[name="g-recaptcha-response"]');
-      if (recaptchaResponse && !recaptchaResponse.value) {
-        if (trialRecaptcha) {
-          trialRecaptcha.classList.add('trial-recaptcha--invalid');
-          trialRecaptcha.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          setTimeout(() => trialRecaptcha.classList.remove('trial-recaptcha--invalid'), 1800);
-        }
         return;
       }
 
@@ -1003,7 +990,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       trialFlipInner.classList.remove('flipped');
       setTimeout(() => {
         trialForm.reset();
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) grecaptcha.reset();
       }, 400);
     });
   }
