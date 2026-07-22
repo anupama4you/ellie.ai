@@ -1,0 +1,37 @@
+name: Daily SEO Article
+
+on:
+  schedule:
+    # 21:30 UTC = 7:00am ACST Adelaide next day (8:00am ACDT in summer)
+    - cron: "30 21 * * *"
+  workflow_dispatch: {} # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate article
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SITE_URL: https://callellie.com
+        run: node scripts/generate-article.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "ellie-seo-bot"
+          git config user.email "bot@callellie.com"
+          git add blog/ content-queue/ sitemap-blog.xml
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "chore: daily SEO article $(date +%F)"
+          git push

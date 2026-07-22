@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog | ELLIE AI Receptionist — Missed Calls, Bookings & Business Growth</title>
+  <meta name="description" content="Practical guides for Australian businesses on handling calls, capturing more bookings and never missing a customer. From the team behind Ellie.">
+  <link rel="canonical" href="https://callellie.com/blog/">
+  <style>
+    :root { --plum: #3d2a4a; --accent: #a78bfa; --pink: #ec4899; --paper: #faf8f5; --ink: #1f1a24; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.6; }
+    header.site { background: var(--plum); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    header.site a.logo { color: #fff; font-weight: 800; font-size: 20px; text-decoration: none; }
+    header.site a.cta { background: linear-gradient(90deg, var(--accent), var(--pink)); color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+    h1 { color: var(--plum); font-size: 32px; margin-bottom: 8px; }
+    .sub { color: #6b6472; margin-bottom: 40px; }
+    .post { padding: 20px 0; border-bottom: 1px solid #e8e2da; }
+    .post a { color: var(--plum); font-size: 20px; font-weight: 700; text-decoration: none; }
+    .post a:hover { color: var(--pink); }
+    .post p { color: #55505c; margin-top: 6px; font-size: 15px; }
+    .post .date { font-size: 13px; color: #8a8492; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <a class="logo" href="/">Ellie</a>
+    <a class="cta" href="/#book">Try Free for 7 Days</a>
+  </header>
+  <main>
+    <h1>The Ellie Blog</h1>
+    <p class="sub">Practical guides for Australian businesses on calls, bookings and growth.</p>
+    <div id="posts"></div>
+  </main>
+  <script>
+    fetch('/blog/index.json')
+      .then(r => r.json())
+      .then(posts => {
+        document.getElementById('posts').innerHTML = posts.map(p => `
+          <div class="post">
+            <a href="${p.url}">${p.title}</a>
+            <p>${p.description}</p>
+            <div class="date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+          </div>
+        `).join('');
+      });
+  </script>
+</body>
+</html>
