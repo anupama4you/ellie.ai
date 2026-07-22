@@ -47,7 +47,9 @@
     main { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
     h1 { color: var(--text); font-size: 32px; margin-bottom: 8px; }
     .sub { color: var(--muted); margin-bottom: 40px; }
-    .post { padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .post { display: flex; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .post img { width: 120px; height: 84px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+    .post-body { min-width: 0; }
     .post a { color: var(--text); font-size: 20px; font-weight: 700; text-decoration: none; }
     .post a:hover { color: var(--violet); }
     .post p { color: var(--muted); margin-top: 6px; font-size: 15px; }
@@ -83,9 +85,12 @@
       .then(posts => {
         document.getElementById('posts').innerHTML = posts.map(p => `
           <div class="post">
-            <a href="${p.url}">${p.title}</a>
-            <p>${p.description}</p>
-            <div class="date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+            ${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : ''}
+            <div class="post-body">
+              <a href="${p.url}">${p.title}</a>
+              <p>${p.description}</p>
+              <div class="date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+            </div>
           </div>
         `).join('');
       });

@@ -69,6 +69,10 @@
       padding: 48px 24px 80px;
     }
     .meta { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .hero-img { margin: 0 0 32px; }
+    .hero-img img { width: 100%; height: auto; border-radius: 14px; display: block; }
+    .hero-img figcaption { color: var(--muted); font-size: 12px; margin-top: 8px; text-align: right; }
+    .hero-img figcaption a { color: var(--muted); }
     article h1 { font-size: 34px; line-height: 1.25; margin-bottom: 16px; color: var(--text); }
     article h2 { font-size: 24px; margin: 36px 0 12px; color: var(--violet); }
     article p { margin-bottom: 16px; color: var(--text); }
@@ -117,6 +121,7 @@
   </header>
 
   <main>
+    {{HERO_IMAGE}}
     <p class="meta">Published {{DATE_DISPLAY}} · ELLIE AI Receptionist</p>
     <article>
       {{BODY}}

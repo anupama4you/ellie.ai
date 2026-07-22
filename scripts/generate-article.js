@@ -25,6 +25,9 @@ if (!API_KEY) {
   process.exit(1);
 }
 
+// Optional — articles still generate fine without a hero image if this is unset.
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+
 // ---------------------------------------------------------------
 // 1. Pick the next keyword from the queue
 // ---------------------------------------------------------------
@@ -70,6 +73,7 @@ REQUIREMENTS:
 6. NEVER use em dashes anywhere. Use commas, colons, or rephrase instead.
 7. Do not invent statistics. You may use widely published industry figures with soft attribution like "industry research suggests" only if they are genuinely well known (e.g. most callers who reach voicemail do not call back).
 8. Write a compelling, click-worthy but honest title (max 60 chars) and a meta description (max 155 chars).
+9. Write an imageQuery: a short 3 to 6 word phrase describing a realistic stock-photo scene that fits this article (e.g. "electrician answering phone call", "salon receptionist on the phone", "tradesperson on a job site"). This is used to search a stock photo library, so describe a plausible real-world scene, not an abstract concept.
 
 Respond ONLY with valid JSON, no markdown fences, in exactly this shape:
 {
@@ -77,7 +81,8 @@ Respond ONLY with valid JSON, no markdown fences, in exactly this shape:
   "metaDescription": "...",
   "slug": "lowercase-hyphenated-slug",
   "bodyHtml": "<h1>...</h1><p>...</p> ... full article body as clean HTML using h1, h2, p, ul, li, strong only",
-  "faq": [{"question": "...", "answer": "..."}]
+  "faq": [{"question": "...", "answer": "..."}],
+  "imageQuery": "..."
 }`;
 }
 
@@ -116,12 +121,49 @@ async function generateArticle(prompt) {
 }
 
 // ---------------------------------------------------------------
+// 3b. Fetch a hero image from Pexels (optional — article still
+//     generates fine without one if this fails or isn't configured)
+// ---------------------------------------------------------------
+async function fetchHeroImage(query) {
+  if (!PEXELS_API_KEY) return null;
+  try {
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=landscape`,
+      { headers: { Authorization: PEXELS_API_KEY }, signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) {
+      console.warn(`Pexels API error ${res.status} — publishing without a hero image.`);
+      return null;
+    }
+    const data = await res.json();
+    const photo = data.photos && data.photos[0];
+    if (!photo) return null;
+    return {
+      url: photo.src.large2x,
+      alt: photo.alt || query,
+      photographer: photo.photographer,
+      photographerUrl: photo.photographer_url,
+    };
+  } catch (err) {
+    console.warn(`Pexels fetch failed (${err.message}) — publishing without a hero image.`);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------
 // 4. Render HTML page from template
 // ---------------------------------------------------------------
-function renderPage(article, kw) {
+function renderPage(article, kw, heroImage) {
   const template = fs.readFileSync(TEMPLATE_FILE, "utf8");
   const today = new Date().toISOString().split("T")[0];
   const url = `${SITE_URL}/blog/${article.slug}.html`;
+
+  const heroImageHtml = heroImage
+    ? `<figure class="hero-img">
+      <img src="${heroImage.url}" alt="${escapeHtml(heroImage.alt)}" loading="lazy">
+      <figcaption>Photo by <a href="${heroImage.photographerUrl}" target="_blank" rel="noopener">${escapeHtml(heroImage.photographer)}</a> on <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></figcaption>
+    </figure>`
+    : "";
 
   // FAQ JSON-LD — this is what gets ELLIE quoted in Google rich results
   // and picked up by AI search engines.
@@ -153,6 +195,7 @@ function renderPage(article, kw) {
     .replaceAll("{{DATE}}", today)
     .replaceAll("{{DATE_DISPLAY}}", formatDate(today))
     .replaceAll("{{KEYWORD}}", escapeHtml(kw.keyword))
+    .replaceAll("{{HERO_IMAGE}}", heroImageHtml)
     .replaceAll("{{BODY}}", article.bodyHtml)
     .replaceAll("{{FAQ_SCHEMA}}", JSON.stringify(faqSchema))
     .replaceAll("{{ARTICLE_SCHEMA}}", JSON.stringify(articleSchema));
@@ -177,7 +220,7 @@ function formatDate(iso) {
 // ---------------------------------------------------------------
 // 5. Update blog index + sitemap
 // ---------------------------------------------------------------
-function updateIndex(article) {
+function updateIndex(article, heroImage) {
   const indexFile = path.join(BLOG_DIR, "index.json");
   let index = [];
   if (fs.existsSync(indexFile)) {
@@ -188,6 +231,7 @@ function updateIndex(article) {
     description: article.metaDescription,
     url: `/blog/${article.slug}.html`,
     date: new Date().toISOString().split("T")[0],
+    image: heroImage ? heroImage.url : null,
   });
   fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
   return index;
@@ -234,12 +278,14 @@ ${urls}
 
   if (!fs.existsSync(BLOG_DIR)) fs.mkdirSync(BLOG_DIR, { recursive: true });
 
-  const html = renderPage(article, next);
+  const heroImage = await fetchHeroImage(article.imageQuery || next.keyword);
+
+  const html = renderPage(article, next, heroImage);
   const outPath = path.join(BLOG_DIR, `${article.slug}.html`);
   fs.writeFileSync(outPath, html);
-  console.log(`Wrote ${outPath}`);
+  console.log(`Wrote ${outPath}${heroImage ? " (with hero image)" : " (no hero image)"}`);
 
-  const index = updateIndex(article);
+  const index = updateIndex(article, heroImage);
   rebuildSitemap(index);
 
   // Mark keyword as published

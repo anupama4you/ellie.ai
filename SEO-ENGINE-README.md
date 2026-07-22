@@ -30,6 +30,11 @@ GitHub Action (daily 7am Adelaide)
    Name: ANTHROPIC_API_KEY
    Value: your key from console.anthropic.com
 
+3b. (Optional, for hero images) Add a free Pexels API key the same way:
+   Name: PEXELS_API_KEY
+   Value: your key from pexels.com/api (free, no card required)
+   Without this, articles publish fine, just without a header photo.
+
 4. Test it manually first:
    GitHub repo -> Actions tab -> "Daily SEO Article" -> Run workflow
 

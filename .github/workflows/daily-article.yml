@@ -24,6 +24,7 @@ jobs:
       - name: Generate article
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           SITE_URL: https://callellie.com
         run: node scripts/generate-article.js
 
