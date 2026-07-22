@@ -28,7 +28,9 @@
       "keyword": "missed calls costing my business customers",
       "intent": "problem aware - quantifying the cost of missed calls",
       "audience": "busy owners who suspect they are losing leads",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-22",
+      "slug": "missed-calls-costing-my-business-customers"
     },
     {
       "keyword": "AI receptionist vs hiring a receptionist",

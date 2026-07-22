@@ -73,7 +73,10 @@ REQUIREMENTS:
 6. NEVER use em dashes anywhere. Use commas, colons, or rephrase instead.
 7. Do not invent statistics. You may use widely published industry figures with soft attribution like "industry research suggests" only if they are genuinely well known (e.g. most callers who reach voicemail do not call back).
 8. Write a compelling, click-worthy but honest title (max 60 chars) and a meta description (max 155 chars).
-9. Write an imageQuery: a short 3 to 6 word phrase describing a realistic stock-photo scene that fits this article (e.g. "electrician answering phone call", "salon receptionist on the phone", "tradesperson on a job site"). This is used to search a stock photo library, so describe a plausible real-world scene, not an abstract concept.
+9. Write an imageQuery: a short 3 to 6 word phrase describing a realistic stock-photo scene that fits this article as a whole (e.g. "electrician answering phone call", "salon receptionist on the phone", "tradesperson on a job site"). This is used to search a stock photo library, so describe a plausible real-world scene, not an abstract concept.
+10. Within bodyHtml, insert exactly 2 image placeholders at genuinely relevant points, spread apart (never right after the H1, never back to back), each inline between two existing HTML elements (e.g. right after a closing </p> and before the next <h2> or <p>) in this exact format: <!--IMG: short 3 to 6 word visual scene description-->. Each must describe a distinct real-world scene matching the section it sits in (not a repeat of imageQuery or of each other) — e.g. one near a section about after-hours calls could be "empty office phone ringing at night", one near a pricing section could be "small business owner reviewing invoice".
+11. bodyHtml must be valid inside a JSON string: a single continuous string with no literal line breaks. Never press Enter inside bodyHtml, including around the IMG placeholders — keep everything on one logical line.
+12. bodyHtml is itself a JSON string value, so every HTML attribute inside it (href, class, everything) MUST use single quotes, e.g. <a href='/blog/some-article.html'>, never double quotes. Double quotes inside bodyHtml will break JSON parsing.
 
 Respond ONLY with valid JSON, no markdown fences, in exactly this shape:
 {
@@ -142,6 +145,7 @@ async function fetchHeroImage(query, usedPhotoIds) {
     // articles don't end up sharing an image.
     const photo = photos.find((p) => !usedPhotoIds.has(p.id)) || photos[0];
     if (!photo) return null;
+    usedPhotoIds.add(photo.id); // reserve it so later picks in this same run don't repeat it
     return {
       id: photo.id,
       url: photo.src.large2x,
@@ -153,6 +157,26 @@ async function fetchHeroImage(query, usedPhotoIds) {
     console.warn(`Pexels fetch failed (${err.message}) — publishing without a hero image.`);
     return null;
   }
+}
+
+function imageFigureHtml(image) {
+  return `<figure class="hero-img">
+      <img src="${image.url}" alt="${escapeHtml(image.alt)}" loading="lazy">
+      <figcaption>Photo by <a href="${image.photographerUrl}" target="_blank" rel="noopener">${escapeHtml(image.photographer)}</a> on <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></figcaption>
+    </figure>`;
+}
+
+// Replaces the <!--IMG: query--> placeholders Claude sprinkles through the
+// body with real Pexels photos matching that section's content. Falls back
+// to silently removing the placeholder if no image can be found for it.
+async function insertInlineImages(bodyHtml, usedPhotoIds) {
+  const markers = [...bodyHtml.matchAll(/<!--\s*IMG:\s*(.*?)\s*-->/g)];
+  let result = bodyHtml;
+  for (const [placeholder, query] of markers) {
+    const image = await fetchHeroImage(query, usedPhotoIds);
+    result = result.replace(placeholder, image ? imageFigureHtml(image) : "");
+  }
+  return result;
 }
 
 // Extracts the numeric photo ID from a stored Pexels URL, e.g.
@@ -170,12 +194,7 @@ function renderPage(article, kw, heroImage) {
   const today = new Date().toISOString().split("T")[0];
   const url = `${SITE_URL}/blog/${article.slug}.html`;
 
-  const heroImageHtml = heroImage
-    ? `<figure class="hero-img">
-      <img src="${heroImage.url}" alt="${escapeHtml(heroImage.alt)}" loading="lazy">
-      <figcaption>Photo by <a href="${heroImage.photographerUrl}" target="_blank" rel="noopener">${escapeHtml(heroImage.photographer)}</a> on <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></figcaption>
-    </figure>`
-    : "";
+  const heroImageHtml = heroImage ? imageFigureHtml(heroImage) : "";
 
   // FAQ JSON-LD — this is what gets ELLIE quoted in Google rich results
   // and picked up by AI search engines.
@@ -283,7 +302,16 @@ ${urls}
     fullIndex.map((a) => pexelsIdFromUrl(a.image)).filter((id) => id !== null)
   );
 
-  const article = await generateArticle(buildPrompt(next, recent));
+  // Claude occasionally mis-escapes quotes inside the JSON string on a first
+  // attempt — one retry clears most of these before we give up on the day.
+  const prompt = buildPrompt(next, recent);
+  let article;
+  try {
+    article = await generateArticle(prompt);
+  } catch (err) {
+    console.warn(`First attempt failed (${err.message}) — retrying once.`);
+    article = await generateArticle(prompt);
+  }
 
   // Safety: strip any em dashes the model slipped in
   article.bodyHtml = article.bodyHtml.replace(/—|–/g, ", ");
@@ -293,6 +321,7 @@ ${urls}
   if (!fs.existsSync(BLOG_DIR)) fs.mkdirSync(BLOG_DIR, { recursive: true });
 
   const heroImage = await fetchHeroImage(article.imageQuery || next.keyword, usedPhotoIds);
+  article.bodyHtml = await insertInlineImages(article.bodyHtml, usedPhotoIds);
 
   const html = renderPage(article, next, heroImage);
   const outPath = path.join(BLOG_DIR, `${article.slug}.html`);
