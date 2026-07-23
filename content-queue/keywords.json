@@ -44,7 +44,9 @@
       "keyword": "phone answering service for tradies",
       "intent": "commercial - trade specific solution",
       "audience": "plumbers, electricians, builders on the tools all day",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-23",
+      "slug": "phone-answering-service-for-tradies"
     },
     {
       "keyword": "answering service for medical clinics Australia",
