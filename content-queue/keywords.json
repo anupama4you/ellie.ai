@@ -52,7 +52,9 @@
       "keyword": "answering service for medical clinics Australia",
       "intent": "commercial - clinic specific",
       "audience": "practice managers at GP, dental, physio clinics",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-24",
+      "slug": "answering-service-for-medical-clinics-australia"
     },
     {
       "keyword": "how to stop missing calls at my salon",
