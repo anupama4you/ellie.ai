@@ -60,7 +60,9 @@
       "keyword": "how to stop missing calls at my salon",
       "intent": "problem aware - salon specific",
       "audience": "salon and beauty studio owners",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-25",
+      "slug": "how-to-stop-missing-calls-at-my-salon"
     },
     {
       "keyword": "what is an AI phone receptionist and how does it work",
