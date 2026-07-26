@@ -68,7 +68,9 @@
       "keyword": "what is an AI phone receptionist and how does it work",
       "intent": "informational - education stage",
       "audience": "owners new to the concept of voice AI",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-26",
+      "slug": "what-is-an-ai-phone-receptionist-and-how-does-it-work"
     },
     {
       "keyword": "virtual receptionist vs answering service difference",
