@@ -76,7 +76,9 @@
       "keyword": "virtual receptionist vs answering service difference",
       "intent": "informational - clarifying options",
       "audience": "owners confused by the market terminology",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-27",
+      "slug": "virtual-receptionist-vs-answering-service-difference"
     },
     {
       "keyword": "best way to handle business calls while on a job site",
