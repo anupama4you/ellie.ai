@@ -84,7 +84,9 @@
       "keyword": "best way to handle business calls while on a job site",
       "intent": "problem aware - tradie pain point",
       "audience": "solo tradies and small trade crews",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-28",
+      "slug": "best-way-to-handle-business-calls-on-job-site"
     },
     {
       "keyword": "do customers call back if no one answers",
