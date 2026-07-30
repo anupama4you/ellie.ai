@@ -100,7 +100,9 @@
       "keyword": "24/7 phone answering for small business cost",
       "intent": "commercial - price comparison",
       "audience": "owners comparing always-on coverage options",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-30",
+      "slug": "24-7-phone-answering-small-business-cost"
     },
     {
       "keyword": "AI appointment booking over the phone",
