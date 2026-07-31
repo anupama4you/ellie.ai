@@ -108,7 +108,9 @@
       "keyword": "AI appointment booking over the phone",
       "intent": "commercial - booking automation",
       "audience": "appointment based businesses",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-07-31",
+      "slug": "ai-appointment-booking-over-the-phone"
     },
     {
       "keyword": "reduce receptionist costs small business",
