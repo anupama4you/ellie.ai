@@ -116,7 +116,9 @@
       "keyword": "reduce receptionist costs small business",
       "intent": "commercial - cost cutting",
       "audience": "owners with staffing cost pressure",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-01",
+      "slug": "reduce-receptionist-costs-small-business"
     },
     {
       "keyword": "can AI answer my business phone",
