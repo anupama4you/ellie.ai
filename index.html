@@ -2066,7 +2066,7 @@
     .book-cal-inner .calendly-inline-widget { display: block; }
 
     /* ── NEW RESPONSIVE OVERRIDES ── */
-    @media (max-width: 900px) {
+    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
       .prob-body { grid-template-columns: 1fr; gap: 32px; }
       .dash-bullets { grid-template-columns:1fr 1fr; }
       .hero-social-card { bottom:-8px;left:50%;transform:translateX(-50%) !important; }
@@ -2084,7 +2084,7 @@
     }
 
     /* ── MEDIA QUERIES ── */
-    @media (max-width: 900px) {
+    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
       .hero-in { grid-template-columns:1fr;gap:32px;padding-top:24px; }
       .hero-url-btn { font-size:.75rem; padding:8px 14px; }
       .steps { grid-template-columns: repeat(2,1fr); gap: 12px; }
