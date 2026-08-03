@@ -188,13 +188,19 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
   const assistantId = process.env.VAPI_WEB_ASSISTANT_ID;
 
   // When a dashboard assistant is configured, only override what has to vary per call —
-  // the persona + greeting — and let the assistant's own configured model/voice/transcriber
-  // apply (same pattern as call-initiate.js). Only fall back to a fully self-contained
-  // transient config when no assistant is set up yet, since that path has no base to merge with.
+  // the persona + greeting — and let the assistant's own configured voice/transcriber apply.
+  // Vapi's /call/web endpoint requires `model.provider` whenever `model` is present in the
+  // override at all (unlike the /call/phone REST path), so it must always be supplied here
+  // even though we're not changing it — omitting it fails with a 400 "model.provider must be
+  // one of the following values" error and the demo call never starts.
   const assistantOverrides = assistantId
     ? {
         firstMessage,
-        model: { messages: [{ role: 'system', content: systemPrompt }] },
+        model: {
+          provider: 'openai',
+          model:    'gpt-4.1-mini',
+          messages: [{ role: 'system', content: systemPrompt }],
+        },
       }
     : {
         firstMessage,
