@@ -152,12 +152,21 @@
     demoUrlStatus.textContent = msg;
   }
 
+  function setPhoneLoader(active, text) {
+    const phoneLoader = document.getElementById('phone-fetch-loader');
+    if (!phoneLoader) return;
+    if (text) {
+      const textEl = phoneLoader.querySelector('.pfl-text');
+      if (textEl) textEl.textContent = text;
+    }
+    phoneLoader.classList.toggle('active', active);
+  }
+
   function setBtnLoading(loading) {
     if (!demoBizBtn) return;
     demoBizBtn.classList.toggle('loading', loading);
     demoBizBtn.disabled = loading;
-    const phoneLoader = document.getElementById('phone-fetch-loader');
-    if (phoneLoader) phoneLoader.classList.toggle('active', loading);
+    setPhoneLoader(loading, 'Briefing Ellie…');
   }
 
   function getCompanyDomain(raw) {
@@ -363,6 +372,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     demoGenerateBtn.disabled = true;
     demoGenerateBtn.classList.add('loading');
     if (demoGenerateLabel) demoGenerateLabel.textContent = "Designing Ellie's persona…";
+    setPhoneLoader(true, "Designing Ellie's persona…");
 
     // Ask AI to infer the business type and design a whole persona/flow suited to it —
     // not just drop these fields into one fixed template. Falls back to the generic
@@ -391,6 +401,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     demoGenerateBtn.disabled = false;
     demoGenerateBtn.classList.remove('loading');
     if (demoGenerateLabel) demoGenerateLabel.textContent = 'Generate Your Own Ellie';
+    setPhoneLoader(false);
 
     // Store generated prompt separately — startDemo() always fetches fresh VAPI config
     // and patches these in, so we never pass stale session data to VAPI.
