@@ -2228,7 +2228,7 @@
         min-height: 4.4rem;
         margin-bottom: .55rem;
       }
-      .hero-sub   { order: 3; text-align: center; font-size: .86rem; line-height: 1.68; max-width: 300px; margin: 0 auto .9rem; }
+      .hero-sub   { order: 3; text-align: center; font-size: .86rem; line-height: 1.68; max-width: clamp(300px, 60vw, 560px); margin: 0 auto .9rem; }
       .hero-right { order: 4; width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0; }
       .hero-url-wrap  { order: 5; width: 100%; margin-bottom: 0; }
       .hero-actions   { display: flex; order: 6; flex-direction: column; width: 100%; margin-top: 10px; }
@@ -2246,7 +2246,7 @@
         gap: 16px; margin-bottom: 0;
       }
       .hero-av-video-frame {
-        width: 100%; max-width: 320px;
+        width: 100%; max-width: clamp(320px, 50vw, 460px);
       }
       .hero-av-video-overlay { justify-content: flex-end; }
       .hero-av-info { display: none; }
