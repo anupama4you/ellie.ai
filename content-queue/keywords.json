@@ -132,7 +132,9 @@
       "keyword": "phone answering service for real estate agents Australia",
       "intent": "commercial - industry specific",
       "audience": "agents missing buyer and vendor calls",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-04",
+      "slug": "phone-answering-service-real-estate-agents-australia"
     },
     {
       "keyword": "how many calls do small businesses miss",
