@@ -140,7 +140,9 @@
       "keyword": "how many calls do small businesses miss",
       "intent": "informational - statistics content",
       "audience": "researchers and problem-aware owners",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-05",
+      "slug": "how-many-calls-do-small-businesses-miss"
     },
     {
       "keyword": "weekend call answering for trades",
