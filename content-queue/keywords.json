@@ -148,7 +148,9 @@
       "keyword": "weekend call answering for trades",
       "intent": "commercial - weekend coverage",
       "audience": "trades getting weekend emergency calls",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-07",
+      "slug": "weekend-call-answering-for-trades"
     },
     {
       "keyword": "AI receptionist for law firms Australia",
