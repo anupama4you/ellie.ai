@@ -156,7 +156,9 @@
       "keyword": "AI receptionist for law firms Australia",
       "intent": "commercial - professional services",
       "audience": "small legal practices",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-07",
+      "slug": "ai-receptionist-law-firms-australia"
     },
     {
       "keyword": "AI receptionist for accounting firms",
