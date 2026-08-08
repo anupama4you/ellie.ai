@@ -164,7 +164,9 @@
       "keyword": "AI receptionist for accounting firms",
       "intent": "commercial - professional services",
       "audience": "accounting practices during tax season rush",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-08",
+      "slug": "ai-receptionist-accounting-firms-australia"
     },
     {
       "keyword": "how to convert more phone enquiries into bookings",
