@@ -172,7 +172,9 @@
       "keyword": "how to convert more phone enquiries into bookings",
       "intent": "informational - conversion advice",
       "audience": "service businesses wanting better phone conversion",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-10",
+      "slug": "how-to-convert-more-phone-enquiries-into-bookings"
     },
     {
       "keyword": "voicemail vs answering service which is better",
