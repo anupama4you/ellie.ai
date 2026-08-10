@@ -180,7 +180,9 @@
       "keyword": "voicemail vs answering service which is better",
       "intent": "commercial - comparison",
       "audience": "owners relying on voicemail today",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-10",
+      "slug": "voicemail-vs-answering-service-which-is-better"
     },
     {
       "keyword": "signs your business needs a receptionist",
