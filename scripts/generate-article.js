@@ -61,6 +61,8 @@ TARGET KEYWORD: "${kw.keyword}"
 SEARCH INTENT: ${kw.intent}
 AUDIENCE: ${kw.audience}
 
+CATEGORY: classify this article into exactly one of these fixed categories (use the exact string, no variations): "Trades & Field Services", "Healthcare & Clinics", "Legal & Accounting", "Real Estate", "Salons & Beauty", "Pricing & Comparisons", "Guides & Tips". Use an industry category only when the article is specifically about that industry; otherwise use "Pricing & Comparisons" for cost/comparison content or "Guides & Tips" for general advice and stats.
+
 ALREADY-PUBLISHED ARTICLES (do not duplicate these topics, but link to them where genuinely relevant using their URLs):
 ${recentTitles.length ? recentTitles.map((t) => `- ${t.title} (${t.url})`).join("\n") : "- none yet"}
 
@@ -85,7 +87,8 @@ Respond ONLY with valid JSON, no markdown fences, in exactly this shape:
   "slug": "lowercase-hyphenated-slug",
   "bodyHtml": "<h1>...</h1><p>...</p> ... full article body as clean HTML using h1, h2, p, ul, li, strong only",
   "faq": [{"question": "...", "answer": "..."}],
-  "imageQuery": "..."
+  "imageQuery": "...",
+  "category": "one of the fixed category strings above"
 }`;
 }
 
@@ -251,6 +254,16 @@ function formatDate(iso) {
 // ---------------------------------------------------------------
 // 5. Update blog index + sitemap
 // ---------------------------------------------------------------
+const CATEGORIES = [
+  "Trades & Field Services",
+  "Healthcare & Clinics",
+  "Legal & Accounting",
+  "Real Estate",
+  "Salons & Beauty",
+  "Pricing & Comparisons",
+  "Guides & Tips",
+];
+
 function updateIndex(article, heroImage) {
   const indexFile = path.join(BLOG_DIR, "index.json");
   let index = [];
@@ -263,6 +276,7 @@ function updateIndex(article, heroImage) {
     url: `/blog/${article.slug}.html`,
     date: new Date().toISOString().split("T")[0],
     image: heroImage ? heroImage.url : null,
+    category: CATEGORIES.includes(article.category) ? article.category : "Guides & Tips",
   });
   fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
   return index;

@@ -29,27 +29,116 @@
       <h1>Australia's #1 Business Owner's Guide</h1>
       <p class="sub">Articles and guides for small/medium business owners.</p>
     </div>
+
+    <div class="blog-controls">
+      <input type="search" id="blog-search" class="search-input" placeholder="Search articles…" aria-label="Search articles">
+      <div class="filter-pills" id="filter-pills"></div>
+    </div>
+
     <div class="posts-grid" id="posts"></div>
+    <p class="no-results" id="no-results" hidden>No articles match your search.</p>
+    <div class="pagination" id="pagination"></div>
   </main>
   <footer>
     <p>&copy; ELLIE AI Receptionist · <a href="https://callellie.com">callellie.com</a> · From $199/month · Built in Australia</p>
   </footer>
   <script>
+    const PER_PAGE = 9;
+    let allPosts = [];
+    let filtered = [];
+    let currentPage = 1;
+    let activeCategory = 'All';
+    let searchTerm = '';
+
+    const postsEl      = document.getElementById('posts');
+    const pillsEl       = document.getElementById('filter-pills');
+    const paginationEl  = document.getElementById('pagination');
+    const noResultsEl   = document.getElementById('no-results');
+    const searchEl      = document.getElementById('blog-search');
+
     fetch('/blog/index.json')
       .then(r => r.json())
       .then(posts => {
-        document.getElementById('posts').innerHTML = posts.map(p => `
-          <a class="post-card" href="${p.url}">
-            ${p.image ? `<div class="thumb"><img src="${p.image}" alt="" loading="lazy"></div>` : ''}
-            <div class="card-body">
-              <div class="date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-              <h2>${p.title}</h2>
-              <p>${p.description}</p>
-              <span class="read-more">Read article &rarr;</span>
-            </div>
-          </a>
-        `).join('');
+        allPosts = posts;
+        renderPills();
+        applyFilters();
       });
+
+    function renderPills() {
+      const categories = ['All', ...new Set(allPosts.map(p => p.category).filter(Boolean))];
+      pillsEl.innerHTML = categories.map(c =>
+        `<button class="filter-pill${c === activeCategory ? ' active' : ''}" data-cat="${c}">${c}</button>`
+      ).join('');
+      pillsEl.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeCategory = btn.dataset.cat;
+          currentPage = 1;
+          renderPills();
+          applyFilters();
+        });
+      });
+    }
+
+    function applyFilters() {
+      const term = searchTerm.trim().toLowerCase();
+      filtered = allPosts.filter(p => {
+        const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+        const matchesSearch = !term || p.title.toLowerCase().includes(term) || p.description.toLowerCase().includes(term);
+        return matchesCategory && matchesSearch;
+      });
+      renderPosts();
+      renderPagination();
+    }
+
+    function renderPosts() {
+      const start = (currentPage - 1) * PER_PAGE;
+      const pagePosts = filtered.slice(start, start + PER_PAGE);
+      noResultsEl.hidden = pagePosts.length !== 0;
+      postsEl.innerHTML = pagePosts.map(p => `
+        <a class="post-card" href="${p.url}">
+          ${p.image ? `<div class="thumb"><img src="${p.image}" alt="" loading="lazy"></div>` : ''}
+          <div class="card-body">
+            <div class="date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+            <h2>${p.title}</h2>
+            <p>${p.description}</p>
+            <span class="read-more">Read article &rarr;</span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(filtered.length / PER_PAGE);
+      if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+      let html = `<button data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''} aria-label="Previous page">&larr;</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button data-page="${i}" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+      }
+      html += `<button data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''} aria-label="Next page">&rarr;</button>`;
+      paginationEl.innerHTML = html;
+      paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const page = Number(btn.dataset.page);
+          const totalPages = Math.ceil(filtered.length / PER_PAGE);
+          if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderPosts();
+            renderPagination();
+            document.querySelector('.page-head').scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    }
+
+    let searchDebounce;
+    searchEl.addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        searchTerm = searchEl.value;
+        currentPage = 1;
+        applyFilters();
+      }, 150);
+    });
   </script>
 </body>
 </html>
