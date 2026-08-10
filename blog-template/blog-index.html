@@ -6,63 +6,7 @@
   <title>Blog | ELLIE AI Receptionist — Missed Calls, Bookings & Business Growth</title>
   <meta name="description" content="Practical guides for Australian businesses on handling calls, capturing more bookings and never missing a customer. From the team behind Ellie.">
   <link rel="canonical" href="https://callellie.com/blog/">
-  <style>
-    :root {
-      --bg:      #030712;
-      --violet:  #a78bfa;
-      --rose:    #f472b6;
-      --text:    #e2e8f0;
-      --muted:   #7c8fa8;
-      --border:  rgba(255,255,255,.07);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    header.site {
-      background: rgba(3,7,18,.85);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-    }
-    header.site .brand { display: flex; align-items: center; text-decoration: none; }
-    header.site .brand img { height: 28px; display: block; }
-    header.site a.cta {
-      background: linear-gradient(90deg, var(--violet), var(--rose));
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
-    h1 { color: var(--text); font-size: 32px; margin-bottom: 8px; }
-    .sub { color: var(--muted); margin-bottom: 40px; }
-    .post { display: flex; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--border); }
-    .post img { width: 120px; height: 84px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
-    .post-body { min-width: 0; }
-    .post a { color: var(--text); font-size: 20px; font-weight: 700; text-decoration: none; }
-    .post a:hover { color: var(--violet); }
-    .post p { color: var(--muted); margin-top: 6px; font-size: 15px; }
-    .post .date { font-size: 13px; color: var(--muted); margin-top: 6px; opacity: .8; }
-    footer {
-      text-align: center;
-      padding: 32px;
-      color: var(--muted);
-      font-size: 13px;
-      border-top: 1px solid var(--border);
-    }
-    footer a { color: var(--muted); }
-  </style>
+  <link rel="stylesheet" href="/blog/assets/blog.css">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3DDVZ866F9"></script>
 <script>
@@ -80,10 +24,12 @@
     </a>
     <a class="cta" href="/#book">Try Free for 7 Days</a>
   </header>
-  <main>
-    <h1>Australia's #1 Business Owner's Guide</h1>
-    <p class="sub">Articles and guides for small/medium business owners.</p>
-    <div id="posts"></div>
+  <main class="index-wrap">
+    <div class="page-head">
+      <h1>Australia's #1 Business Owner's Guide</h1>
+      <p class="sub">Articles and guides for small/medium business owners.</p>
+    </div>
+    <div class="posts-grid" id="posts"></div>
   </main>
   <footer>
     <p>&copy; ELLIE AI Receptionist · <a href="https://callellie.com">callellie.com</a> · From $199/month · Built in Australia</p>
@@ -93,14 +39,15 @@
       .then(r => r.json())
       .then(posts => {
         document.getElementById('posts').innerHTML = posts.map(p => `
-          <div class="post">
-            ${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : ''}
-            <div class="post-body">
-              <a href="${p.url}">${p.title}</a>
-              <p>${p.description}</p>
+          <a class="post-card" href="${p.url}">
+            ${p.image ? `<div class="thumb"><img src="${p.image}" alt="" loading="lazy"></div>` : ''}
+            <div class="card-body">
               <div class="date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+              <h2>${p.title}</h2>
+              <p>${p.description}</p>
+              <span class="read-more">Read article &rarr;</span>
             </div>
-          </div>
+          </a>
         `).join('');
       });
   </script>

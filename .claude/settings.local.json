@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check ellie.js)",
+      "Bash(node --check netlify/functions/generate-demo-prompt.js)",
+      "Bash(node --check netlify/functions/demo-vapi-config.js)"
+    ]
+  }
+}
