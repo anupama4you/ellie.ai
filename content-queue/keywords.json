@@ -188,7 +188,9 @@
       "keyword": "signs your business needs a receptionist",
       "intent": "problem aware - readiness checklist",
       "audience": "growing businesses at the tipping point",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-11",
+      "slug": "signs-your-business-needs-a-receptionist"
     },
     {
       "keyword": "AI receptionist for dental practices",
