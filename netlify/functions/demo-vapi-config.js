@@ -14,7 +14,7 @@ async function extractWithClaude(siteUrl, content, apiKey) {
       'anthropic-version': '2023-06-01',
       'content-type':      'application/json',
     },
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(3000),
     body: JSON.stringify({
       model:      'claude-haiku-4-5-20251001',
       max_tokens: 400,
@@ -56,7 +56,9 @@ Return this exact JSON (use empty string if unknown):
 
 async function crawlSite(siteUrl, anthropicKey) {
   const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-  const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 5000 });
+  // 2 attempts x 3s = 6s worst case, leaving room for the Claude extraction call
+  // below within Netlify's ~10s function limit.
+  const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 3000, retries: 1 });
   const content = fetched.content || '';
 
   if (!content) {
@@ -142,7 +144,15 @@ Guardrails:
     const info = await crawlSite(siteUrl, process.env.ANTHROPIC_API_KEY);
 
     if (info.name || info._metadata?.title) businessName = info.name || info._metadata.title;
-    if (info.description)  businessDescription = info.description;
+    // The "About" box is the only free-text field on the edit form, so fold in anything
+    // extracted that doesn't have its own field (email, booking info) rather than dropping
+    // it — otherwise it's only ever used server-side for the URL-only live-demo flow and
+    // never reaches the user when they go on to customise via "Generate Your Own Ellie".
+    const descriptionParts = [];
+    if (info.description)  descriptionParts.push(info.description);
+    if (info.email)        descriptionParts.push(`Email: ${info.email}`);
+    if (info.bookingInfo)  descriptionParts.push(`Booking: ${info.bookingInfo}`);
+    if (descriptionParts.length) businessDescription = descriptionParts.join(' ');
     if (info.phone)        businessPhone       = info.phone;
     if (info.location)     businessLocation    = info.location;
     if (info.businessType) businessType        = info.businessType;

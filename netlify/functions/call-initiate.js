@@ -47,7 +47,8 @@ exports.handler = async (event) => {
 
     try {
       const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-      const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 5000 });
+      // 2 attempts x 4s = 8s worst case, leaving headroom under Netlify's ~10s function limit.
+      const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 4000, retries: 1 });
 
       if (fetched.content || fetched.metadata.title || fetched.metadata.description || fetched.metadata.phone) {
         const parts = [];

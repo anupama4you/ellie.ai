@@ -179,8 +179,20 @@ async function readLocalFile(source) {
   }
 }
 
+/** Race Jina against a direct fetch — whichever returns usable content first wins. */
+async function raceFetch(normalizedUrl, timeoutMs) {
+  return Promise.any(
+    [fetchJinaContent(normalizedUrl, timeoutMs), fetchDirectContent(normalizedUrl, timeoutMs)]
+      .map((p) => p.then((r) => r || Promise.reject()))
+  ).catch(() => null);
+}
+
 async function fetchWebsiteContent(url, options = {}) {
   const timeoutMs = options.timeoutMs || DEFAULT_TIMEOUT_MS;
+  // Jina has to actually render the page (JS-heavy sites, WAF challenges), which
+  // occasionally overruns a single short timeout even though the site is fine —
+  // one retry with a fresh full-length window clears most of these transient misses.
+  const retries = options.retries ?? 1;
   const source = String(url || '').trim();
 
   if (isLocalFileInput(source)) {
@@ -197,12 +209,10 @@ async function fetchWebsiteContent(url, options = {}) {
   const normalizedUrl = normalizeWebsiteUrl(source);
   if (!normalizedUrl) return { content: '', metadata: {}, source: null, url: '' };
 
-  // Race Jina against a direct fetch — whichever returns usable content first wins,
-  // so a slow/hanging site doesn't block on a full sequential fallback.
-  const result = await Promise.any(
-    [fetchJinaContent(normalizedUrl, timeoutMs), fetchDirectContent(normalizedUrl, timeoutMs)]
-      .map((p) => p.then((r) => r || Promise.reject()))
-  ).catch(() => null);
+  let result = null;
+  for (let attempt = 0; attempt <= retries && !result; attempt++) {
+    result = await raceFetch(normalizedUrl, timeoutMs);
+  }
 
   if (!result) return { content: '', metadata: {}, source: null, url: '' };
 
