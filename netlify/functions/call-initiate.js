@@ -1,4 +1,4 @@
-const { normalizeWebsiteUrl, fetchWebsiteContent, getBusinessWebsiteInput } = require('./_website-fetch');
+const { normalizeWebsiteUrl, fetchBusinessInfoWithFirecrawl, getBusinessWebsiteInput } = require('./_website-fetch');
 
 exports.handler = async (event) => {
   const headers = {
@@ -47,18 +47,22 @@ exports.handler = async (event) => {
 
     try {
       const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-      // 2 attempts x 4s = 8s worst case, leaving headroom under Netlify's ~10s function limit.
-      const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 4000, retries: 1 });
+      // Tighter budget than demo-vapi-config's default (12s) — this handler still needs to
+      // make the VAPI call below, so it can't use the full Netlify function timeout.
+      const info = await fetchBusinessInfoWithFirecrawl(normalizedSiteUrl, { timeoutMs: 8500 });
 
-      if (fetched.content || fetched.metadata.title || fetched.metadata.description || fetched.metadata.phone) {
+      if (info.name || info.description || info.phone || info.services) {
         const parts = [];
-        if (fetched.metadata.title) {
-          businessName = fetched.metadata.title;
-          parts.push(`Business name / brand: "${fetched.metadata.title}"`);
+        if (info.name) {
+          businessName = info.name;
+          parts.push(`Business name / brand: "${info.name}"`);
         }
-        if (fetched.metadata.description) parts.push(`About the business: ${fetched.metadata.description}`);
-        if (fetched.metadata.phone) parts.push(`Business phone found on site: ${fetched.metadata.phone}`);
-        if (fetched.content) parts.push(`Website content summary: ${fetched.content.slice(0, 1800)}`);
+        if (info.description)    parts.push(`About the business: ${info.description}`);
+        if (info.businessType)   parts.push(`Business type: ${info.businessType}`);
+        if (info.services)       parts.push(`Services: ${info.services}`);
+        if (info.phone)          parts.push(`Business phone found on site: ${info.phone}`);
+        if (info.hours)          parts.push(`Hours: ${info.hours}`);
+        if (info.additionalInfo) parts.push(info.additionalInfo);
         parts.push(`Website: ${normalizedSiteUrl}`);
 
         businessContext = parts.join('. ');

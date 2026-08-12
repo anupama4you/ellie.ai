@@ -1,8 +1,6 @@
 const fs = require('node:fs/promises');
 const cheerio = require('cheerio');
 
-const DEFAULT_TIMEOUT_MS = 5000;
-const JINA_READER_BASE = 'https://r.jina.ai/';
 // Separators are whitespace/dash only (not '.') — visible phone numbers are
 // written "0400 111 222" / "02-9876-5432", while a bare dot separator is
 // almost always a decimal stat or price ("99.999%") rather than a number.
@@ -122,54 +120,6 @@ function isLocalFileInput(source) {
   return /^(\/|\.\/|\.\.\/)/.test(source) || source.startsWith('file://');
 }
 
-/** Direct HTML fetch, using a Googlebot UA — most WAFs whitelist it since blocking it hurts SEO. */
-async function fetchDirectContent(normalizedUrl, timeoutMs) {
-  try {
-    const response = await fetch(normalizedUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        Accept: 'text/html,application/xhtml+xml',
-      },
-      signal: AbortSignal.timeout(timeoutMs),
-    });
-    if (!response.ok) return null;
-
-    const html = await response.text();
-    if (!html) return null;
-    const content = stripHtmlToText(html).slice(0, 5000);
-    return content ? { html, content, kind: 'html' } : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Jina AI's free Reader service: renders JS (fixes empty-shell Wix/Squarespace/React
- * sites) and, via X-Remove-Selector, strips nav/footer/header/cookie banners at the
- * source rather than leaving it to be filtered out of the extracted text.
- */
-async function fetchJinaContent(normalizedUrl, timeoutMs) {
-  try {
-    const headers = {
-      Accept: 'application/json',
-      'X-Remove-Selector': 'nav,footer,header,.cookie,.popup,.overlay,.banner',
-    };
-    if (process.env.JINA_API_KEY) headers.Authorization = `Bearer ${process.env.JINA_API_KEY}`;
-
-    const response = await fetch(JINA_READER_BASE + normalizedUrl, {
-      headers,
-      signal: AbortSignal.timeout(timeoutMs),
-    });
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    const content = (data?.data?.content || '').replace(/\n{4,}/g, '\n\n').trim();
-    return content ? { title: data?.data?.title || '', content: content.slice(0, 5000), kind: 'jina' } : null;
-  } catch {
-    return null;
-  }
-}
-
 async function readLocalFile(source) {
   try {
     const filePath = source.startsWith('file://') ? new URL(source).pathname : source;
@@ -179,20 +129,8 @@ async function readLocalFile(source) {
   }
 }
 
-/** Race Jina against a direct fetch — whichever returns usable content first wins. */
-async function raceFetch(normalizedUrl, timeoutMs) {
-  return Promise.any(
-    [fetchJinaContent(normalizedUrl, timeoutMs), fetchDirectContent(normalizedUrl, timeoutMs)]
-      .map((p) => p.then((r) => r || Promise.reject()))
-  ).catch(() => null);
-}
-
+/** Local-file-only — network fetching goes through fetchBusinessInfoWithFirecrawl below. */
 async function fetchWebsiteContent(url, options = {}) {
-  const timeoutMs = options.timeoutMs || DEFAULT_TIMEOUT_MS;
-  // Jina has to actually render the page (JS-heavy sites, WAF challenges), which
-  // occasionally overruns a single short timeout even though the site is fine —
-  // one retry with a fresh full-length window clears most of these transient misses.
-  const retries = options.retries ?? 1;
   const source = String(url || '').trim();
 
   if (isLocalFileInput(source)) {
@@ -206,33 +144,75 @@ async function fetchWebsiteContent(url, options = {}) {
     };
   }
 
-  const normalizedUrl = normalizeWebsiteUrl(source);
-  if (!normalizedUrl) return { content: '', metadata: {}, source: null, url: '' };
+  return { content: '', metadata: {}, source: null, url: '' };
+}
 
-  let result = null;
-  for (let attempt = 0; attempt <= retries && !result; attempt++) {
-    result = await raceFetch(normalizedUrl, timeoutMs);
-  }
+const FIRECRAWL_SCRAPE_URL = 'https://api.firecrawl.dev/v2/scrape';
+const DEFAULT_FIRECRAWL_TIMEOUT_MS = 12000;
 
-  if (!result) return { content: '', metadata: {}, source: null, url: '' };
+const EMPTY_BUSINESS_INFO = {
+  name: '', description: '', phone: '', email: '', location: '',
+  hours: '', businessType: '', services: '', bookingInfo: '', additionalInfo: '',
+};
 
-  const metadata = result.kind === 'html'
-    ? extractMetadata(result.html)
-    : { title: result.title || '', description: '', phone: findPhoneNumber(result.content) };
+const BUSINESS_INFO_JSON_SCHEMA = {
+  type: 'object',
+  properties: {
+    name: { type: 'string', description: 'Full business name' },
+    description: { type: 'string', description: '2-3 sentences: what they do, who they serve, their speciality' },
+    phone: { type: 'string', description: 'Main phone number' },
+    email: { type: 'string', description: 'Main contact email' },
+    location: { type: 'string', description: 'Full address or suburb/city + state' },
+    hours: { type: 'string', description: 'Opening hours summary' },
+    businessType: { type: 'string', description: 'e.g. Car Dealership, Hair Salon, Dental Clinic, Plumber' },
+    services: { type: 'string', description: 'Comma-separated list of key services or products offered' },
+    bookingInfo: { type: 'string', description: 'How customers book — online, phone, walk-in, etc.' },
+    additionalInfo: { type: 'string', description: "Any other detail useful for a receptionist to know that doesn't fit the fields above (awards, notable facts, policies)" },
+  },
+  required: ['name', 'description', 'phone', 'email', 'location', 'hours', 'businessType', 'services', 'bookingInfo', 'additionalInfo'],
+};
 
-  return {
-    content: result.content,
-    metadata,
-    source: result.kind === 'html' ? 'html' : 'jina-reader',
-    url: normalizedUrl,
-  };
+/**
+ * Fetches a business website and extracts structured info in one Firecrawl /scrape call
+ * using its `json` format — Firecrawl handles the page fetch and the extraction itself, so
+ * this is a single API call rather than a separate scrape-then-extract pipeline. Does not
+ * work for Google Maps/Business Profile listings — those are a client-rendered SPA that
+ * doesn't expose business details to a scraper (confirmed: returns only map tile image
+ * URLs, no text).
+ */
+async function fetchBusinessInfoWithFirecrawl(normalizedUrl, options = {}) {
+  const apiKey = options.apiKey || process.env.FIRECRAWL_API_KEY;
+  const timeoutMs = options.timeoutMs || DEFAULT_FIRECRAWL_TIMEOUT_MS;
+  if (!apiKey) throw new Error('Missing Firecrawl API key');
+
+  const res = await fetch(FIRECRAWL_SCRAPE_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    signal: AbortSignal.timeout(timeoutMs),
+    body: JSON.stringify({
+      url: normalizedUrl,
+      formats: [{ type: 'json', schema: BUSINESS_INFO_JSON_SCHEMA }],
+      // Phone numbers, hours, and addresses live in the header/footer on most business
+      // sites — onlyMainContent:true strips exactly that.
+      onlyMainContent: false,
+      timeout: Math.max(timeoutMs - 1500, 2000),
+    }),
+  });
+  if (!res.ok) throw new Error(`Firecrawl ${res.status}`);
+
+  const data = await res.json();
+  if (!data.success) throw new Error(data?.error || 'Firecrawl scrape failed');
+  return { ...EMPTY_BUSINESS_INFO, ...(data.data?.json || {}) };
 }
 
 module.exports = {
-  DEFAULT_TIMEOUT_MS,
   normalizeWebsiteUrl,
   getBusinessWebsiteInput,
   stripHtmlToText,
   extractMetadata,
   fetchWebsiteContent,
+  fetchBusinessInfoWithFirecrawl,
 };

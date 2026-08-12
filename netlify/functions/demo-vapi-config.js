@@ -2,87 +2,25 @@
 //  Helpers
 // ─────────────────────────────────────────────────────────────
 
-const { normalizeWebsiteUrl, fetchWebsiteContent, getBusinessWebsiteInput } = require('./_website-fetch');
-
-/** Use Claude Haiku to extract structured business info. */
-async function extractWithClaude(siteUrl, content, apiKey) {
-  if (!apiKey) throw new Error('Missing Anthropic API key');
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key':         apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type':      'application/json',
-    },
-    signal: AbortSignal.timeout(3000),
-    body: JSON.stringify({
-      model:      'claude-haiku-4-5-20251001',
-      max_tokens: 400,
-      messages: [{
-        role: 'user',
-        content: `Extract business information from this website content for an AI phone receptionist. Return ONLY valid JSON, no markdown, no explanation.
-
-Website: ${siteUrl}
-
-Content:
-${content.slice(0, 4000)}
-
-Return this exact JSON (use empty string if unknown):
-{
-  "name": "full business name",
-  "description": "2–3 sentences: what they do, who they serve, their speciality",
-  "phone": "main phone number",
-  "email": "main contact email",
-  "location": "full address or suburb/city + state",
-  "hours": "opening hours summary",
-  "businessType": "e.g. Car Dealership, Hair Salon, Dental Clinic, Plumber",
-  "services": "comma-separated list of key services or products offered",
-  "bookingInfo": "how customers book — online, phone, walk-in, etc."
-}`,
-      }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Claude ${res.status}`);
-  const data = await res.json();
-  const raw = (data.content?.[0]?.text || '{}')
-    .replace(/^```(?:json)?\s*/i, '')
-    .replace(/\s*```$/, '');
-  return JSON.parse(raw);
-}
+const { normalizeWebsiteUrl, fetchBusinessInfoWithFirecrawl, getBusinessWebsiteInput } = require('./_website-fetch');
 
 // ─────────────────────────────────────────────────────────────
-//  Main crawler — fetches the site content and uses Claude when available
+//  Main crawler — Firecrawl scrapes and extracts structured info in one call
 // ─────────────────────────────────────────────────────────────
 
-async function crawlSite(siteUrl, anthropicKey) {
+const EMPTY_BUSINESS_INFO = {
+  name: '', description: '', phone: '', email: '', location: '',
+  hours: '', businessType: '', services: '', bookingInfo: '', additionalInfo: '',
+};
+
+async function crawlSite(siteUrl) {
   const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-  // 2 attempts x 3s = 6s worst case, leaving room for the Claude extraction call
-  // below within Netlify's ~10s function limit.
-  const fetched = await fetchWebsiteContent(normalizedSiteUrl, { timeoutMs: 3000, retries: 1 });
-  const content = fetched.content || '';
-
-  if (!content) {
-    return {
-      name: '', description: '', phone: '', email: '', location: '', hours: '', businessType: '', services: '', bookingInfo: '',
-      _rawContent: '',
-      _metadata: fetched.metadata,
-    };
-  }
 
   try {
-    const extracted = anthropicKey ? await extractWithClaude(normalizedSiteUrl, content, anthropicKey) : {};
-    return {
-      ...extracted,
-      _rawContent: content.slice(0, 1500),
-      _metadata: fetched.metadata,
-    };
+    const extracted = await fetchBusinessInfoWithFirecrawl(normalizedSiteUrl);
+    return { ...EMPTY_BUSINESS_INFO, ...extracted };
   } catch {
-    return {
-      name: '', description: '', phone: '', email: '', location: '',
-      hours: '', businessType: '', services: '', bookingInfo: '',
-      _rawContent: content.slice(0, 1500),
-      _metadata: fetched.metadata,
-    };
+    return { ...EMPTY_BUSINESS_INFO };
   }
 }
 
@@ -141,17 +79,19 @@ Guardrails:
       businessName = String(businessWebsite).replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0];
     }
 
-    const info = await crawlSite(siteUrl, process.env.ANTHROPIC_API_KEY);
+    const info = await crawlSite(siteUrl);
 
-    if (info.name || info._metadata?.title) businessName = info.name || info._metadata.title;
+    if (info.name) businessName = info.name;
     // The "About" box is the only free-text field on the edit form, so fold in anything
-    // extracted that doesn't have its own field (email, booking info) rather than dropping
-    // it — otherwise it's only ever used server-side for the URL-only live-demo flow and
-    // never reaches the user when they go on to customise via "Generate Your Own Ellie".
+    // extracted that doesn't have its own field (email, booking info, misc extras) rather
+    // than dropping it — otherwise it's only ever used server-side for the URL-only
+    // live-demo flow and never reaches the user when they go on to customise via
+    // "Generate Your Own Ellie".
     const descriptionParts = [];
-    if (info.description)  descriptionParts.push(info.description);
-    if (info.email)        descriptionParts.push(`Email: ${info.email}`);
-    if (info.bookingInfo)  descriptionParts.push(`Booking: ${info.bookingInfo}`);
+    if (info.description)    descriptionParts.push(info.description);
+    if (info.email)          descriptionParts.push(`Email: ${info.email}`);
+    if (info.bookingInfo)    descriptionParts.push(`Booking: ${info.bookingInfo}`);
+    if (info.additionalInfo) descriptionParts.push(info.additionalInfo);
     if (descriptionParts.length) businessDescription = descriptionParts.join(' ');
     if (info.phone)        businessPhone       = info.phone;
     if (info.location)     businessLocation    = info.location;
@@ -160,16 +100,15 @@ Guardrails:
     if (info.hours)        businessHours       = info.hours;
 
     const contextLines = [];
-    if (info.description)  contextLines.push(info.description);
-    if (info._metadata?.description) contextLines.push(`About the business: ${info._metadata.description}`);
-    if (info.businessType) contextLines.push(`Business type: ${info.businessType}`);
-    if (info.services)     contextLines.push(`Services: ${info.services}`);
-    if (info.phone)        contextLines.push(`Phone: ${info.phone}`);
-    if (info.email)        contextLines.push(`Email: ${info.email}`);
-    if (info.location)     contextLines.push(`Location: ${info.location}`);
-    if (info.hours)        contextLines.push(`Hours: ${info.hours}`);
-    if (info.bookingInfo)  contextLines.push(`Booking: ${info.bookingInfo}`);
-    if (info._rawContent)  contextLines.push(`\nWebsite content:\n${info._rawContent}`);
+    if (info.description)    contextLines.push(info.description);
+    if (info.businessType)   contextLines.push(`Business type: ${info.businessType}`);
+    if (info.services)       contextLines.push(`Services: ${info.services}`);
+    if (info.phone)          contextLines.push(`Phone: ${info.phone}`);
+    if (info.email)          contextLines.push(`Email: ${info.email}`);
+    if (info.location)       contextLines.push(`Location: ${info.location}`);
+    if (info.hours)          contextLines.push(`Hours: ${info.hours}`);
+    if (info.bookingInfo)    contextLines.push(`Booking: ${info.bookingInfo}`);
+    if (info.additionalInfo) contextLines.push(`Additional info: ${info.additionalInfo}`);
     if (!contextLines.length) contextLines.push(`Website: ${siteUrl}`);
 
     systemPrompt = `You are Ellie, the AI receptionist for ${businessName}. This is a live demo call — the person calling is trying Ellie out to see how she'd sound to their own customers, so stay fully in character as ${businessName}'s receptionist for the entire call.
