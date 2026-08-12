@@ -196,7 +196,9 @@
       "keyword": "AI receptionist for dental practices",
       "intent": "commercial - clinic specific",
       "audience": "dental practice managers",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-12",
+      "slug": "ai-receptionist-dental-practices-australia"
     },
     {
       "keyword": "handling patient calls after hours",
