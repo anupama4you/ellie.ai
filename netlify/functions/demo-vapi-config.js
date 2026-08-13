@@ -2,26 +2,16 @@
 //  Helpers
 // ─────────────────────────────────────────────────────────────
 
-const { normalizeWebsiteUrl, fetchBusinessInfoWithFirecrawl, getBusinessWebsiteInput } = require('./_website-fetch');
+const { normalizeWebsiteUrl, fetchBusinessInfo, getBusinessWebsiteInput } = require('./_website-fetch');
 
 // ─────────────────────────────────────────────────────────────
-//  Main crawler — Firecrawl scrapes and extracts structured info in one call
+//  Main crawler — Firecrawl scrapes and extracts structured info in one call,
+//  falling back to Claude's own web_fetch if Firecrawl errors or times out.
 // ─────────────────────────────────────────────────────────────
-
-const EMPTY_BUSINESS_INFO = {
-  name: '', description: '', phone: '', email: '', location: '',
-  hours: '', businessType: '', services: '', bookingInfo: '', additionalInfo: '',
-};
 
 async function crawlSite(siteUrl) {
   const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-
-  try {
-    const extracted = await fetchBusinessInfoWithFirecrawl(normalizedSiteUrl);
-    return { ...EMPTY_BUSINESS_INFO, ...extracted };
-  } catch {
-    return { ...EMPTY_BUSINESS_INFO };
-  }
+  return fetchBusinessInfo(normalizedSiteUrl);
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -208,6 +208,101 @@ async function fetchBusinessInfoWithFirecrawl(normalizedUrl, options = {}) {
   return { ...EMPTY_BUSINESS_INFO, ...(data.data?.json || {}) };
 }
 
+const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+const CLAUDE_MODEL = 'claude-haiku-4-5';
+
+const BUSINESS_INFO_SCHEMA_PROMPT = `Return ONLY valid JSON, no markdown, no explanation, in exactly this shape (use an empty string for any field you can't find):
+{
+  "name": "full business name",
+  "description": "2-3 sentences: what they do, who they serve, their speciality",
+  "phone": "main phone number",
+  "email": "main contact email",
+  "location": "full address or suburb/city + state",
+  "hours": "opening hours summary",
+  "businessType": "e.g. Car Dealership, Hair Salon, Dental Clinic, Plumber",
+  "services": "comma-separated list of key services or products offered",
+  "bookingInfo": "how customers book - online, phone, walk-in, etc.",
+  "additionalInfo": "any other detail useful for a receptionist to know that doesn't fit above (awards, notable facts, policies)"
+}`;
+
+/**
+ * Fallback for when Firecrawl fails or times out: has Claude fetch the page itself (via
+ * its own web_fetch tool) and extract in one call. Slower than Firecrawl on average
+ * (measured ~9-13s), but uses different infrastructure — some sites that stall Firecrawl's
+ * renderer succeed here, and vice versa. web_fetch requires the URL to already appear in
+ * the conversation, so it's embedded in the prompt text below.
+ */
+async function fetchBusinessInfoWithClaude(normalizedUrl, options = {}) {
+  const apiKey = options.apiKey || process.env.ANTHROPIC_API_KEY;
+  const timeoutMs = options.timeoutMs || DEFAULT_FIRECRAWL_TIMEOUT_MS;
+  if (!apiKey) throw new Error('Missing Anthropic API key');
+
+  const res = await fetch(ANTHROPIC_API_URL, {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+    },
+    signal: AbortSignal.timeout(timeoutMs),
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: 1024,
+      tools: [{ type: 'web_fetch_20250910', name: 'web_fetch' }],
+      tool_choice: { type: 'tool', name: 'web_fetch' },
+      messages: [{
+        role: 'user',
+        content: `Fetch this business website and extract information for an AI phone receptionist: ${normalizedUrl}\n\n${BUSINESS_INFO_SCHEMA_PROMPT}`,
+      }],
+    }),
+  });
+  if (!res.ok) throw new Error(`Claude ${res.status}`);
+
+  const data = await res.json();
+  const textBlock = (data.content || []).filter((b) => b.type === 'text').pop();
+  const raw = (textBlock?.text || '{}')
+    .replace(/^```(?:json)?\s*/i, '')
+    .replace(/\s*```$/, '');
+  return { ...EMPTY_BUSINESS_INFO, ...JSON.parse(raw) };
+}
+
+// Claude's web_fetch fallback measured ~13-14s to actually complete on sites Firecrawl
+// struggled with — giving it less than that just burns the budget on a second failure.
+// Firecrawl gets a short fail-fast window instead of a long one, so a stalled site moves
+// to the fallback quickly rather than eating time that should go to Claude.
+const DEFAULT_OVERALL_TIMEOUT_MS = 18000;
+const DEFAULT_FIRECRAWL_ATTEMPT_MS = 4000;
+const MIN_CLAUDE_FALLBACK_MS = 4000;
+
+/**
+ * Firecrawl first (fast on most sites), falling back to Claude's own web_fetch if Firecrawl
+ * errors or times out. Firecrawl gets a short leash so a slow/stalled site fails into the
+ * fallback quickly rather than eating the whole budget — see fetchBusinessInfoWithClaude
+ * for why a second, differently-infrastructured attempt is worth making at all.
+ */
+async function fetchBusinessInfo(normalizedUrl, options = {}) {
+  const overallBudgetMs = options.timeoutMs || DEFAULT_OVERALL_TIMEOUT_MS;
+  const deadline = Date.now() + overallBudgetMs;
+
+  try {
+    return await fetchBusinessInfoWithFirecrawl(normalizedUrl, {
+      apiKey: options.firecrawlApiKey,
+      timeoutMs: Math.min(options.firecrawlTimeoutMs || DEFAULT_FIRECRAWL_ATTEMPT_MS, overallBudgetMs - MIN_CLAUDE_FALLBACK_MS),
+    });
+  } catch {
+    const remainingMs = deadline - Date.now();
+    if (remainingMs < MIN_CLAUDE_FALLBACK_MS) return { ...EMPTY_BUSINESS_INFO };
+    try {
+      return await fetchBusinessInfoWithClaude(normalizedUrl, {
+        apiKey: options.anthropicApiKey,
+        timeoutMs: remainingMs,
+      });
+    } catch {
+      return { ...EMPTY_BUSINESS_INFO };
+    }
+  }
+}
+
 module.exports = {
   normalizeWebsiteUrl,
   getBusinessWebsiteInput,
@@ -215,4 +310,6 @@ module.exports = {
   extractMetadata,
   fetchWebsiteContent,
   fetchBusinessInfoWithFirecrawl,
+  fetchBusinessInfoWithClaude,
+  fetchBusinessInfo,
 };

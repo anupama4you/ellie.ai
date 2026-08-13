@@ -1,4 +1,4 @@
-const { normalizeWebsiteUrl, fetchBusinessInfoWithFirecrawl, getBusinessWebsiteInput } = require('./_website-fetch');
+const { normalizeWebsiteUrl, fetchBusinessInfo, getBusinessWebsiteInput } = require('./_website-fetch');
 
 exports.handler = async (event) => {
   const headers = {
@@ -47,9 +47,10 @@ exports.handler = async (event) => {
 
     try {
       const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-      // Tighter budget than demo-vapi-config's default (12s) — this handler still needs to
-      // make the VAPI call below, so it can't use the full Netlify function timeout.
-      const info = await fetchBusinessInfoWithFirecrawl(normalizedSiteUrl, { timeoutMs: 8500 });
+      // Tighter budget than demo-vapi-config's default (15s) — this handler still needs to
+      // make the VAPI call below, so it can't use the full Netlify function timeout. Firecrawl
+      // gets first crack, falling back to Claude's web_fetch with whatever budget remains.
+      const info = await fetchBusinessInfo(normalizedSiteUrl, { timeoutMs: 9000, firecrawlTimeoutMs: 5000 });
 
       if (info.name || info.description || info.phone || info.services) {
         const parts = [];
