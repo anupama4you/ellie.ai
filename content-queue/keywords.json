@@ -204,7 +204,9 @@
       "keyword": "handling patient calls after hours",
       "intent": "problem aware - healthcare specific",
       "audience": "clinic owners and practice managers",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-13",
+      "slug": "handling-patient-calls-after-hours"
     },
     {
       "keyword": "cost of a missed lead for a tradie",
