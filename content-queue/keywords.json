@@ -212,7 +212,9 @@
       "keyword": "cost of a missed lead for a tradie",
       "intent": "informational - value of a lead",
       "audience": "trades quantifying lost job value",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-14",
+      "slug": "cost-of-a-missed-lead-for-a-tradie"
     },
     {
       "keyword": "how to sound professional on business calls",
