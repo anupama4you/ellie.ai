@@ -47,10 +47,12 @@ exports.handler = async (event) => {
 
     try {
       const normalizedSiteUrl = normalizeWebsiteUrl(siteUrl) || siteUrl;
-      // Tighter budget than demo-vapi-config's default (15s) — this handler still needs to
-      // make the VAPI call below, so it can't use the full Netlify function timeout. Firecrawl
-      // gets first crack, falling back to Claude's web_fetch with whatever budget remains.
-      const info = await fetchBusinessInfo(normalizedSiteUrl, { timeoutMs: 9000, firecrawlTimeoutMs: 5000 });
+      // Netlify's hard function timeout is 10s total for this whole handler (confirmed —
+      // Personal plan, no increase). The VAPI call below still has to happen after this, so
+      // the fetch budget is tighter than demo-vapi-config's (9.3s, no call after it).
+      // Firecrawl gets first crack; Claude's web_fetch fallback gets whatever's left, which
+      // is rarely enough for it to fully complete — see fetchBusinessInfo for why.
+      const info = await fetchBusinessInfo(normalizedSiteUrl, { timeoutMs: 7500, firecrawlTimeoutMs: 6500 });
 
       if (info.name || info.description || info.phone || info.services) {
         const parts = [];

@@ -266,13 +266,23 @@ async function fetchBusinessInfoWithClaude(normalizedUrl, options = {}) {
   return { ...EMPTY_BUSINESS_INFO, ...JSON.parse(raw) };
 }
 
-// Claude's web_fetch fallback measured ~13-14s to actually complete on sites Firecrawl
-// struggled with — giving it less than that just burns the budget on a second failure.
-// Firecrawl gets a short fail-fast window instead of a long one, so a stalled site moves
-// to the fallback quickly rather than eating time that should go to Claude.
-const DEFAULT_OVERALL_TIMEOUT_MS = 18000;
-const DEFAULT_FIRECRAWL_ATTEMPT_MS = 4000;
-const MIN_CLAUDE_FALLBACK_MS = 4000;
+// Netlify's actual function timeout on this site's plan is a hard 10s (confirmed —
+// Personal plan, no support-granted increase; that needs Business+). Everything below is
+// budgeted to fit under that with a safety margin for Netlify's own invocation overhead —
+// there is no code-side way to exceed it; a request that runs past 10s gets killed by the
+// platform regardless of our own AbortSignal values.
+//
+// This makes the Claude fallback structurally limited: it measured ~13-14s to actually
+// complete on sites Firecrawl struggled with, which cannot fit under a 10s hard cap no
+// matter how the budget is split. It still gets whatever time Firecrawl doesn't use — most
+// useful when Firecrawl fails FAST (a quick 4xx/5xx) rather than by using its whole
+// attempt window — but treat it as a partial second chance, not a reliable one.
+const DEFAULT_OVERALL_TIMEOUT_MS = 9300;
+// Firecrawl's json-extraction typically lands in the 5-8s range for a normal business
+// site, so it gets most of the budget — it's the only path that can realistically finish
+// inside 10s at all.
+const DEFAULT_FIRECRAWL_ATTEMPT_MS = 8000;
+const MIN_CLAUDE_FALLBACK_MS = 1200;
 
 /**
  * Firecrawl first (fast on most sites), falling back to Claude's own web_fetch if Firecrawl
