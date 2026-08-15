@@ -15,6 +15,11 @@
   to     = "/tradies.html"
   status = 200
 
+[[redirects]]
+  from   = "/beauty"
+  to     = "/beauty.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
