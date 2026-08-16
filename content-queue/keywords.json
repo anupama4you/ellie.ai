@@ -228,7 +228,9 @@
       "keyword": "SMS appointment confirmation for small business",
       "intent": "commercial - confirmations and no-shows",
       "audience": "appointment businesses fighting no-shows",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-16",
+      "slug": "sms-appointment-confirmation-small-business"
     },
     {
       "keyword": "reduce no shows with appointment reminders",
