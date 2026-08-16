@@ -6,10 +6,21 @@
 (function () {
   'use strict';
 
+  // ── Conversion funnel tracking (GA4) ──────────────────────
+  function track(name, params) {
+    if (typeof gtag === 'function') gtag('event', name, params || {});
+  }
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-track]');
+    if (el) track(el.getAttribute('data-track'), {});
+  });
+
   // ── Light / dark theme toggle ─────────────────────────────
+  // Light is the default brand presentation; dark is an alternate the
+  // user can opt into, remembered via localStorage.
   const themeToggle = document.getElementById('theme-toggle');
-  const savedTheme = localStorage.getItem('ellie-theme');
-  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+  const savedTheme = localStorage.getItem('ellie-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -166,7 +177,7 @@
     if (!demoBizBtn) return;
     demoBizBtn.classList.toggle('loading', loading);
     demoBizBtn.disabled = loading;
-    setPhoneLoader(loading, 'Briefing Ellie…');
+    setPhoneLoader(loading, 'Learning your business…');
   }
 
   function getCompanyDomain(raw) {
@@ -303,8 +314,9 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       return;
     }
 
+    track('hero_demo_website_submitted', { website: val });
     setBtnLoading(true);
-    setDemoUrlStatus('briefing', 'Analyzing your business website…');
+    setDemoUrlStatus('briefing', 'Learning your business…');
 
     try {
       const res = await fetch('/.netlify/functions/demo-vapi-config', {
@@ -317,6 +329,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       const data = await res.json();
       briefedConfig = { ...data, _websiteUrl: val };
       setDemoUrlStatus('ready', `✓ Details fetched for ${data.businessName || getCompanyDomain(val)}`);
+      track('website_analysed_success', { business_name: data.businessName || '' });
       showEditStep(data, val);
 
       // Save demo lead as soon as URL is analysed
@@ -336,6 +349,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       }).catch(() => {});
     } catch (err) {
       briefedConfig = null;
+      track('website_analysed_failed', {});
       const isTimeout = err?.name === 'TimeoutError' || err?.name === 'AbortError';
       setDemoUrlStatus('error', isTimeout
         ? '⚠ Website took too long — try again or click "Enter manually" below'
@@ -432,10 +446,12 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       }).catch(() => {});
     } catch {}
 
+    track('demo_persona_generated', { business_name: name, business_type: businessType });
+
     // Update phone UI to show ready state
     if (demoContactName)  demoContactName.textContent  = name;
     if (demoContactLabel) demoContactLabel.textContent = businessType ? `Ellie · ${businessType}` : 'Ellie · AI Receptionist';
-    if (demoPhoneNote)    demoPhoneNote.textContent    = `${name}'s Ellie is ready — press Call`;
+    if (demoPhoneNote)    demoPhoneNote.textContent    = `Ellie is ready to answer for ${name} — press Call`;
 
     // Vibrate call button + show bubble
     const callWrap = document.getElementById('call-btn-wrap');
@@ -598,6 +614,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
 
   async function startDemo() {
     if (demoActive) return;
+    track('demo_call_initiated', {});
     demoActive = true;
     btns.className = 'phone-btns phone-btns-active';
     callBtn.style.display = 'none';
@@ -657,6 +674,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       });
 
       vapi.on('call-end', () => {
+        track('demo_call_completed', { duration_seconds: timerSecs });
         clearInterval(timerInterval);
         setStatus('Call ended', false);
         setWave(false);
@@ -991,6 +1009,9 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         }),
       }).catch(() => {});
 
+      track('trial_started', { business_type: trialType ? trialType.value : '' });
+      track('callback_requested', {});
+
       if (typeof confetti === 'function') {
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#a78bfa','#ec4899','#34d399','#fbbf24','#60a5fa'] });
         setTimeout(() => confetti({ particleCount: 60, spread: 120, origin: { y: 0.55 }, colors: ['#a78bfa','#ec4899','#34d399'] }), 350);
@@ -1036,27 +1057,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     });
   }
 
-  // ── Dashboard gallery: huge hover preview (desktop only) ──
-  const dashPreview    = document.getElementById('dash-hover-preview');
-  const dashPreviewImg = document.getElementById('dash-hover-preview-img');
-  const dashPreviewTag = document.getElementById('dash-hover-preview-tag');
-
-  if (dashPreview && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    document.querySelectorAll('.dash-gallery-card').forEach(card => {
-      const img = card.querySelector('img');
-      const tag = card.querySelector('.dash-gallery-tag');
-      card.addEventListener('mouseenter', () => {
-        dashPreviewImg.src = img.src;
-        dashPreviewImg.alt = img.alt;
-        dashPreviewTag.textContent = tag?.textContent || '';
-        dashPreview.classList.add('is-active');
-      });
-      card.addEventListener('mouseleave', () => {
-        dashPreview.classList.remove('is-active');
-      });
-    });
-  }
-
   // ── Problem section loss counter ─────────────────────────
   // ── Revenue chart draw animation ─────────────────────────
   const pcLineBad  = document.getElementById('pcLineBad');
@@ -1090,179 +1090,62 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     }, { threshold: 0.5 }).observe(probLossEl);
   }
 
-  // ── Integrations hub ─────────────────────────────────────
-  (function buildIntHub() {
-    const svg = document.getElementById('int-svg');
-    if (!svg) return;
+  // ── Hero background: animated voice waveform ──────────────
+  const heroWaveform = document.getElementById('hero-waveform');
+  if (heroWaveform) {
+    const barCount = window.innerWidth < 640 ? 26 : 64;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < barCount; i++) {
+      const bar = document.createElement('span');
+      bar.style.setProperty('--wh', (12 + Math.random() * 68) + '%');
+      bar.style.setProperty('--wd', (Math.random() * -2.4).toFixed(2) + 's');
+      frag.appendChild(bar);
+    }
+    heroWaveform.appendChild(frag);
+  }
 
-    const CX = 300, CY = 300, RADIUS = 210, NODE_R = 28;
+  // ── Sticky mobile CTA ──────────────────────────────────────
+  const stickyCta = document.getElementById('sticky-mobile-cta');
+  if (stickyCta) {
+    const heroSec = document.getElementById('home');
+    const bookSec = document.getElementById('book');
+    let pastHero = false, nearFooter = false;
 
-    // slug: Simple Icons CDN identifier — https://cdn.simpleicons.org/[slug]/[hexcolor]
-    const INT_TOOLS = [
-      { name: 'Google',    sub: 'Calendar',   color: '#4285F4', slug: 'googlecalendar' },
-      { name: 'Xero',      sub: 'Accounting', color: '#1AB4D7', slug: 'xero'           },
-      { name: 'HubSpot',   sub: 'CRM',        color: '#FF7A59', slug: 'hubspot'        },
-      { name: 'Stripe',    sub: 'Payments',   color: '#635BFF', slug: 'stripe'         },
-      { name: 'ServiceM8', sub: 'Field Jobs', color: '#F59E0B', slug: 'servicem8'      },
-      { name: 'Calendly',  sub: 'Scheduling', color: '#4BA1FF', slug: 'calendly'       },
-      { name: 'Mailchimp', sub: 'Marketing',  color: '#FFE01B', slug: 'mailchimp'      },
-      { name: 'Zapier',    sub: 'Automation', color: '#FF4A00', slug: 'zapier'         },
-      { name: 'Sheets',    sub: 'Google',     color: '#34A853', slug: 'googlesheets'   },
-      { name: 'Square',    sub: 'Payments',   color: '#FFFFFF', slug: 'square'         },
-      { name: 'Cliniko',   sub: 'Practice',   color: '#00C4B4', slug: 'cliniko'        },
-      { name: 'MYOB',      sub: 'Accounting', color: '#BB6BD9', slug: 'myob'           },
-    ];
-
-    function ns(tag) { return document.createElementNS('http://www.w3.org/2000/svg', tag); }
-
-    function setAttrs(el, attrs) {
-      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-      return el;
+    function refreshStickyVisibility() {
+      stickyCta.classList.toggle('visible', pastHero && !nearFooter);
+    }
+    if (heroSec) {
+      new IntersectionObserver((entries) => {
+        pastHero = !entries[0].isIntersecting;
+        refreshStickyVisibility();
+      }, { threshold: 0 }).observe(heroSec);
+    }
+    if (bookSec) {
+      new IntersectionObserver((entries) => {
+        nearFooter = entries[0].isIntersecting;
+        refreshStickyVisibility();
+      }, { threshold: 0 }).observe(bookSec);
     }
 
-    const linesG    = svg.querySelector('#int-lines');
-    const ringsG    = svg.querySelector('#int-rings');
-    const nodesG    = svg.querySelector('#int-nodes');
-    const particleG = svg.querySelector('#int-particles');
+    stickyCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector('#trial-form input[name="name"]');
+      (bookSec || document.getElementById('book'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => target?.focus(), 450);
+    });
+  }
 
-    INT_TOOLS.forEach((tool, i) => {
-      const angle = (i / INT_TOOLS.length) * Math.PI * 2 - Math.PI / 2;
-      const nx = CX + Math.cos(angle) * RADIUS;
-      const ny = CY + Math.sin(angle) * RADIUS;
-
-      // Connection line
-      const line = setAttrs(ns('line'), {
-        x1: CX, y1: CY, x2: nx, y2: ny,
-        stroke: tool.color,
-        'stroke-width': '1',
-        'stroke-opacity': '0.2',
-        'stroke-dasharray': '4 6',
-      });
-      linesG.appendChild(line);
-
-      // Tool icon — Simple Icons CDN brand logo
-      const g = ns('g');
-      const IMG = 30;
-      const hex = tool.color.replace('#', '');
-
-      // Letter fallback (visible if CDN image fails to load for niche tools)
-      const fallback = setAttrs(ns('text'), {
-        x: String(nx), y: String(ny + 5),
-        'text-anchor': 'middle',
-        'font-family': 'Inter,sans-serif',
-        'font-size': '15', 'font-weight': '800',
-        fill: tool.color,
-      });
-      fallback.textContent = tool.name[0];
-      g.appendChild(fallback);
-
-      // Brand icon from Simple Icons CDN (renders over the fallback)
-      const imgEl = setAttrs(ns('image'), {
-        href: `https://cdn.simpleicons.org/${tool.slug}/${hex}`,
-        x: String(nx - IMG / 2), y: String(ny - IMG / 2),
-        width: String(IMG), height: String(IMG),
-        filter: 'url(#ig-glow-v)',
-      });
-      g.appendChild(imgEl);
-
-      // Label positioning based on angle quadrant
-      const labelPad = NODE_R + 14;
-      const lx = CX + Math.cos(angle) * (RADIUS + labelPad);
-      const ly = CY + Math.sin(angle) * (RADIUS + labelPad);
-      const anchor = Math.cos(angle) > 0.25 ? 'start' : Math.cos(angle) < -0.25 ? 'end' : 'middle';
-
-      const nameEl = setAttrs(ns('text'), {
-        x: lx, y: ly - 2,
-        'text-anchor': anchor,
-        'font-family': 'Inter,sans-serif',
-        'font-size': '10.5',
-        'font-weight': '600',
-        fill: 'rgba(255,255,255,0.8)',
-      });
-      nameEl.textContent = tool.name;
-      g.appendChild(nameEl);
-
-      const subEl = setAttrs(ns('text'), {
-        x: lx, y: ly + 10,
-        'text-anchor': anchor,
-        'font-family': 'Inter,sans-serif',
-        'font-size': '8.5',
-        fill: tool.color,
-        'fill-opacity': '0.75',
-      });
-      subEl.textContent = tool.sub;
-      g.appendChild(subEl);
-
-      nodesG.appendChild(g);
-
-      // Animated particles along the line
-      const pCount = 2;
-      for (let p = 0; p < pCount; p++) {
-        const inbound = p % 2 === 0;
-        const dot = setAttrs(ns('circle'), {
-          r: '3',
-          fill: tool.color,
-          opacity: '0.85',
-          filter: 'url(#ig-glow-v)',
-        });
-
-        const motionPath = `M ${inbound ? nx : CX} ${inbound ? ny : CY} L ${inbound ? CX : nx} ${inbound ? CY : ny}`;
-        const mPath = ns('path');
-        mPath.setAttribute('d', motionPath);
-        mPath.setAttribute('id', `ipath-${i}-${p}`);
-        mPath.setAttribute('fill', 'none');
-        mPath.setAttribute('stroke', 'none');
-        svg.querySelector('defs').appendChild(mPath);
-
-        const motion = ns('animateMotion');
-        motion.setAttribute('dur', (2.4 + i * 0.18 + p * 1.1) + 's');
-        motion.setAttribute('repeatCount', 'indefinite');
-        motion.setAttribute('begin', (p * 1.2 + i * 0.15) + 's');
-
-        const mref = ns('mpath');
-        mref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#ipath-${i}-${p}`);
-        motion.appendChild(mref);
-        dot.appendChild(motion);
-        particleG.appendChild(dot);
+  // ── Pricing / founding offer view tracking ────────────────
+  const pricingSec = document.getElementById('pricing');
+  if (pricingSec) {
+    let pricingSeen = false;
+    new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !pricingSeen) {
+        pricingSeen = true;
+        track('pricing_viewed', {});
       }
-    });
-
-    // Pulse rings on center node
-    [60, 80, 105].forEach((r, idx) => {
-      const ring = setAttrs(ns('circle'), {
-        cx: CX, cy: CY, r,
-        fill: 'none',
-        stroke: 'rgba(167,139,250,0.35)',
-        'stroke-width': '1',
-      });
-      const anim = setAttrs(ns('animate'), {
-        attributeName: 'stroke-opacity',
-        values: '0.35;0.05;0.35',
-        dur: (2.4 + idx * 0.6) + 's',
-        repeatCount: 'indefinite',
-        begin: (idx * 0.4) + 's',
-      });
-      ring.appendChild(anim);
-      ringsG.appendChild(ring);
-    });
-
-    // Animate connection count to 12
-    const connNum = document.getElementById('int-conn-num');
-    if (connNum) {
-      let counted = false;
-      new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && !counted) {
-          counted = true;
-          let n = 0;
-          const iv = setInterval(() => {
-            n++;
-            connNum.textContent = n;
-            if (n >= 12) clearInterval(iv);
-          }, 90);
-        }
-      }, { threshold: 0.4 }).observe(svg);
-    }
-  })();
+    }, { threshold: 0.4 }).observe(pricingSec);
+  }
 
   // ── Hero avatar idle animation (subtle mouth twitch) ──────
   const heroClip = document.getElementById('hero-ellie-clip');
