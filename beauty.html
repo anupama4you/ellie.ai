@@ -1498,7 +1498,7 @@
 
     /* ── VOICE COMPARISON ── */
     /* ── TESTIMONIALS ── */
-    /* ── GOOGLE REVIEWS ── */
+    /* ── TESTIMONIALS ── */
     .grev-sec { background: var(--bg2); position: relative; overflow: hidden; }
     .grev-sec::before { content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent); }
     .grev-hd { text-align:center; margin-bottom: 2.6rem; }
@@ -2439,6 +2439,13 @@
 
     .img-placeholder { width:100%; height:100%; min-height:180px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:20px; text-align:center; background:var(--violet-d); border:2px dashed var(--violet-b); color:var(--muted); font-size:.82rem; font-weight:600; border-radius:inherit; }
     .img-placeholder svg { opacity:.5; }
+
+    .tp-logo { height: 13px; width: auto; display: block; }
+    .tp-logo-wrap { background: #fff; border-radius: 5px; padding: 4px 7px; display: inline-flex; align-items: center; line-height: 0; }
+    .grev-logo .tp-logo { height: 20px; }
+    .grev-logo .tp-logo-wrap { width: auto; height: auto; padding: 5px 9px; border-radius: 6px; }
+    .ts-icon .tp-logo { height: 14px; }
+    .ts-icon .tp-logo-wrap { padding: 3px 6px; border-radius: 4px; }
   </style>
 
 </head>
@@ -2499,22 +2506,12 @@
       <div class="hero-trust-row">
         <a href="#testimonials" class="hero-trust-badge">
           <div class="hero-trust-google">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="url(#heroTrustGrad)" stroke-width="1.6" aria-hidden="true">
-              <defs>
-                <linearGradient id="heroTrustGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stop-color="#f472b6"/>
-                  <stop offset="1" stop-color="#c084fc"/>
-                </linearGradient>
-              </defs>
-              <path d="M7.5 8.5c-2 .6-3 2.2-3 4.2 0 1.9 1.4 3.3 3 3.3s3-1.4 3-3.3c0-1.6-.9-2.8-2.3-3.2.2-1 1-1.8 2.1-2.1" />
-              <path d="M16.5 8.5c-2 .6-3 2.2-3 4.2 0 1.9 1.4 3.3 3 3.3s3-1.4 3-3.3c0-1.6-.9-2.8-2.3-3.2.2-1 1-1.8 2.1-2.1" />
-            </svg>
-            <span class="hero-trust-google-label">Client Feedback</span>
+            <span class="tp-logo-wrap"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
           </div>
           <div class="hero-trust-sep"></div>
           <div class="hero-trust-right">
             <div class="hero-trust-stars">★★★★★ <b>5.0</b></div>
-            <div class="hero-trust-count">200+ SA businesses</div>
+            <div class="hero-trust-count">200+ Australian businesses</div>
           </div>
         </a>
         <a href="#book" class="hero-callback-pill">
@@ -2624,7 +2621,7 @@
     </div>
     <div class="ts-sep"></div>
     <div class="ts-item">
-      <div class="ts-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#f472b6"><path d="M7.5 8.5c-2 .6-3 2.2-3 4.2 0 1.9 1.4 3.3 3 3.3s3-1.4 3-3.3c0-1.6-.9-2.8-2.3-3.2.2-1 1-1.8 2.1-2.1"/><path d="M16.5 8.5c-2 .6-3 2.2-3 4.2 0 1.9 1.4 3.3 3 3.3s3-1.4 3-3.3c0-1.6-.9-2.8-2.3-3.2.2-1 1-1.8 2.1-2.1"/></svg></div>
+      <div class="ts-icon"><span class="tp-logo-wrap"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span></div>
       <div class="ts-val"><span class="ts-val-grad">5.0</span><span class="ts-stars"> ★★★★★</span></div>
       <div class="ts-label">Client rating</div>
     </div>
@@ -3211,20 +3208,11 @@
   <div class="container">
     <div class="grev-hd reveal">
       <div class="grev-logo">
-        <svg class="grev-logo-icon" viewBox="0 0 24 24" fill="none" stroke="url(#grevGrad)" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="grevGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stop-color="#f472b6"/>
-              <stop offset="1" stop-color="#c084fc"/>
-            </linearGradient>
-          </defs>
-          <path d="M7.5 8.5c-2 .6-3 2.2-3 4.2 0 1.9 1.4 3.3 3 3.3s3-1.4 3-3.3c0-1.6-.9-2.8-2.3-3.2.2-1 1-1.8 2.1-2.1" />
-          <path d="M16.5 8.5c-2 .6-3 2.2-3 4.2 0 1.9 1.4 3.3 3 3.3s3-1.4 3-3.3c0-1.6-.9-2.8-2.3-3.2.2-1 1-1.8 2.1-2.1" />
-        </svg>
+        <span class="tp-logo-wrap grev-logo-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
         <span class="grev-logo-text">What Salons Tell Us</span>
       </div>
       <h2 class="grev-headline">Built on what small businesses already trust Ellie for</h2>
-      <p class="grev-sub"><span class="grev-sub-stars">★★★★★</span> 5.0 &nbsp;·&nbsp; 200+ SA businesses live on Ellie</p>
+      <p class="grev-sub"><span class="grev-sub-stars">★★★★★</span> 5.0 &nbsp;·&nbsp; 200+ Australian businesses live on Ellie</p>
     </div>
   </div>
 
@@ -3393,7 +3381,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
               Get a free callback
             </button>
-            <p class="trial-trust-line"><span class="trial-trust-stars">★★★★★ <b>5.0</b></span> rated &nbsp;&middot;&nbsp; Trusted by 200+ SA businesses</p>
+            <p class="trial-trust-line"><span class="trial-trust-stars">★★★★★ <b>5.0</b></span> rated &nbsp;&middot;&nbsp; Trusted by 200+ Australian businesses</p>
           </form>
         </div>
 

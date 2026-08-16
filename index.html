@@ -1573,7 +1573,7 @@
 
     /* ── VOICE COMPARISON ── */
     /* ── TESTIMONIALS ── */
-    /* ── GOOGLE REVIEWS ── */
+    /* ── TESTIMONIALS ── */
     .grev-sec { background: var(--bg2); position: relative; overflow: hidden; }
     .grev-sec::before { content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent); }
     .grev-hd { text-align:center; margin-bottom: 2.6rem; }
@@ -2509,6 +2509,15 @@
       .ct-ellie-price,.ct-human-price { font-size:.95rem; }
       .ct-note { font-size:.6rem; }
     }
+
+    .tp-logo { height: 13px; width: auto; display: block; }
+    .tp-logo-wrap { background: #fff; border-radius: 5px; padding: 4px 7px; display: inline-flex; align-items: center; line-height: 0; }
+    .grev-logo .tp-logo { height: 20px; }
+    .grev-logo .tp-logo-wrap { width: auto; height: auto; padding: 5px 9px; border-radius: 6px; }
+    .ts-icon .tp-logo { height: 14px; }
+    .ts-icon .tp-logo-wrap { padding: 3px 6px; border-radius: 4px; }
+    .grev-footer .tp-logo { height: 12px; }
+    .grev-footer .tp-logo-wrap { width: auto; height: auto; padding: 3px 6px; border-radius: 4px; flex-shrink: 0; }
   </style>
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <!-- Google tag (gtag.js) -->
@@ -2577,18 +2586,12 @@
       <div class="hero-trust-row">
         <a href="#testimonials" class="hero-trust-badge">
           <div class="hero-trust-google">
-            <svg viewBox="0 0 48 48" width="20" height="20" aria-label="Google">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.33 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.67 14.62 48 24 48z"/>
-            </svg>
-            <span class="hero-trust-google-label">Google</span>
+            <span class="tp-logo-wrap"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
           </div>
           <div class="hero-trust-sep"></div>
           <div class="hero-trust-right">
             <div class="hero-trust-stars">★★★★★ <b>5.0</b></div>
-            <div class="hero-trust-count">200+ SA businesses</div>
+            <div class="hero-trust-count">200+ Australian businesses</div>
           </div>
         </a>
         <a href="#book" class="hero-callback-pill">
@@ -2699,9 +2702,9 @@
     </div>
     <div class="ts-sep"></div>
     <div class="ts-item">
-      <div class="ts-icon"><svg width="18" height="18" viewBox="0 0 48 48" style="display:block"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.33 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.67 14.62 48 24 48z"/></svg></div>
+      <div class="ts-icon"><span class="tp-logo-wrap"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span></div>
       <div class="ts-val"><span class="ts-val-grad">5.0</span><span class="ts-stars"> ★★★★★</span></div>
-      <div class="ts-label">Google rating</div>
+      <div class="ts-label">Client rating</div>
     </div>
     <div class="ts-sep"></div>
     <div class="ts-item">
@@ -3542,19 +3545,13 @@
   </div>
 </section>
 
-<!-- ── GOOGLE REVIEWS ── -->
+<!-- ── TESTIMONIALS ── -->
 <section id="testimonials" class="grev-sec">
   <div class="container">
     <div class="grev-hd reveal">
       <div class="grev-logo">
-        <!-- Google "G" logo SVG -->
-        <svg class="grev-logo-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/>
-          <path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/>
-          <path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/>
-        </svg>
-        <span class="grev-logo-text">Google Reviews</span>
+        <span class="tp-logo-wrap grev-logo-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+        <span class="grev-logo-text">What Our Clients Tell Us</span>
       </div>
       <h2 class="grev-headline">Rated 5.0 stars by businesses across Australia</h2>
       <p class="grev-sub"><span class="grev-sub-stars">★★★★★</span> 5.0 &nbsp;·&nbsp; 100+ verified reviews</p>
@@ -3577,8 +3574,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">We were missing 8–10 calls a day after hours. Now Ellie books them all. Our revenue went up over 35% in the first month. I wish I'd done this sooner.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3595,8 +3592,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">I can't answer my phone when I'm under a car. Ellie answers every single time. Three new regulars in the first week from calls I'd normally miss. Worth every cent.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3613,8 +3610,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Set it up on a Sunday afternoon. By Monday morning Ellie had already booked 3 new cleaning jobs. Paid for the whole month in one day. Absolute no-brainer.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3631,8 +3628,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Ellie handles all our after-hours emergency call intake. Customers get an immediate response instead of voicemail. We haven't lost a single urgent job since we signed up.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3649,8 +3646,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Our front desk was overwhelmed with appointment calls. Ellie now handles the overflow perfectly. Patients say they love getting an instant answer. Setup took under an hour.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3667,8 +3664,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Couldn't believe how natural it sounds. Customers don't even realise it's AI. I've picked up 4 jobs this week alone that came through after 5pm. Game changer for sole traders.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3685,8 +3682,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">I run a one-woman spa and used to dread missing calls during treatments. Ellie books clients seamlessly while I work. My bookings are up 40% since I started using it.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3703,8 +3700,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Landscaping is seasonal and calls flood in during spring. Ellie handled 60+ enquiries in one week without missing a beat. All booked into our calendar automatically. Unreal.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3721,8 +3718,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">We were losing patients to competitors simply because our phones went to voicemail at lunch. Ellie fixed that overnight. Patient satisfaction scores have genuinely improved too.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3740,8 +3737,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">We were missing 8–10 calls a day after hours. Now Ellie books them all. Our revenue went up over 35% in the first month. I wish I'd done this sooner.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 2 dup -->
@@ -3757,8 +3754,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">I can't answer my phone when I'm under a car. Ellie answers every single time. Three new regulars in the first week from calls I'd normally miss. Worth every cent.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 3 dup -->
@@ -3774,8 +3771,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Set it up on a Sunday afternoon. By Monday morning Ellie had already booked 3 new cleaning jobs. Paid for the whole month in one day. Absolute no-brainer.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 4 dup -->
@@ -3791,8 +3788,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Ellie handles all our after-hours emergency call intake. Customers get an immediate response instead of voicemail. We haven't lost a single urgent job since we signed up.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 5 dup -->
@@ -3808,8 +3805,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Our front desk was overwhelmed with appointment calls. Ellie now handles the overflow perfectly. Patients say they love getting an instant answer. Setup took under an hour.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 6 dup -->
@@ -3825,8 +3822,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Couldn't believe how natural it sounds. Customers don't even realise it's AI. I've picked up 4 jobs this week alone that came through after 5pm. Game changer for sole traders.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 7 dup -->
@@ -3842,8 +3839,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">I run a one-woman spa and used to dread missing calls during treatments. Ellie books clients seamlessly while I work. My bookings are up 40% since I started using it.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 8 dup -->
@@ -3859,8 +3856,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">Landscaping is seasonal and calls flood in during spring. Ellie handled 60+ enquiries in one week without missing a beat. All booked into our calendar automatically. Unreal.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
       <!-- Card 9 dup -->
@@ -3876,8 +3873,8 @@
         <div class="grev-stars">★★★★★</div>
         <p class="grev-text">We were losing patients to competitors simply because our phones went to voicemail at lunch. Ellie fixed that overnight. Patient satisfaction scores have genuinely improved too.</p>
         <div class="grev-footer">
-          <svg class="grev-footer-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.1 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.8 6C12.3 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8C43.6 37.3 46.5 31.4 46.5 24.5z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.5 10.6l8-6z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.7-3.8-13.5-9.2l-8 6.2C6.6 42.4 14.6 48 24 48z"/></svg>
-          <span class="grev-posted">Posted on Google</span>
+          <span class="tp-logo-wrap grev-footer-icon"><img class="tp-logo" src="assets/ellie/trustpilot.svg.webp" alt="Trustpilot" loading="lazy"></span>
+          <span class="grev-posted">Posted on Trustpilot</span>
         </div>
       </div>
 
@@ -3923,7 +3920,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
               Get a free callback
             </button>
-            <p class="trial-trust-line"><span class="trial-trust-stars">★★★★★ <b>5.0</b></span> on Google &nbsp;&middot;&nbsp; Trusted by 200+ SA businesses</p>
+            <p class="trial-trust-line"><span class="trial-trust-stars">★★★★★ <b>5.0</b></span> on Google &nbsp;&middot;&nbsp; Trusted by 200+ Australian businesses</p>
           </form>
         </div>
 
