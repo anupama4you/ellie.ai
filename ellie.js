@@ -632,6 +632,23 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     if (ringCtx) { try { ringCtx.close(); } catch (_) {} ringCtx = null; }
   }
 
+  // The Vapi client SDK is ~575KB and is only ever needed once someone actually
+  // starts a demo call, so it's not loaded on page load — only fetched here, on
+  // first use, and cached so a second call doesn't re-download it.
+  let vapiSdkPromise = null;
+  function loadVapiSdk() {
+    if (typeof Vapi !== 'undefined') return Promise.resolve();
+    if (vapiSdkPromise) return vapiSdkPromise;
+    vapiSdkPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'vapi-sdk.js';
+      script.onload = resolve;
+      script.onerror = () => { vapiSdkPromise = null; reject(new Error('Could not load call SDK')); };
+      document.head.appendChild(script);
+    });
+    return vapiSdkPromise;
+  }
+
   async function startDemo() {
     if (demoActive) return;
     track('demo_call_initiated', {});
@@ -644,6 +661,10 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     document.getElementById('call-btn-wrap')?.classList.remove('ready');
 
     try {
+      // Kick off the SDK download in parallel with the config fetch below so it
+      // doesn't add extra latency on top of the network round-trip.
+      const vapiSdkReady = loadVapiSdk();
+
       // Always fetch a fresh config from the server for a valid publicKey/session.
       // If the user went through Generate, we patch the overrides with their edited fields.
       // If user already clicked Generate, the system prompt is pre-built client-side —
@@ -676,6 +697,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         assistantOverrides.model.messages[0].content += `\n\nCurrent date & time: ${nowStr} (Australia/Sydney). Compare this against the business's stated hours to judge whether it's currently open or closed, and follow the in-hours vs after-hours guidance accordingly.`;
       }
 
+      await vapiSdkReady;
       const VapiClass = (typeof Vapi === 'function') ? Vapi : Vapi.default;
       const vapi = new VapiClass(publicKey);
       vapiInstance = vapi;
