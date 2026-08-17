@@ -595,8 +595,8 @@
     /* ── Founding offer tag, attached to the headline ── */
     .hero-offer-tag {
       display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--violet), #6d28d9);
-      color: #fff; font-size: .82rem; font-weight: 700;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #451a03; font-size: .82rem; font-weight: 700;
       padding: 8px 10px 8px 16px; border-radius: 999px;
       margin-bottom: 1.3rem; text-decoration: none; white-space: nowrap;
       animation: heroFadeUp .6s .0s ease both, offerPulse 2.6s 1s ease-in-out infinite;
@@ -604,21 +604,21 @@
     .hero-offer-tag:hover { animation: heroFadeUp .6s .0s ease both; }
     .hero-offer-tag__spark { font-size: .9rem; line-height: 1; }
     .hero-offer-tag__limited {
-      background: rgba(255,255,255,.22); color: #fff;
+      background: rgba(69,26,3,.16); color: #451a03;
       font-size: .66rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
       padding: 4px 9px; border-radius: 999px;
     }
     @keyframes offerPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(167,139,250,.45), 0 6px 20px rgba(0,0,0,.18); transform: scale(1); }
-      50%      { box-shadow: 0 0 0 10px rgba(167,139,250,0), 0 6px 20px rgba(0,0,0,.18); transform: scale(1.025); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,.5), 0 6px 20px rgba(0,0,0,.18); transform: scale(1); }
+      50%      { box-shadow: 0 0 0 10px rgba(251,191,36,0), 0 6px 20px rgba(0,0,0,.18); transform: scale(1.025); }
     }
     [data-theme="light"] .hero-offer-tag {
       animation: heroFadeUp .6s .0s ease both, offerPulseLight 2.6s 1s ease-in-out infinite;
     }
     [data-theme="light"] .hero-offer-tag:hover { animation: heroFadeUp .6s .0s ease both; }
     @keyframes offerPulseLight {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,.35), 0 6px 18px rgba(15,23,42,.12); transform: scale(1); }
-      50%      { box-shadow: 0 0 0 9px rgba(124,58,237,0), 0 6px 18px rgba(15,23,42,.12); transform: scale(1.025); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,.4), 0 6px 18px rgba(15,23,42,.12); transform: scale(1); }
+      50%      { box-shadow: 0 0 0 9px rgba(245,158,11,0), 0 6px 18px rgba(15,23,42,.12); transform: scale(1.025); }
     }
     .hero-h1 {
       font-size: clamp(2.6rem, 5.4vw, 4.8rem); font-weight: 800; letter-spacing: -.03em;
@@ -2222,10 +2222,11 @@
       .hero-in { flex: 1; padding: 80px 20px 24px; gap: 0; display: flex; flex-direction: column; justify-content: center; }
 
       .hero-offer-tag {
-        white-space: normal; text-align: center; font-size: .72rem;
-        padding: 7px 12px; gap: 6px; max-width: 300px; margin-left: auto; margin-right: auto;
+        white-space: nowrap; font-size: .62rem;
+        padding: 5px 9px; gap: 4px; margin-left: auto; margin-right: auto;
       }
-      .hero-offer-tag__limited { font-size: .6rem; padding: 3px 7px; }
+      .hero-offer-tag__spark { font-size: .74rem; }
+      .hero-offer-tag__limited { font-size: .52rem; padding: 2px 6px; }
       .hero-h1 {
         text-align: center;
         font-size: 2.15rem; line-height: 1.08;
@@ -2666,10 +2667,16 @@
     }
     @media (max-width: 560px) {
       .wf-example-grid { grid-template-columns: 1fr; }
-      .workflow-steps { flex-direction: column; }
-      .wf-arrow { transform: rotate(90deg); }
-      .wf-step { width: 100%; flex-direction: row; text-align: left; }
-      .wf-step-label { text-align: left; }
+      /* Stays horizontal on mobile too, just scrollable — bleeds edge-to-edge
+         so the row isn't cramped inside the container's side padding. */
+      .workflow-steps {
+        flex-wrap: nowrap; justify-content: flex-start;
+        overflow-x: auto; scrollbar-width: none;
+        margin: 0 -24px 2.8rem; padding: 4px 24px;
+      }
+      .workflow-steps::-webkit-scrollbar { display: none; }
+      .wf-step { width: 78px; flex-shrink: 0; }
+      .wf-step-label { font-size: .7rem; }
     }
 
     /* ── HUMAN HANDOFF ── */
@@ -2973,7 +2980,7 @@
     <div class="hero-copy">
       <a href="#pricing" class="hero-offer-tag">
         <span class="hero-offer-tag__spark">🔥</span>
-        Founding Offer — $99/month for the first 10 businesses
+        $99/month offer for the first 10 businesses
         <span class="hero-offer-tag__limited">Limited</span>
       </a>
       <h1 class="hero-h1" id="heroH1">The 24/7 <span class="h2-grad">AI receptionist</span> for Australian businesses</h1>
@@ -4303,9 +4310,8 @@
         <!-- FRONT: form -->
         <div class="trial-flip-front cta-card" style="text-align:center;">
           <div class="sec-tag" style="justify-content:center;">7-Day Free Trial</div>
-          <h2 class="book-h2">Don't book a demo.<br><span class="h2-grad">Call your receptionist.</span></h2>
-          <p class="book-sub">Enter your website up top and hear Ellie answer for your own business in seconds — free, no credit card, takes less than a minute.</p>
-          <p class="book-sub" style="margin-bottom:1.8rem;">Ready to go further? Leave your details and we'll call you back within 1 business day to get your Ellie set up.</p>
+          <h2 class="book-h2">Get Ellie answering<br><span class="h2-grad">your calls in 24 hours.</span></h2>
+          <p class="book-sub" style="margin-bottom:1.8rem;">Leave your details and we'll set up your Ellie, starting with a quick call to learn your business.</p>
 
           <form class="trial-form" id="trial-form" name="free-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field">
             <input type="hidden" name="form-name" value="free-trial">
@@ -4341,8 +4347,8 @@
           <div class="trial-success-icon">
             <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
           </div>
-          <h2 class="trial-success-h">One of our team members will get back to you <span class="h2-grad">within 1 day.</span></h2>
-          <p class="book-sub">We'll call you back to get your Ellie set up — usually much sooner than 24 hours.</p>
+          <h2 class="trial-success-h">We'll give you a quick call <span class="h2-grad">to understand your business.</span></h2>
+          <p class="book-sub">Then we'll have Ellie set up and answering your calls within 24 hours.</p>
           <button class="trial-resubmit" id="trial-resubmit" aria-label="Submit another request">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
             Submit another request
