@@ -496,26 +496,6 @@
         radial-gradient(ellipse 55% 55% at 18% 52%, rgba(167,139,250,.13) 0%, transparent 68%),
         radial-gradient(ellipse 40% 40% at 84% 28%, rgba(244,114,182,.08) 0%, transparent 68%);
     }
-    /* ── Live-call signal: concentric rings pulsing outward, like an incoming
-       call being answered — ties the hero background to what Ellie actually
-       does, instead of generic decorative blur orbs. ── */
-    .hero-signal {
-      position: absolute; top: 40%; left: 50%; width: 1px; height: 1px;
-      pointer-events: none; z-index: 0;
-    }
-    .hero-signal-ring {
-      position: absolute; top: 0; left: 0; transform: translate(-50%, -50%);
-      border-radius: 50%; border: 1.5px solid var(--violet);
-      opacity: 0; animation: heroSignalPulse 6s ease-out infinite;
-    }
-    .hero-signal-ring:nth-child(1) { animation-delay: 0s; }
-    .hero-signal-ring:nth-child(2) { animation-delay: 2s; }
-    .hero-signal-ring:nth-child(3) { animation-delay: 4s; }
-    @keyframes heroSignalPulse {
-      0%   { width: 60px;   height: 60px;   opacity: .55; border-width: 1.5px; }
-      65%  { opacity: .1; }
-      100% { width: 1200px; height: 1200px; opacity: 0; border-width: .5px; }
-    }
     /* ── Voice waveform strip: a live audio-levels bar, echoing the call
        transcript UI elsewhere on the page — bars are generated in JS. ── */
     .hero-waveform {
@@ -2363,11 +2343,14 @@
     }
 
     @media (max-width: 540px) {
-      .int-card { width: 122px; padding: 22px 10px 18px; gap: 10px; }
-      .int-card-icon { width: 48px; height: 48px; border-radius: 13px; }
-      .int-card-icon img { width: 26px; height: 26px; }
-      .int-card-icon .int-mono { font-size: 1.1rem; border-radius: 13px; }
-      .int-card-name { font-size: .78rem; }
+      /* Grid instead of wrapping flex — guarantees exactly 3 per row
+         regardless of card/gap pixel math. */
+      .int-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: none; }
+      .int-card { width: auto; padding: 16px 6px 14px; gap: 8px; }
+      .int-card-icon { width: 40px; height: 40px; border-radius: 12px; }
+      .int-card-icon img { width: 22px; height: 22px; }
+      .int-card-icon .int-mono { font-size: .95rem; border-radius: 12px; }
+      .int-card-name { font-size: .68rem; line-height: 1.25; }
     }
 
     /* ── CTA IDLE PULSE ── */
@@ -2700,7 +2683,7 @@
     .au-trust-links { text-align: center; font-size: .82rem; color: var(--muted); margin-top: 2.4rem; }
     .au-trust-links a { color: var(--violet); text-decoration: underline; }
     @media (max-width: 860px) { .au-trust-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 560px) { .au-trust-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .au-trust-grid { grid-template-columns: 1fr 1fr; } }
 
     /* ── INDUSTRIES ── */
     .industries-sec { background: var(--bg); padding: 88px 0; }
@@ -2969,11 +2952,6 @@
 <!-- ── HERO ── -->
 <section id="home" class="hero">
   <div class="grid-bg"></div>
-  <div class="hero-signal" aria-hidden="true">
-    <span class="hero-signal-ring"></span>
-    <span class="hero-signal-ring"></span>
-    <span class="hero-signal-ring"></span>
-  </div>
   <div class="hero-waveform" id="hero-waveform" aria-hidden="true"></div>
 
   <div class="hero-in">
@@ -3096,7 +3074,7 @@
           </div>
           <div class="prob-feat__text">
             <strong>Beat the competition</strong>
-            <p>Customers go with whoever answers first. With Ellie, that's always you — even at 2am.</p>
+            <p>Customers go with whoever answers first. With Ellie, that's always you, even at 2am.</p>
           </div>
         </div>
 
@@ -3127,7 +3105,7 @@
     <div class="how-hd reveal">
       <div class="sec-tag">How It Works</div>
       <h2 class="sec-h2">How <span class="h2-grad">Ellie works.</span></h2>
-      <p>We set it up, Ellie runs it — you just do the work. Here's exactly what happens on every call.</p>
+      <p>We set it up, Ellie runs it, you just do the work. Here's exactly what happens on every call.</p>
     </div>
 
     <div class="steps">
@@ -3139,7 +3117,7 @@
         <div class="step-body">
           <span class="step-label">Step 1</span>
           <h3>Customer calls your business</h3>
-          <p>They dial your number — Ellie picks up every time, wherever you are.</p>
+          <p>They dial your number, Ellie picks up every time, wherever you are.</p>
         </div>
       </div>
 
@@ -3150,7 +3128,7 @@
         <div class="step-body">
           <span class="step-label">Step 2</span>
           <h3>Ellie answers in 2 seconds</h3>
-          <p>Warm, professional, sounding just like your business — answered before the second ring.</p>
+          <p>Warm, professional, sounding just like your business, answered before the second ring.</p>
         </div>
       </div>
 
@@ -3189,8 +3167,8 @@
       <!-- Left: story + features -->
       <div class="reveal">
         <div class="sec-tag">The Technology</div>
-        <h2 class="sec-h2">Why Ellie sounds like a real person — <span class="h2-grad">not a bot.</span></h2>
-        <p class="ellie-tech-intro">Most AI voices give themselves away within seconds. Ellie is built with natural Australian voices and fast, human-paced conversation — so your callers get a warm, professional answer, not a robotic script-reader.</p>
+        <h2 class="sec-h2">Why Ellie sounds like a real person, <span class="h2-grad">not a bot.</span></h2>
+        <p class="ellie-tech-intro">Most AI voices give themselves away within seconds. Ellie is built with natural Australian voices and fast, human-paced conversation. so your callers get a warm, professional answer, not a robotic script-reader.</p>
 
         <div class="ellie-tech-feats">
 
@@ -3203,7 +3181,7 @@
               <span class="ellie-tech-feat__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></span>
             </div>
             <div class="ellie-tech-feat__body">
-              <p>We license authentic Australian voice recordings — not synthetic speech. Your callers hear genuine warmth, natural rhythm, and real Australian intonation.</p>
+              <p>We license authentic Australian voice recordings, not synthetic speech. Your callers hear genuine warmth, natural rhythm, and real Australian intonation.</p>
             </div>
           </div>
 
@@ -3216,7 +3194,7 @@
               <span class="ellie-tech-feat__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></span>
             </div>
             <div class="ellie-tech-feat__body">
-              <p>No menus, no "press 1 for sales." Callers just talk — interruptions, half-finished sentences and all — and Ellie follows the conversation.</p>
+              <p>No menus, no "press 1 for sales." Callers just talk, interruptions, half-finished sentences and all, and Ellie follows the conversation.</p>
             </div>
           </div>
 
@@ -3229,7 +3207,7 @@
               <span class="ellie-tech-feat__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></span>
             </div>
             <div class="ellie-tech-feat__body">
-              <p>From tradie call-outs to salon bookings to after-hours enquiries — Ellie speaks with a natural Australian voice, not a generic American AI.</p>
+              <p>From tradie call-outs to salon bookings to after-hours enquiries, Ellie speaks with a natural Australian voice, not a generic American AI.</p>
             </div>
           </div>
 
@@ -3242,7 +3220,7 @@
               <span class="ellie-tech-feat__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></span>
             </div>
             <div class="ellie-tech-feat__body">
-              <p>Ellie responds quickly, without the long robotic pauses that give away a bad AI system — so conversations stay natural and unhurried.</p>
+              <p>Ellie responds quickly, without the long robotic pauses that give away a bad AI system, so conversations stay natural and unhurried.</p>
             </div>
           </div>
 
@@ -3574,7 +3552,7 @@
     <div class="dashboard-hd reveal">
       <div class="sec-tag" style="justify-content:center;">Your Dashboard</div>
       <h2 class="sec-h2">Every call. Every booking.<br><span class="h2-grad">One place.</span></h2>
-      <p>You don't need to listen to every recording to know what happened. Calls, bookings and analytics — all visible in one dashboard.</p>
+      <p>You don't need to listen to every recording to know what happened. Calls, bookings and analytics. all visible in one dashboard.</p>
     </div>
 
     <!-- Real dashboard UI, recreated in HTML/CSS (not a screenshot) — sample
@@ -3796,7 +3774,7 @@
     <div class="integrations-copy reveal">
       <div class="sec-tag" style="justify-content:center;">Works With Your Tools</div>
       <h2 class="sec-h2">Ellie connects right into<br><span class="h2-grad">your existing tools.</span></h2>
-      <p>Ellie connects to the tools you already use — including real-time Google Calendar availability and booking — without ripping out your current systems.</p>
+      <p>Ellie connects to the tools you already use, including real-time Google Calendar availability and booking, without ripping out your current systems.</p>
     </div>
 
     <div class="int-grid reveal">
@@ -3851,6 +3829,10 @@
       <div class="int-card">
         <div class="int-card-icon"><img src="https://cdn.simpleicons.org/myob/BB6BD9" alt="" loading="lazy"></div>
         <span class="int-card-name">MYOB</span>
+      </div>
+      <div class="int-card">
+        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=fresha.com&sz=128" alt="" loading="lazy"></div>
+        <span class="int-card-name">Fresha</span>
       </div>
     </div>
   </div>
@@ -3950,7 +3932,7 @@
     <div class="workflow-hd reveal">
       <div class="sec-tag" style="justify-content:center;">How A Call Actually Plays Out</div>
       <h2 class="sec-h2">From ringing phone<br><span class="h2-grad">to booked job.</span></h2>
-      <p class="sec-p" style="margin:0 auto;text-align:center;">An illustrative example — not a real customer.</p>
+      <p class="sec-p" style="margin:0 auto;text-align:center;">An illustrative example, not a real customer.</p>
     </div>
 
     <div class="wf-hero reveal">
@@ -4080,7 +4062,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </span>
         <strong>Australian-Owned &amp; Built</strong>
-        <span class="industry-sub">Designed, built and supported right here in Australia — not offshored.</span>
+        <span class="industry-sub">Designed, built and supported right here in Australia, not offshored.</span>
       </div>
       <div class="industry-card">
         <span class="industry-icon industry-icon--rose">
@@ -4128,7 +4110,7 @@
     <div class="industries-hd reveal">
       <div class="sec-tag" style="justify-content:center;">Built For Service Businesses</div>
       <h2 class="sec-h2">Whatever you do, <span class="h2-grad">Ellie can answer for it.</span></h2>
-      <p class="sec-p" style="margin:0 auto;text-align:center;">Ellie isn't limited to one industry — but these are the businesses she helps most.</p>
+      <p class="sec-p" style="margin:0 auto;text-align:center;">Ellie isn't limited to one industry, but these are the businesses she helps most.</p>
     </div>
   </div>
 
@@ -4255,7 +4237,7 @@
     <div class="founding-hd reveal">
       <div class="sec-tag" style="justify-content:center;">Founding Customer Offer</div>
       <h2 class="sec-h2">We're opening Ellie to our<br><span class="h2-grad">first 10 Australian businesses.</span></h2>
-      <p class="sec-p" style="margin:0 auto;text-align:center;">Simple, honest pricing. Limited to 10 founding businesses — after that, new customers join at the regular rate.</p>
+      <p class="sec-p" style="margin:0 auto;text-align:center;">Simple, honest pricing. Limited to 10 founding businesses. After that, new customers join at the regular rate.</p>
     </div>
 
     <div class="pricing-card reveal">
@@ -4476,7 +4458,7 @@
     <div class="blog-hd reveal">
       <div class="sec-tag" style="justify-content:center;">From The Blog</div>
       <h2 class="sec-h2">Practical advice for <span class="h2-grad">Australian business owners.</span></h2>
-      <p class="sec-p" style="margin:0 auto;text-align:center;">Guides on missed calls, bookings and growing without hiring more staff — new articles every week.</p>
+      <p class="sec-p" style="margin:0 auto;text-align:center;">Guides on missed calls, bookings and growing without hiring more staff, new articles every week.</p>
     </div>
     <div class="blog-grid reveal" id="home-blog-grid"></div>
     <div class="blog-more reveal">
@@ -4492,7 +4474,7 @@
       <a href="index.html" class="nav-logo" aria-label="Ellie AI Receptionist — home" style="margin-bottom:.6rem;">
         <img src="assets/ellie/logo.png" alt="Ellie AI Receptionist by anupama.dev" style="height:34px;" loading="lazy">
       </a>
-      <p style="max-width:none;">Ellie is an AI receptionist for small businesses — she answers calls, books appointments, and sends SMS confirmations 24/7. If connected, she only uses your Google Calendar to check availability and create bookings. <a href="privacy.html" style="color:inherit;text-decoration:underline;">Privacy Policy</a></p>
+      <p style="max-width:none;">Ellie is an AI receptionist for small businesses. She answers calls, books appointments, and sends SMS confirmations 24/7. If connected, she only uses your Google Calendar to check availability and create bookings. <a href="privacy.html" style="color:inherit;text-decoration:underline;">Privacy Policy</a></p>
     </div>
     <div class="foot-col">
       <h4>Ellie</h4>
