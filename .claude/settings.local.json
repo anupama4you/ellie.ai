@@ -3,7 +3,9 @@
     "allow": [
       "Bash(node --check ellie.js)",
       "Bash(node --check netlify/functions/generate-demo-prompt.js)",
-      "Bash(node --check netlify/functions/demo-vapi-config.js)"
+      "Bash(node --check netlify/functions/demo-vapi-config.js)",
+      "Read(//c/Users/dilshana/AppData/Local/Temp/claude/c--Users-dilshana-Documents-projects-ellie-dev/559647b3-3fec-445e-ba7b-b31d1522c850/scratchpad/pw-check6/**)",
+      "Bash(node -e ' *)"
     ]
   }
 }

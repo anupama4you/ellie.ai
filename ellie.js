@@ -69,6 +69,26 @@
   );
   document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
+  // ── Homepage blog teaser: latest 3 posts from /blog/index.json ──
+  const homeBlogGrid = document.getElementById('home-blog-grid');
+  if (homeBlogGrid) {
+    fetch('/blog/index.json')
+      .then(r => r.json())
+      .then(posts => {
+        homeBlogGrid.innerHTML = posts.slice(0, 3).map(p => `
+          <a class="blog-card" href="${p.url}">
+            ${p.image ? `<div class="blog-card-thumb"><img src="${p.image}" alt="" loading="lazy"></div>` : ''}
+            <div class="blog-card-body">
+              <span class="blog-card-date">${new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              <strong>${p.title}</strong>
+              <span class="blog-card-excerpt">${p.description}</span>
+            </div>
+          </a>
+        `).join('');
+      })
+      .catch(() => {}); // homepage stays fine without the teaser if this fails
+  }
+
   // ── Hero avatar video: tap to play talking clip, then back to loop ──
   const heroPlayBtn  = document.getElementById('hero-av-play');
   const heroVideo    = document.getElementById('hero-av-video');

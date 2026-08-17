@@ -2281,10 +2281,7 @@
     }
 
     /* ── Integrations ─────────────────────────────────────── */
-    .integrations-sec {
-      padding: 100px 0 0;
-      overflow: hidden;
-    }
+    .integrations-sec { padding: 100px 0 110px; }
     .integrations-copy { min-width: 0; max-width: 720px; margin: 0 auto; text-align: center; }
     .integrations-copy .sec-tag { justify-content: center; }
     .integrations-copy .sec-h2 { margin-bottom: 16px; }
@@ -2294,28 +2291,8 @@
       max-width: 600px;
       margin: 0 auto 32px;
     }
-    /* ── Full-bleed scrollable integration cards — one continuous row,
-       live tools first, "coming soon" ones tagged individually rather than
-       split into a separate section. ── */
-    .int-scroll-outer {
-      width: 100%; overflow: hidden;
-      padding-bottom: 100px;
-      mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
-    }
-    .int-scroll-row {
-      display: flex; gap: 16px; width: max-content;
-      padding: 4px 0;
-      animation: intMarquee 42s linear infinite;
-    }
-    .int-scroll-row:hover { animation-play-state: paused; }
-    @keyframes intMarquee {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .int-scroll-row { animation: none; }
-    }
+    /* ── Tools — static flat grid, no scrolling/animation. ── */
+    .int-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; max-width: 900px; margin: 0 auto; }
     .int-card {
       position: relative; flex-shrink: 0;
       width: 150px; display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -2600,14 +2577,71 @@
       display: flex; align-items: center; justify-content: center;
       flex-wrap: wrap; gap: 8px 4px; max-width: 920px; margin: 0 auto 2.8rem;
     }
-    .wf-step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 108px; text-align: center; }
+    .wf-step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 108px; text-align: center; transition: transform .2s ease; }
+    .wf-step:hover { transform: translateY(-2px); }
     .wf-step-icon {
-      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
-      background: var(--bg3); border: 1px solid var(--border);
+      width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0;
+      background: var(--violet-d); border: 1px solid var(--violet-b);
       display: flex; align-items: center; justify-content: center; color: var(--violet);
+      transition: background .2s ease, border-color .2s ease;
     }
+    .wf-step:hover .wf-step-icon { background: var(--violet-b); }
     .wf-step-label { font-size: .74rem; font-weight: 600; color: var(--text); line-height: 1.35; }
-    .wf-arrow { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
+
+    /* Flowing chevron-trio "arrow" between each step — a subtle repeating
+       pulse to read as motion/direction rather than a static separator. */
+    .wf-arrow { display: flex; align-items: center; gap: 1px; color: var(--violet); flex-shrink: 0; padding: 0 1px; }
+    .wf-arrow svg { opacity: .3; animation: wfArrowFlow 1.6s ease-in-out infinite; }
+    .wf-arrow svg:nth-child(2) { animation-delay: .16s; }
+    .wf-arrow svg:nth-child(3) { animation-delay: .32s; }
+    @keyframes wfArrowFlow {
+      0%, 100% { opacity: .3; transform: translateX(0); }
+      50%      { opacity: 1;  transform: translateX(2px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .wf-arrow svg { animation: none; opacity: .8; }
+    }
+
+    /* Photo + floating "booking confirmed" card — the visual payoff for the flow below */
+    .wf-hero { position: relative; max-width: 920px; margin: 0 auto 2.8rem; border-radius: 20px; overflow: hidden; }
+    .wf-hero img { width: 100%; height: clamp(200px, 30vw, 320px); object-fit: cover; display: block; }
+    .wf-hero::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(3,7,18,0) 45%, rgba(3,7,18,.6) 100%);
+      pointer-events: none;
+    }
+    .wf-hero-card {
+      position: absolute; left: 20px; bottom: 20px; z-index: 2;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,.96); backdrop-filter: blur(6px);
+      border-radius: 14px; padding: 11px 18px 11px 12px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.28);
+      animation: wfHeroPop .6s cubic-bezier(.2,.8,.2,1) .2s both;
+    }
+    .wf-hero-card-icon {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      background: #22c55e; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .wf-hero-card strong { display: block; font-size: .86rem; color: #0f172a; line-height: 1.3; }
+    .wf-hero-card span { font-size: .76rem; color: #475569; }
+    @keyframes wfHeroPop {
+      from { opacity: 0; transform: translateY(10px) scale(.94); }
+      to   { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .wf-hero-card { animation: none; }
+    }
+    .wf-hero-credit {
+      position: absolute; right: 12px; bottom: 8px; z-index: 2;
+      font-size: .68rem; color: rgba(255,255,255,.75);
+    }
+    .wf-hero-credit a { color: inherit; }
+    @media (max-width: 560px) {
+      .wf-hero-card { left: 14px; bottom: 14px; padding: 9px 14px 9px 10px; }
+      .wf-hero-card strong { font-size: .8rem; }
+      .wf-hero-card span { font-size: .72rem; }
+    }
     .wf-example { max-width: 920px; margin: 0 auto; position: relative; }
     .wf-example-tag {
       display: inline-flex; font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
@@ -2655,42 +2689,58 @@
     .au-trust-sec { background: var(--bg3); padding: 80px 0; }
     .au-trust-hd { text-align: center; margin-bottom: 2rem; }
     .au-trust-hd .sec-tag { justify-content: center; }
-    .au-trust-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-      max-width: 760px; margin: 0 auto;
-    }
-    .au-trust-item {
-      display: flex; align-items: center; gap: 10px; font-size: .85rem; font-weight: 600; color: var(--text);
-      background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
-    }
-    .au-trust-item span { font-size: 1.1rem; flex-shrink: 0; }
-    .au-trust-links { text-align: center; font-size: .82rem; color: var(--muted); margin-top: 1.8rem; }
+    .au-trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .au-trust-links { text-align: center; font-size: .82rem; color: var(--muted); margin-top: 2.4rem; }
     .au-trust-links a { color: var(--violet); text-decoration: underline; }
-    @media (max-width: 700px) { .au-trust-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 460px) { .au-trust-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { .au-trust-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .au-trust-grid { grid-template-columns: 1fr; } }
 
     /* ── INDUSTRIES ── */
     .industries-sec { background: var(--bg); padding: 88px 0; }
     .industries-hd { max-width: 620px; margin: 0 auto 2.4rem; text-align: center; }
     .industries-hd .sec-tag { justify-content: center; }
-    .industries-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .industries-scroll-outer {
+      width: 100%; overflow: hidden;
+      mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    }
+    .industries-grid {
+      display: flex; gap: 16px; width: max-content; padding: 4px 0;
+      animation: industriesMarquee 36s linear infinite;
+    }
+    .industries-grid:hover, .industries-grid:focus-within { animation-play-state: paused; }
+    @keyframes industriesMarquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .industries-grid { animation: none; }
+    }
     .industry-card {
-      position: relative;
-      display: flex; flex-direction: column; gap: 8px; text-align: left;
+      position: relative; flex: 0 0 270px;
+      display: flex; flex-direction: column; gap: 8px; text-align: left; overflow: hidden;
       background: var(--bg3); border: 1px solid var(--border); border-radius: 16px;
       padding: 22px 22px 24px; transition: border-color .2s, transform .2s, background .2s, box-shadow .2s;
     }
     a.industry-card:hover {
-      border-color: var(--violet-b); background: var(--violet-d); transform: translateY(-3px);
+      border-color: var(--violet-b); transform: translateY(-3px);
       box-shadow: 0 12px 28px rgba(0,0,0,.18);
     }
+    .industry-card-img {
+      margin: -22px -22px 6px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg2);
+    }
+    .industry-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+    a.industry-card:hover .industry-card-img img { transform: scale(1.06); }
     a.industry-card::after {
-      content: '→'; position: absolute; top: 22px; right: 20px;
-      color: var(--violet); font-size: .95rem; opacity: 0; transform: translateX(-4px);
+      content: '→'; position: absolute; top: 14px; right: 14px; z-index: 2;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(3,7,18,.55); backdrop-filter: blur(4px); color: #fff; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateY(-4px);
       transition: opacity .2s, transform .2s;
     }
-    a.industry-card:hover::after { opacity: 1; transform: translateX(0); }
-    .industry-card--static { cursor: default; opacity: .82; }
+    a.industry-card:hover::after { opacity: 1; transform: translateY(0); }
+    .industry-card--static { cursor: default; }
     .industry-icon {
       width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
@@ -2704,8 +2754,38 @@
     .industry-card strong { font-size: 1rem; color: var(--text); }
     .industry-sub { font-size: .8rem; color: var(--muted); line-height: 1.5; }
     .industry-msg { font-size: .82rem; color: var(--violet); font-weight: 600; font-style: italic; margin-top: 4px; line-height: 1.4; }
-    @media (max-width: 860px) { .industries-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 560px) { .industries-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .industry-card { flex-basis: 240px; } }
+
+    /* ── FROM THE BLOG ── */
+    .blog-sec { background: var(--bg); padding: 88px 0; }
+    .blog-hd { max-width: 620px; margin: 0 auto 2.4rem; text-align: center; }
+    .blog-hd .sec-tag { justify-content: center; }
+    .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .blog-card {
+      position: relative;
+      display: flex; flex-direction: column; text-align: left; text-decoration: none;
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .blog-card:hover {
+      border-color: var(--violet-b); transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,.18);
+    }
+    .blog-card-thumb { aspect-ratio: 16/10; width: 100%; overflow: hidden; background: var(--bg2); }
+    .blog-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+    .blog-card:hover .blog-card-thumb img { transform: scale(1.06); }
+    .blog-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+    .blog-card-date { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--violet); font-weight: 700; }
+    .blog-card strong { font-size: .98rem; color: var(--text); line-height: 1.4; }
+    .blog-card-excerpt {
+      font-size: .82rem; color: var(--muted); line-height: 1.55;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .blog-more { text-align: center; margin-top: 2.2rem; }
+    .blog-more-link { color: var(--violet); font-weight: 700; text-decoration: none; font-size: .92rem; }
+    .blog-more-link:hover { text-decoration: underline; }
+    @media (max-width: 860px) { .blog-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .blog-grid { grid-template-columns: 1fr; } }
 
     /* ── FOUNDING OFFER + PRICING ── */
     .founding-sec { background: var(--bg3); padding: 92px 0; position: relative; overflow: hidden; }
@@ -3709,15 +3789,25 @@
     <div class="integrations-copy reveal">
       <div class="sec-tag" style="justify-content:center;">Works With Your Tools</div>
       <h2 class="sec-h2">Ellie connects right into<br><span class="h2-grad">your existing tools.</span></h2>
-      <p>No ripping out your current systems. Ellie connects to the tools small businesses already use — including your Google Calendar, where she checks real-time availability during a call and books confirmed appointments directly, so your calendar is always up to date without you touching it.</p>
+      <p>Ellie connects to the tools you already use — including real-time Google Calendar availability and booking — without ripping out your current systems.</p>
     </div>
-  </div>
 
-  <div class="int-scroll-outer reveal">
-    <div class="int-scroll-row">
+    <div class="int-grid reveal">
       <div class="int-card">
         <div class="int-card-icon"><img src="https://cdn.simpleicons.org/googlecalendar/4285F4" alt=""></div>
         <span class="int-card-name">Google Calendar</span>
+      </div>
+      <div class="int-card">
+        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=outlook.com&sz=128" alt=""></div>
+        <span class="int-card-name">Outlook</span>
+      </div>
+      <div class="int-card">
+        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/gmail/EA4335" alt=""></div>
+        <span class="int-card-name">Gmail</span>
+      </div>
+      <div class="int-card">
+        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/hubspot/FF7A59" alt=""></div>
+        <span class="int-card-name">HubSpot</span>
       </div>
       <div class="int-card">
         <div class="int-card-icon"><img src="https://cdn.simpleicons.org/calendly/006BFF" alt=""></div>
@@ -3726,18 +3816,6 @@
       <div class="int-card">
         <div class="int-card-icon"><img src="https://cdn.simpleicons.org/zapier/FF4A00" alt=""></div>
         <span class="int-card-name">Zapier</span>
-      </div>
-      <div class="int-card">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/hubspot/FF7A59" alt=""></div>
-        <span class="int-card-name">HubSpot</span>
-      </div>
-      <div class="int-card">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/gmail/EA4335" alt=""></div>
-        <span class="int-card-name">Gmail</span>
-      </div>
-      <div class="int-card">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=outlook.com&sz=128" alt=""></div>
-        <span class="int-card-name">Outlook</span>
       </div>
       <div class="int-card">
         <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=servicem8.com&sz=128" alt=""></div>
@@ -3764,59 +3842,6 @@
         <span class="int-card-name">Xero</span>
       </div>
       <div class="int-card">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/myob/BB6BD9" alt=""></div>
-        <span class="int-card-name">MYOB</span>
-      </div>
-      <!-- duplicate set — feeds the seamless auto-scroll loop -->
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/googlecalendar/4285F4" alt=""></div>
-        <span class="int-card-name">Google Calendar</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/calendly/006BFF" alt=""></div>
-        <span class="int-card-name">Calendly</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/zapier/FF4A00" alt=""></div>
-        <span class="int-card-name">Zapier</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/hubspot/FF7A59" alt=""></div>
-        <span class="int-card-name">HubSpot</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/gmail/EA4335" alt=""></div>
-        <span class="int-card-name">Gmail</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=outlook.com&sz=128" alt=""></div>
-        <span class="int-card-name">Outlook</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=servicem8.com&sz=128" alt=""></div>
-        <span class="int-card-name">ServiceM8</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=simprogroup.com&sz=128" alt=""></div>
-        <span class="int-card-name">simPRO</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=tradifyhq.com&sz=128" alt=""></div>
-        <span class="int-card-name">Tradify</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=cliniko.com&sz=128" alt=""></div>
-        <span class="int-card-name">Cliniko</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://www.google.com/s2/favicons?domain=halaxy.com&sz=128" alt=""></div>
-        <span class="int-card-name">Halaxy</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
-        <div class="int-card-icon"><img src="https://cdn.simpleicons.org/xero/13B5EA" alt=""></div>
-        <span class="int-card-name">Xero</span>
-      </div>
-      <div class="int-card" aria-hidden="true">
         <div class="int-card-icon"><img src="https://cdn.simpleicons.org/myob/BB6BD9" alt=""></div>
         <span class="int-card-name">MYOB</span>
       </div>
@@ -3921,32 +3946,66 @@
       <p class="sec-p" style="margin:0 auto;text-align:center;">An illustrative example — not a real customer.</p>
     </div>
 
+    <div class="wf-hero reveal">
+      <img src="https://images.pexels.com/photos/34670920/pexels-photo-34670920.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=700&w=1400" alt="Tradesperson smiling and giving a thumbs up after a job is booked in" loading="lazy">
+      <div class="wf-hero-card">
+        <span class="wf-hero-card-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <div>
+          <strong>Booking confirmed</strong>
+          <span>Tuesday, 10:30 AM</span>
+        </div>
+      </div>
+      <span class="wf-hero-credit">Photo by <a href="https://www.pexels.com/@bymuratisikofficial/" target="_blank" rel="noopener">Murat IŞIK</a> on <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span>
+    </div>
+
     <div class="workflow-steps reveal">
       <div class="wf-step">
         <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
         <span class="wf-step-label">Customer calls</span>
       </div>
-      <div class="wf-arrow">→</div>
+      <div class="wf-arrow" aria-hidden="true">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+      </div>
       <div class="wf-step">
         <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0z"/></svg></div>
         <span class="wf-step-label">Ellie answers</span>
       </div>
-      <div class="wf-arrow">→</div>
+      <div class="wf-arrow" aria-hidden="true">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+      </div>
       <div class="wf-step">
         <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <span class="wf-step-label">Understands what they need</span>
       </div>
-      <div class="wf-arrow">→</div>
+      <div class="wf-arrow" aria-hidden="true">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+      </div>
       <div class="wf-step">
         <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <span class="wf-step-label">Qualifies &amp; books</span>
       </div>
-      <div class="wf-arrow">→</div>
+      <div class="wf-arrow" aria-hidden="true">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+      </div>
       <div class="wf-step">
         <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
         <span class="wf-step-label">Confirmation sent</span>
       </div>
-      <div class="wf-arrow">→</div>
+      <div class="wf-arrow" aria-hidden="true">
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
+      </div>
       <div class="wf-step">
         <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <span class="wf-step-label">You see the result</span>
@@ -4009,12 +4068,48 @@
       <h2 class="sec-h2">Built for <span class="h2-grad">Australian businesses.</span></h2>
     </div>
     <div class="au-trust-grid reveal">
-      <div class="au-trust-item"><span>🇦🇺</span> Australian business</div>
-      <div class="au-trust-item"><span>🗣️</span> Australian voice options</div>
-      <div class="au-trust-item"><span>🔒</span> Secure call handling</div>
-      <div class="au-trust-item"><span>🛡️</span> Privacy-conscious design</div>
-      <div class="au-trust-item"><span>📞</span> Australian phone compatibility</div>
-      <div class="au-trust-item"><span>💬</span> Local support</div>
+      <div class="industry-card">
+        <span class="industry-icon industry-icon--violet">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <strong>Australian-Owned &amp; Built</strong>
+        <span class="industry-sub">Designed, built and supported right here in Australia — not offshored.</span>
+      </div>
+      <div class="industry-card">
+        <span class="industry-icon industry-icon--rose">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </span>
+        <strong>Natural Australian Voice</strong>
+        <span class="industry-sub">Real Aussie accents and phrasing, not a generic overseas voice.</span>
+      </div>
+      <div class="industry-card">
+        <span class="industry-icon industry-icon--green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <strong>Secure Call Handling</strong>
+        <span class="industry-sub">Calls and data handled with modern security best practices.</span>
+      </div>
+      <div class="industry-card">
+        <span class="industry-icon industry-icon--amber">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <strong>Privacy-Conscious by Design</strong>
+        <span class="industry-sub">Built with Australian privacy expectations front of mind.</span>
+      </div>
+      <div class="industry-card">
+        <span class="industry-icon industry-icon--cyan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </span>
+        <strong>Works With Aussie Numbers</strong>
+        <span class="industry-sub">Fully compatible with Australian mobile and landline formats.</span>
+      </div>
+      <div class="industry-card">
+        <span class="industry-icon industry-icon--violet">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        </span>
+        <strong>Local, Human Support</strong>
+        <span class="industry-sub">Real people, in Australian business hours, when you need help.</span>
+      </div>
     </div>
     <p class="au-trust-links reveal">Read our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> for exactly what we collect and how it's used.</p>
   </div>
@@ -4028,8 +4123,14 @@
       <h2 class="sec-h2">Whatever you do, <span class="h2-grad">Ellie can answer for it.</span></h2>
       <p class="sec-p" style="margin:0 auto;text-align:center;">Ellie isn't limited to one industry — but these are the businesses she helps most.</p>
     </div>
-    <div class="industries-grid reveal">
+  </div>
+
+  <div class="industries-scroll-outer reveal">
+    <div class="industries-grid">
       <a href="tradies.html" class="industry-card">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="Plumber installing pipe fittings" loading="lazy">
+        </div>
         <span class="industry-icon industry-icon--violet">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         </span>
@@ -4038,6 +4139,9 @@
         <span class="industry-msg">"You're on the tools. Ellie is on the phone."</span>
       </a>
       <div class="industry-card industry-card--static">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/8478233/pexels-photo-8478233.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="Mechanic working on a car engine" loading="lazy">
+        </div>
         <span class="industry-icon industry-icon--rose">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2v-4.5L19 8h-4.5L12 5H6.5L3 8v9h2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/><path d="M10 17.5h5"/></svg>
         </span>
@@ -4046,6 +4150,9 @@
         <span class="industry-msg">"Keep working on the cars while Ellie handles bookings and enquiries."</span>
       </div>
       <a href="medical-dental-clinics.html" class="industry-card">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/14052564/pexels-photo-14052564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="Dentist consulting a smiling patient" loading="lazy">
+        </div>
         <span class="industry-icon industry-icon--green">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
         </span>
@@ -4054,6 +4161,9 @@
         <span class="industry-msg">"Give patients an answer without overwhelming reception."</span>
       </a>
       <a href="beauty.html" class="industry-card">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/7755518/pexels-photo-7755518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="Hairstylist blow-drying a client's hair in a salon" loading="lazy">
+        </div>
         <span class="industry-icon industry-icon--amber">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
         </span>
@@ -4062,6 +4172,65 @@
         <span class="industry-msg">"Never interrupt an appointment just to answer the phone."</span>
       </a>
       <div class="industry-card industry-card--static">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/36766677/pexels-photo-36766677.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="Smiling businessman on the phone at his desk" loading="lazy">
+        </div>
+        <span class="industry-icon industry-icon--cyan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        <strong>Professional Services</strong>
+        <span class="industry-sub">Lawyers, accountants, migration agents &amp; consultants</span>
+        <span class="industry-msg">"Capture every new enquiry, even after hours."</span>
+      </div>
+      <!-- duplicate set — feeds the seamless auto-scroll loop -->
+      <a href="tradies.html" class="industry-card" aria-hidden="true" tabindex="-1">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="" loading="lazy">
+        </div>
+        <span class="industry-icon industry-icon--violet">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </span>
+        <strong>Tradies</strong>
+        <span class="industry-sub">Plumbers, electricians, HVAC, builders &amp; other field-service businesses</span>
+        <span class="industry-msg">"You're on the tools. Ellie is on the phone."</span>
+      </a>
+      <div class="industry-card industry-card--static" aria-hidden="true">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/8478233/pexels-photo-8478233.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="" loading="lazy">
+        </div>
+        <span class="industry-icon industry-icon--rose">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2v-4.5L19 8h-4.5L12 5H6.5L3 8v9h2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/><path d="M10 17.5h5"/></svg>
+        </span>
+        <strong>Automotive</strong>
+        <span class="industry-sub">Mechanics, workshops, tyre shops &amp; detailers</span>
+        <span class="industry-msg">"Keep working on the cars while Ellie handles bookings and enquiries."</span>
+      </div>
+      <a href="medical-dental-clinics.html" class="industry-card" aria-hidden="true" tabindex="-1">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/14052564/pexels-photo-14052564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="" loading="lazy">
+        </div>
+        <span class="industry-icon industry-icon--green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+        </span>
+        <strong>Health &amp; Dental</strong>
+        <span class="industry-sub">Clinics, dentists, physios &amp; allied health</span>
+        <span class="industry-msg">"Give patients an answer without overwhelming reception."</span>
+      </a>
+      <a href="beauty.html" class="industry-card" aria-hidden="true" tabindex="-1">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/7755518/pexels-photo-7755518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="" loading="lazy">
+        </div>
+        <span class="industry-icon industry-icon--amber">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
+        </span>
+        <strong>Beauty &amp; Wellness</strong>
+        <span class="industry-sub">Hair, beauty, massage &amp; salons</span>
+        <span class="industry-msg">"Never interrupt an appointment just to answer the phone."</span>
+      </a>
+      <div class="industry-card industry-card--static" aria-hidden="true">
+        <div class="industry-card-img">
+          <img src="https://images.pexels.com/photos/36766677/pexels-photo-36766677.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=500&w=650" alt="" loading="lazy">
+        </div>
         <span class="industry-icon industry-icon--cyan">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </span>
@@ -4291,6 +4460,21 @@
         </button>
         <div class="faq-a"><p>Most businesses go live within 24 hours of their callback. Ellie learns your business from your website in seconds — we handle the rest.</p></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FROM THE BLOG ── -->
+<section class="blog-sec" id="blog">
+  <div class="container">
+    <div class="blog-hd reveal">
+      <div class="sec-tag" style="justify-content:center;">From The Blog</div>
+      <h2 class="sec-h2">Practical advice for <span class="h2-grad">Australian business owners.</span></h2>
+      <p class="sec-p" style="margin:0 auto;text-align:center;">Guides on missed calls, bookings and growing without hiring more staff — new articles every week.</p>
+    </div>
+    <div class="blog-grid reveal" id="home-blog-grid"></div>
+    <div class="blog-more reveal">
+      <a href="/blog/" class="blog-more-link">Browse All Articles →</a>
     </div>
   </div>
 </section>
