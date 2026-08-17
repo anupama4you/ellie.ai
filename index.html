@@ -572,33 +572,31 @@
       94% { transform: translate(0,0) rotate(0deg); }
     }
     .hero-actions { display: none; }
-    /* ── Founding offer tag, attached to the headline ── */
+    /* ── Founding offer tag, attached to the headline — quiet status-badge style,
+       matching the brand violet palette instead of a shouty orange/amber alert ── */
     .hero-offer-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #451a03; font-size: .82rem; font-weight: 700;
-      padding: 8px 10px 8px 16px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 11px;
+      background: var(--violet-d); border: 1px solid var(--violet-b);
+      color: var(--violet); font-size: 1.05rem; font-weight: 600;
+      padding: 10px 10px 10px 18px; border-radius: 999px;
       margin-bottom: 1.3rem; text-decoration: none; white-space: nowrap;
-      animation: heroFadeUp .6s .0s ease both, offerPulse 2.6s 1s ease-in-out infinite;
+      animation: heroFadeUp .6s .0s ease both;
+      transition: background .2s, border-color .2s;
     }
-    .hero-offer-tag:hover { animation: heroFadeUp .6s .0s ease both; }
-    .hero-offer-tag__spark { font-size: .9rem; line-height: 1; }
+    .hero-offer-tag:hover { background: var(--violet-b); }
+    .hero-offer-tag__spark {
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+      background: var(--green); box-shadow: 0 0 0 0 rgba(34,197,94,.55);
+      animation: offerDotPulse 2.2s ease-in-out infinite;
+    }
     .hero-offer-tag__limited {
-      background: rgba(69,26,3,.16); color: #451a03;
-      font-size: .66rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
-      padding: 4px 9px; border-radius: 999px;
+      background: var(--violet); color: #fff;
+      font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+      padding: 5px 11px; border-radius: 999px;
     }
-    @keyframes offerPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,.5), 0 6px 20px rgba(0,0,0,.18); transform: scale(1); }
-      50%      { box-shadow: 0 0 0 10px rgba(251,191,36,0), 0 6px 20px rgba(0,0,0,.18); transform: scale(1.025); }
-    }
-    [data-theme="light"] .hero-offer-tag {
-      animation: heroFadeUp .6s .0s ease both, offerPulseLight 2.6s 1s ease-in-out infinite;
-    }
-    [data-theme="light"] .hero-offer-tag:hover { animation: heroFadeUp .6s .0s ease both; }
-    @keyframes offerPulseLight {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,.4), 0 6px 18px rgba(15,23,42,.12); transform: scale(1); }
-      50%      { box-shadow: 0 0 0 9px rgba(245,158,11,0), 0 6px 18px rgba(15,23,42,.12); transform: scale(1.025); }
+    @keyframes offerDotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,.55); }
+      50%      { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
     }
     .hero-h1 {
       font-size: clamp(2.6rem, 5.4vw, 4.8rem); font-weight: 800; letter-spacing: -.03em;
@@ -2203,22 +2201,30 @@
 
       .hero-offer-tag {
         white-space: nowrap; font-size: .62rem;
-        padding: 5px 9px; gap: 4px; margin-left: auto; margin-right: auto;
+        padding: 5px 9px; gap: 5px; margin-left: auto; margin-right: auto;
       }
-      .hero-offer-tag__spark { font-size: .74rem; }
+      .hero-offer-tag__spark { width: 5px; height: 5px; }
       .hero-offer-tag__limited { font-size: .52rem; padding: 2px 6px; }
       .hero-h1 {
         text-align: center;
-        font-size: 2.15rem; line-height: 1.08;
-        margin-bottom: .55rem;
+        font-size: 2.7rem; line-height: 1.08;
+        margin-bottom: .7rem;
       }
-      .hero-sub { text-align: center; font-size: 1rem; line-height: 1.55; max-width: 320px; margin: 0 auto .9rem; }
+      .hero-sub { text-align: center; font-size: 1.15rem; line-height: 1.5; max-width: 340px; margin: 0 auto 1rem; }
 
-      /* ── URL pill — stays one row, just tightens up ── */
-      .hero-url-pill { padding: 6px 6px 6px 18px; }
-      .hero-url-icon svg { width: 17px; height: 17px; }
-      .hero-url-input { font-size: 1rem; padding: 15px 6px; }
-      .hero-url-btn { padding: 13px 18px; font-size: .86rem; }
+      /* ── URL pill — stacked card, Jodie-style on mobile: search row on top, full-width button below ── */
+      .hero-url-pill {
+        display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto;
+        align-items: center; gap: 2px 6px;
+        padding: 12px; border-radius: 22px;
+      }
+      .hero-url-icon { grid-column: 1; grid-row: 1; padding-left: 4px; }
+      .hero-url-icon svg { width: 18px; height: 18px; }
+      .hero-url-input { grid-column: 2; grid-row: 1; font-size: 1rem; padding: 12px 6px; }
+      .hero-url-btn {
+        grid-column: 1 / -1; grid-row: 2; width: 100%; justify-content: center;
+        margin-top: 6px; padding: 15px 18px; font-size: .95rem; border-radius: 14px;
+      }
       .hero-fine-print { font-size: .76rem; margin: .9rem 0 0; }
       .hero-fine-print--offer { font-size: .72rem; }
       /* ── Other sections ── */
@@ -2616,11 +2622,6 @@
     @media (prefers-reduced-motion: reduce) {
       .wf-hero-card { animation: none; }
     }
-    .wf-hero-credit {
-      position: absolute; right: 12px; bottom: 8px; z-index: 2;
-      font-size: .68rem; color: rgba(255,255,255,.75);
-    }
-    .wf-hero-credit a { color: inherit; }
     @media (max-width: 560px) {
       .wf-hero-card { left: 14px; bottom: 14px; padding: 9px 14px 9px 10px; }
       .wf-hero-card strong { font-size: .8rem; }
@@ -2923,7 +2924,7 @@
     </ul>
     <div class="nav-right">
       <div class="nav-ctas">
-        <a href="#demo" class="nav-book">Try Live Demo</a>
+        <a href="#demo" class="nav-book">Try Ellie Free</a>
         <a href="#book" class="nav-cta">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px;margin-top:-1px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Request a callback
         </a>
@@ -2944,7 +2945,7 @@
     <a href="#faq">FAQ</a>
     <a href="/blog/">Blog</a>
     <div class="nav-mobile-divider"></div>
-    <a href="#demo">Try Live Demo</a>
+    <a href="#demo">Try Ellie Free</a>
     <a href="#book" style="color:var(--violet);font-weight:600;">Request a callback →</a>
   </div>
 </nav>
@@ -2957,8 +2958,8 @@
   <div class="hero-in">
     <div class="hero-copy">
       <a href="#pricing" class="hero-offer-tag">
-        <span class="hero-offer-tag__spark">🔥</span>
-        $99/month offer for the first 10 businesses
+        <span class="hero-offer-tag__spark" aria-hidden="true"></span>
+        $99/month founding rate for the first 10 businesses
         <span class="hero-offer-tag__limited">Limited</span>
       </a>
       <h1 class="hero-h1" id="heroH1">The 24/7 <span class="h2-grad">AI receptionist</span> for Australian businesses</h1>
@@ -2976,7 +2977,7 @@
             placeholder="Type your business website..."
             autocomplete="url" spellcheck="false" aria-label="Your business website">
           <button class="hero-url-btn" id="hero-url-btn" type="button">
-            Hear Ellie
+            Try Ellie Free
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -3936,7 +3937,7 @@
     </div>
 
     <div class="wf-hero reveal">
-      <img src="https://images.pexels.com/photos/34670920/pexels-photo-34670920.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=700&w=1400" alt="Tradesperson smiling and giving a thumbs up after a job is booked in" loading="lazy">
+      <img src="assets/ellie/booking-confirmed.jpg" alt="Tradesperson checking a booking confirmation on his phone" loading="lazy">
       <div class="wf-hero-card">
         <span class="wf-hero-card-icon">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -3946,7 +3947,6 @@
           <span>Tuesday, 10:30 AM</span>
         </div>
       </div>
-      <span class="wf-hero-credit">Photo by <a href="https://www.pexels.com/@bymuratisikofficial/" target="_blank" rel="noopener">Murat IŞIK</a> on <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span>
     </div>
 
     <div class="workflow-steps reveal">
