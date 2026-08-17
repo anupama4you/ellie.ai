@@ -1,9 +1,9 @@
-name: Daily SEO Article
+name: Weekly SEO Article
 
 on:
   schedule:
-    # 21:30 UTC = 7:00am ACST Adelaide next day (8:00am ACDT in summer)
-    - cron: "30 21 * * *"
+    # 21:30 UTC Sun = 7:00am ACST Adelaide Monday (8:00am ACDT in summer)
+    - cron: "30 21 * * 0"
   workflow_dispatch: {} # lets you trigger it manually from the Actions tab
 
 permissions:
@@ -34,5 +34,5 @@ jobs:
           git config user.email "bot@callellie.com"
           git add blog/ content-queue/ sitemap-blog.xml
           git diff --cached --quiet && echo "Nothing to commit" && exit 0
-          git commit -m "chore: daily SEO article $(date +%F)"
+          git commit -m "chore: weekly SEO article $(date +%F)"
           git push

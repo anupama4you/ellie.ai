@@ -1,13 +1,13 @@
 # ELLIE SEO Engine
 
-Automated daily SEO article publishing for callellie.com. A GitHub Action runs every morning, asks Claude to write one genuinely useful article from the keyword queue, saves it as a static HTML page with full schema markup, updates the blog index and sitemap, and commits it. Netlify picks up the commit and deploys automatically.
+Automated weekly SEO article publishing for callellie.com. A GitHub Action runs every Monday morning, asks Claude to write one genuinely useful article from the keyword queue, saves it as a static HTML page with full schema markup, updates the blog index and sitemap, and commits it. Netlify picks up the commit and deploys automatically.
 
 Cost: roughly $0.05 to $0.15 per article in API usage. No other fees.
 
 ## How it works
 
 ```
-GitHub Action (daily 7am Adelaide)
+GitHub Action (weekly, Monday 7am Adelaide)
    -> scripts/generate-article.js
    -> picks next unpublished keyword from content-queue/keywords.json
    -> calls Claude API with ELLIE facts + past article list (for internal links)
@@ -36,7 +36,7 @@ GitHub Action (daily 7am Adelaide)
    Without this, articles publish fine, just without a header photo.
 
 4. Test it manually first:
-   GitHub repo -> Actions tab -> "Daily SEO Article" -> Run workflow
+   GitHub repo -> Actions tab -> "Weekly SEO Article" -> Run workflow
 
 5. Check the generated article in /blog, tweak the template styling if
    needed, then let the schedule take over.
@@ -46,7 +46,9 @@ GitHub Action (daily 7am Adelaide)
 
 ## Managing the queue
 
-- 40 keywords are pre-loaded (about 6 weeks of daily posts).
+- 40 keywords are pre-loaded. At one post a week that's most of a year of
+  runway; check content-queue/keywords.json for how many are still
+  unpublished and top it up well before it runs dry.
 - Add more anytime by appending to content-queue/keywords.json:
   { "keyword": "...", "intent": "...", "audience": "...", "published": false }
 - Reorder freely. The script always takes the first unpublished entry.
@@ -56,14 +58,20 @@ GitHub Action (daily 7am Adelaide)
 By default articles publish fully automatically. If you want review first,
 change the workflow to open a pull request instead of pushing to main:
 replace the push step with peter-evans/create-pull-request action. You then
-merge each morning's article with one click from your phone.
+merge each week's article with one click from your phone.
 
-## Slowing it down
+## Changing the schedule
 
-Daily is aggressive. Every 2 to 3 days also works fine and stretches the
-queue to 3+ months. Edit the cron in .github/workflows/daily-article.yml:
-  every 2 days: "30 21 */2 * *"
-  Mon/Wed/Fri:  "30 21 * * 1,3,5"
+Edit the cron in .github/workflows/daily-article.yml (the file kept its
+original name, but the schedule now controls the actual cadence):
+  weekly (current): "30 21 * * 0"
+  daily:             "30 21 * * *"
+  every 2 days:       "30 21 */2 * *"
+  Mon/Wed/Fri:        "30 21 * * 1,3,5"
+
+Cron has no native "every 2 weeks" — for a slower-than-weekly cadence,
+leave the schedule off and trigger each run manually from the Actions tab
+(workflow_dispatch) whenever you want the next article out.
 
 ## Important notes
 
