@@ -1274,8 +1274,8 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       track('callback_requested', {});
 
       if (typeof confetti === 'function') {
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#a78bfa','#ec4899','#34d399','#fbbf24','#60a5fa'] });
-        setTimeout(() => confetti({ particleCount: 60, spread: 120, origin: { y: 0.55 }, colors: ['#a78bfa','#ec4899','#34d399'] }), 350);
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        setTimeout(() => confetti({ particleCount: 60, spread: 120, origin: { y: 0.55 } }), 350);
       }
 
       const successH = document.getElementById('wiz-success-h');
