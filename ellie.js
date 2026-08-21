@@ -1082,6 +1082,223 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     });
   }
 
+  // ── get-started.html: multi-step lead wizard ──────────────
+  const wizForm = document.getElementById('wiz-form');
+  if (wizForm) {
+    const wizHeroSec = document.getElementById('home');
+    const wizSec      = document.getElementById('wiz');
+    const wizStartBtn = document.getElementById('lp-start-btn');
+    const wizBackBtn  = document.getElementById('wiz-back');
+    const wizProgress = document.getElementById('wiz-progress');
+    const wizDots     = Array.from(document.querySelectorAll('.lp-wiz-dot'));
+    const wizSteps    = Array.from(wizForm.querySelectorAll('.lp-wiz-step'));
+    const wizStickyCta = document.getElementById('lp-sticky-cta');
+
+    const wizName     = document.getElementById('wiz-name');
+    const wizBizName  = document.getElementById('wiz-business_name');
+    const wizPhone    = document.getElementById('wiz-phone');
+    const wizEmail    = document.getElementById('wiz-email');
+    const wizBizType  = document.getElementById('wiz-business_type');
+    const wizHoneypot = wizForm.querySelector('input[name="bot-field"]');
+    const wizLoadedAt = Date.now();
+    limitPhoneInput(wizPhone);
+
+    const WIZ_NAME_RE  = /^[a-zA-ZÀ-ɏ' .-]{2,80}$/;
+    const WIZ_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const WIZ_MIN_HUMAN_FILL_MS = 1500;
+
+    let wizStepIndex = 0;
+    let wizStatCounted = false;
+    let wizInfoCounted = false;
+    const currentWizStep = () => wizSteps[wizStepIndex];
+    const wizStatNumEl = document.getElementById('wiz-stat-num');
+    const wizInfoCostEl = document.getElementById('wiz-info-cost');
+    const wizInfoAccEl  = document.getElementById('wiz-info-acc');
+
+    function animateWizCount(el, target, stepMs) {
+      if (!el) return;
+      let n = 0;
+      const iv = setInterval(() => {
+        n = Math.min(n + 1, target);
+        el.textContent = n;
+        if (n >= target) clearInterval(iv);
+      }, stepMs);
+    }
+
+    function showWizStep(idx) {
+      wizSteps.forEach(s => s.classList.remove('active'));
+      wizSteps[idx].classList.add('active');
+      wizStepIndex = idx;
+      const stepNum = parseInt(wizSteps[idx].dataset.step, 10);
+      wizDots.forEach(d => {
+        const n = parseInt(d.dataset.dot, 10);
+        d.classList.toggle('done', !isNaN(stepNum) && n < stepNum);
+        d.classList.toggle('active', !isNaN(stepNum) && n === stepNum);
+      });
+      const onSuccess = wizSteps[idx].dataset.step === 'success';
+      if (wizBackBtn) wizBackBtn.style.visibility = onSuccess ? 'hidden' : 'visible';
+      if (wizProgress) wizProgress.style.visibility = onSuccess ? 'hidden' : 'visible';
+      const firstInput = wizSteps[idx].querySelector('input.lp-wiz-input');
+      if (firstInput) setTimeout(() => firstInput.focus(), 300);
+
+      if (wizSteps[idx].dataset.step === '6' && !wizStatCounted) {
+        wizStatCounted = true;
+        animateWizCount(wizStatNumEl, 27, 35);
+      }
+      if (wizSteps[idx].dataset.step === '8' && !wizInfoCounted) {
+        wizInfoCounted = true;
+        animateWizCount(wizInfoCostEl, 25, 45);
+        animateWizCount(wizInfoAccEl, 98, 12);
+      }
+    }
+
+    function openWizard() {
+      if (wizHeroSec) wizHeroSec.style.display = 'none';
+      wizSec.style.display = 'flex';
+      showWizStep(0);
+      wizSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      track('trial_wizard_started', {});
+    }
+
+    if (wizStartBtn) wizStartBtn.addEventListener('click', openWizard);
+    if (wizStickyCta) wizStickyCta.addEventListener('click', openWizard);
+
+    if (wizBackBtn) {
+      wizBackBtn.addEventListener('click', () => {
+        if (wizStepIndex === 0) {
+          wizSec.style.display = 'none';
+          if (wizHeroSec) {
+            wizHeroSec.style.display = '';
+            wizHeroSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          showWizStep(wizStepIndex - 1);
+        }
+      });
+    }
+
+    function wizGoNext() {
+      if (wizStepIndex < wizSteps.length - 1) showWizStep(wizStepIndex + 1);
+    }
+
+    // Enter key: advance the current step instead of implicitly submitting
+    // the form (the form only has one native submit button, on the final step).
+    wizForm.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || currentWizStep().dataset.step === '10') return;
+      e.preventDefault();
+      const btn = currentWizStep().querySelector('[data-next]');
+      if (btn && !btn.disabled) btn.click();
+    });
+
+    // Steps with a single text input + Continue button (name, business name, phone)
+    [
+      { input: wizName,    validate: () => WIZ_NAME_RE.test(wizName.value.trim()) },
+      { input: wizBizName, validate: () => wizBizName.value.trim().length > 0 && wizBizName.value.trim().length <= 100 },
+      { input: wizPhone,   validate: () => isValidAuPhone(wizPhone.value) },
+    ].forEach(({ input, validate }) => {
+      if (!input) return;
+      const btn = input.closest('.lp-wiz-step').querySelector('[data-next]');
+      const check = () => { btn.disabled = !validate(); };
+      input.addEventListener('input', check);
+      check();
+      btn.addEventListener('click', () => { if (!btn.disabled) wizGoNext(); });
+    });
+
+    // Steps with option cards — click sets the hidden field and auto-advances
+    wizForm.querySelectorAll('.lp-wiz-options').forEach(group => {
+      const hidden = document.getElementById('wiz-' + group.dataset.field);
+      group.querySelectorAll('.lp-wiz-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          group.querySelectorAll('.lp-wiz-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          if (hidden) hidden.value = opt.textContent.trim();
+          setTimeout(wizGoNext, 320);
+        });
+      });
+    });
+
+    // Informational steps with no field to fill in (e.g. the dashboard
+    // showcase) — just a Continue button that advances.
+    wizForm.querySelectorAll('[data-info-next]').forEach(btn => {
+      btn.addEventListener('click', wizGoNext);
+    });
+
+    wizForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if ((wizHoneypot && wizHoneypot.value) || (Date.now() - wizLoadedAt) < WIZ_MIN_HUMAN_FILL_MS) {
+        return;
+      }
+
+      const name = wizName ? wizName.value.trim() : '';
+      if (!WIZ_NAME_RE.test(name)) { showWizStep(0); return; }
+
+      if (wizPhone && !isValidAuPhone(wizPhone.value)) {
+        showWizStep(wizSteps.findIndex(s => s.dataset.step === '9'));
+        return;
+      }
+
+      const email = wizEmail ? wizEmail.value.trim() : '';
+      if (email && (email.length > 254 || !WIZ_EMAIL_RE.test(email))) {
+        flashInvalid(wizEmail);
+        return;
+      }
+
+      // Shared between the browser pixel and the server-side Conversions API call
+      // below so Meta dedupes them into one Lead instead of counting it twice.
+      const fbEventId = (crypto.randomUUID ? crypto.randomUUID() : `lead-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+      const fbPhone = wizPhone && wizPhone.value.trim() ? toE164Digits(wizPhone.value) : '';
+
+      if (typeof fbq === 'function') {
+        const advancedMatching = {};
+        if (fbPhone) advancedMatching.ph = fbPhone;
+        if (email) advancedMatching.em = email.toLowerCase();
+        if (Object.keys(advancedMatching).length) fbq('init', '1377367451165227', advancedMatching);
+        fbq('track', 'Lead', {}, { eventID: fbEventId });
+      }
+
+      fetch('/.netlify/functions/meta-capi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          em: email || undefined,
+          ph: fbPhone || undefined,
+          eventId: fbEventId,
+          eventSourceUrl: location.href,
+          fbp: getCookie('_fbp'),
+          fbc: getCookie('_fbc'),
+        }),
+      }).catch(() => {});
+
+      track('trial_started', { business_type: wizBizType ? wizBizType.value : '' });
+      track('callback_requested', {});
+
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#a78bfa','#ec4899','#34d399','#fbbf24','#60a5fa'] });
+        setTimeout(() => confetti({ particleCount: 60, spread: 120, origin: { y: 0.55 }, colors: ['#a78bfa','#ec4899','#34d399'] }), 350);
+      }
+
+      const successH = document.getElementById('wiz-success-h');
+      if (successH) {
+        successH.textContent = '';
+        successH.append(`You're all set, ${name.split(' ')[0]}! `);
+        const span = document.createElement('span');
+        span.className = 'h2-grad';
+        span.textContent = '🎉';
+        successH.append(span);
+      }
+      showWizStep(wizSteps.findIndex(s => s.dataset.step === 'success'));
+
+      try {
+        await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(wizForm)).toString(),
+        });
+      } catch {}
+    });
+  }
+
   // ── Demo booking form ─────────────────────────────────────
   const demoForm  = document.getElementById('demo-form');
   const ctaSubmit = document.getElementById('cta-submit');

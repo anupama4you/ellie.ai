@@ -20,6 +20,11 @@
   to     = "/beauty.html"
   status = 200
 
+[[redirects]]
+  from   = "/get-started"
+  to     = "/get-started.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
