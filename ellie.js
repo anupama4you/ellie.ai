@@ -1455,4 +1455,27 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     scheduleCallBubble();
   }
 
+  // ── "Why Ellie sounds human" section: 9:16 video play button ──
+  const techVideo = document.getElementById('tech-video');
+  const techVideoPlay = document.getElementById('tech-video-play');
+  const techVideoFrame = document.getElementById('tech-video-frame');
+  if (techVideo && techVideoPlay) {
+    // Clicking anywhere on the frame toggles play/pause, not just the small
+    // button — the button is inside the frame, so this covers both.
+    (techVideoFrame || techVideoPlay).addEventListener('click', () => {
+      if (techVideo.paused) {
+        techVideo.muted = false;
+        techVideo.play().catch(() => {});
+      } else {
+        techVideo.pause();
+      }
+    });
+    techVideo.addEventListener('play',  () => techVideoPlay.classList.add('playing'));
+    techVideo.addEventListener('pause', () => techVideoPlay.classList.remove('playing'));
+    techVideo.addEventListener('ended', () => {
+      techVideoPlay.classList.remove('playing');
+      techVideo.currentTime = 0;
+    });
+  }
+
 })();

@@ -1550,6 +1550,14 @@
       animation: navShimmer 6s linear infinite;
     }
     .trial-cta:hover { box-shadow: 0 0 40px rgba(167,139,250,.5); transform: translateY(-1px); animation: none; }
+    .trial-cta, .book-call-btn { text-decoration: none; }
+    .book-cta-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .book-cta-row .trial-cta { margin-bottom: 0; }
+    .book-call-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+      color: var(--violet); border-color: var(--violet-b); background: var(--violet-d);
+    }
+    .book-call-btn:hover { background: var(--violet-d); border-color: var(--violet); color: var(--violet); }
     /* ── Card flip ── */
     .trial-flip-wrap { max-width: 520px; margin: 0 auto; perspective: 1200px; }
     .trial-flip-inner {
@@ -1813,6 +1821,31 @@
     .ellie-tech-feat__body p { color: var(--muted); font-size: .78rem; line-height: 1.6; margin: 0; }
     /* Right column */
     .ellie-tech-right { display: flex; flex-direction: column; gap: 16px; }
+    .tech-video-frame {
+      position: relative; margin: 0 auto;
+      height: min(560px, 62vh); aspect-ratio: 9 / 16; width: auto; max-width: 100%;
+      border-radius: 24px; overflow: hidden; background: var(--bg2);
+      border: 1px solid rgba(167,139,250,.18);
+      box-shadow: 0 8px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(167,139,250,.05) inset;
+    }
+    .tech-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tech-video-play-btn {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff;
+      box-shadow: 0 8px 28px rgba(167,139,250,.5);
+      transition: transform .18s ease, opacity .25s ease;
+    }
+    .tech-video-play-btn:hover { transform: translate(-50%, -50%) scale(1.08); }
+    .tech-video-play-btn .icon-pause { display: none; }
+    .tech-video-play-btn.playing { opacity: 0; }
+    .tech-video-frame:hover .tech-video-play-btn.playing { opacity: .85; }
+    .tech-video-play-btn.playing .icon-play  { display: none; }
+    .tech-video-play-btn.playing .icon-pause { display: block; }
+    @media (max-width: 640px) {
+      .tech-video-frame { height: min(440px, 60vh); }
+    }
     .ellie-tech-img-wrap {
       border-radius: 20px; overflow: hidden;
       border: 1px solid rgba(255,255,255,.08);
@@ -2934,6 +2967,385 @@
       .call-fab { width: 52px; height: 52px; }
       .call-bubble { max-width: 150px; font-size: .78rem; }
     }
+
+  /* ══════ HOMEPAGE HERO (ported from beauty.html's hero layout) ══════ */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; padding-top: 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 55% at 18% 52%, rgba(244,114,182,.13) 0%, transparent 68%),
+        radial-gradient(ellipse 40% 40% at 84% 28%, rgba(192,132,252,.08) 0%, transparent 68%);
+    }
+    .hero-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(88px); pointer-events: none; z-index: 0;
+    }
+    .hero-orb--1 {
+      width: 680px; height: 680px;
+      background: radial-gradient(circle, rgba(244,114,182,.14) 0%, transparent 70%);
+      top: -240px; left: -140px;
+      animation: orb-drift 9s ease-in-out infinite;
+    }
+    .hero-orb--2 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(192,132,252,.1) 0%, transparent 70%);
+      top: 80px; right: -100px;
+      animation: orb-drift 12s ease-in-out infinite reverse;
+    }
+    .hero-orb--3 {
+      width: 440px; height: 440px;
+      background: radial-gradient(circle, rgba(103,232,249,.06) 0%, transparent 70%);
+      bottom: -80px; left: 38%;
+      animation: orb-drift 14s ease-in-out infinite;
+    }
+    .hero-in {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px;
+      align-items: center; width: 100%; position: relative; z-index: 1;
+    }
+    /* Old single-column hero centered everything via flex — this hero is a
+       left-aligned two-column layout, so override that explicitly. */
+    .hero-copy { display: block; align-items: unset; text-align: left; }
+    .hero-h1, .hero-sub { text-align: left; }
+
+    /* Hero copy */
+    .hero-trust-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1.4rem; }
+    .hero-trust-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 14px; padding: 9px 14px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.18);
+      text-decoration: none; cursor: pointer;
+      transition: transform .15s, border-color .15s;
+    }
+    .hero-trust-badge:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
+    .hero-trust-google { display: flex; align-items: center; gap: 6px; }
+    .hero-trust-google-label { font-size: .78rem; font-weight: 600; color: rgba(255,255,255,.88); letter-spacing: -.01em; }
+    .hero-trust-sep { width: 1px; height: 24px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+    .hero-trust-right { display: flex; flex-direction: column; gap: 1px; }
+    .hero-trust-stars { font-size: .72rem; color: #c084fc; line-height: 1.2; }
+    .hero-trust-stars b { color: rgba(255,255,255,.9); font-weight: 700; margin-left: 2px; }
+    .hero-trust-count { font-size: .62rem; color: rgba(255,255,255,.48); line-height: 1.2; }
+    .hero-callback-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.13);
+      color: var(--violet); font-size: .78rem; font-weight: 700;
+      padding: 9px 14px; border-radius: 14px; white-space: nowrap;
+      text-decoration: none;
+      box-shadow: 0 2px 16px rgba(0,0,0,.18);
+      animation: calloutVibrate 2.8s ease-in-out infinite;
+    }
+    .hero-callback-pill:hover { animation: none; transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
+    @keyframes calloutVibrate {
+      0%, 82%, 100% { transform: translate(0,0) rotate(0deg); }
+      84% { transform: translate(-2px,1px) rotate(-3deg); }
+      86% { transform: translate(2px,-1px) rotate(3deg); }
+      88% { transform: translate(-2px,1px) rotate(-2deg); }
+      90% { transform: translate(2px,-1px) rotate(2deg); }
+      92% { transform: translate(-1px,0) rotate(-1deg); }
+      94% { transform: translate(0,0) rotate(0deg); }
+    }
+    .hero-actions { display: none; }
+    .hero-h1 { font-size: clamp(2.1rem, 3.6vw, 3.3rem); color: #fff; margin-bottom: 1.2rem; line-height: 1.18; text-wrap: balance; }
+    .hero-h1-line1 { display: block; }
+    @keyframes gradShimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+    @keyframes heroFadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes soundWave { 0%,100%{transform:scaleY(.3)} 50%{transform:scaleY(1)} }
+    .hero-h1-grad {
+      background: linear-gradient(130deg, var(--violet) 0%, var(--rose) 50%, #c084fc 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: gradShimmer 5s linear infinite;
+    }
+    .hero-sub { font-size: .97rem; color: var(--muted); max-width: 440px; margin-bottom: 2rem; line-height: 1.74; }
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+    .hero-trial-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(244,114,182,.1); border: 1px solid rgba(244,114,182,.3);
+      border-radius: 100px; padding: 7px 16px; margin-bottom: 1.4rem;
+      font-size: .78rem; font-weight: 600; color: var(--violet);
+    }
+    .hero-setup-promise {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: .8rem; font-weight: 600; color: var(--violet);
+      margin-bottom: 2rem;
+    }
+    .hero-checks { display: flex; gap: 14px; flex-wrap: nowrap; }
+    .hero-check { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .hero-check svg { color: var(--green); flex-shrink: 0; }
+    /* ── HERO URL BAR ── */
+    .hero-url-wrap { margin-bottom: 1.6rem; }
+    .hero-url-label {
+      font-size: .72rem; font-weight: 700; color: var(--violet);
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: .55rem;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .hero-url-label::before { display:none; }
+    .hero-url-row { display: flex; align-items: center; gap: 8px; }
+    .hero-url-bar {
+      flex: 1; display: flex; align-items: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(244,114,182,.28);
+      border-radius: 12px;
+      transition: border-color .25s, box-shadow .25s;
+      box-shadow: 0 0 0 0 rgba(244,114,182,0);
+    }
+    .hero-url-bar:focus-within {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 3px rgba(244,114,182,.12);
+    }
+    .hero-url-icon {
+      padding: 0 14px; color: var(--muted); flex-shrink: 0;
+      display: flex; align-items: center;
+    }
+    .hero-url-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: 'Inter', sans-serif; font-size: .88rem;
+      color: var(--text); padding: 14px 0;
+      caret-color: var(--violet);
+    }
+    .hero-url-input::placeholder { color: rgba(124,143,168,.6); }
+    .hero-url-btn {
+      background: linear-gradient(135deg, var(--violet), var(--rose));
+      border: none; cursor: pointer; padding: 12px 22px;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif; font-size: .85rem;
+      font-weight: 700; color: #fff; white-space: nowrap;
+      display: flex; align-items: center; gap: 7px; flex-shrink: 0;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 18px rgba(244,114,182,.38);
+    }
+    .hero-url-btn:hover { transform: translateY(-1px); box-shadow: 0 0 28px rgba(244,114,182,.58); }
+    .hero-url-hint {
+      font-size: .72rem; color: var(--muted); margin-top: .5rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .hero-url-hint svg { flex-shrink: 0; color: var(--violet); }
+
+    /* ── HERO RIGHT COLUMN ── */
+    .hero-right { display: flex; flex-direction: column; gap: 0; }
+
+    /* ── HERO ENTRANCE ANIMATIONS ── */
+    .hero-trust-row { animation: heroFadeUp .6s  .00s ease both; }
+    .hero-h1        { animation: heroFadeUp .7s  .08s ease both; }
+    .hero-sub       { animation: heroFadeUp .7s  .18s ease both; }
+    .hero-setup-promise { animation: heroFadeUp .7s  .24s ease both; }
+    .hero-url-wrap  { animation: heroFadeUp .7s  .32s ease both; }
+    .hero-checks    { animation: heroFadeUp .7s  .42s ease both; }
+    .hero-av-wrap   { animation: heroFadeUp .75s .22s ease both; }
+
+    /* ── HERO VIDEO CARD ── */
+    .hero-av-wrap { margin-bottom: 12px; }
+    .hero-av-video-frame {
+      position: relative; width: 100%; aspect-ratio: 1 / 1;
+      border-radius: 24px; overflow: hidden;
+      border: 1px solid rgba(244,114,182,.18);
+      box-shadow: 0 8px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(244,114,182,.05) inset;
+    }
+    .hero-av-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-av-video-overlay {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 14px;
+      padding: 20px 20px 18px;
+      background: linear-gradient(to top, rgba(5,5,12,.92) 0%, rgba(5,5,12,.45) 55%, transparent 100%);
+    }
+    .hero-av-info { flex: 1; min-width: 0; }
+    .hero-av-live {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .62rem; font-weight: 700; color: #10b981;
+      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px;
+    }
+    .hero-av-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: blink 1.4s ease-in-out infinite; }
+    .hero-av-name { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .hero-av-tagline { font-size: .76rem; color: rgba(255,255,255,.75); line-height: 1.4; }
+    .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .hero-av-play-btn {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--violet), #6d28d9);
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 14px rgba(244,114,182,.45);
+      transition: transform .18s, box-shadow .18s;
+    }
+    .hero-av-play-btn:hover { transform: scale(1.1); box-shadow: 0 0 22px rgba(244,114,182,.65); }
+    .hero-av-play-btn:active { transform: scale(.95); }
+    .hero-av-play-btn svg { color: #fff; display: block; }
+    .hero-av-play-btn .icon-pause { display: none; }
+    .hero-av-play-btn.playing .icon-play  { display: none; }
+    .hero-av-play-btn.playing .icon-pause { display: block; }
+    .hero-av-sound { display: flex; align-items: center; gap: 3px; height: 26px; flex-shrink: 0; }
+    .hero-av-bar {
+      width: 3px; border-radius: 3px; transform-origin: bottom;
+      background: linear-gradient(to top, var(--violet), var(--rose));
+      animation: soundWave 1.4s ease-in-out infinite;
+      animation-delay: var(--d, 0s);
+    }
+
+    @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:.45} 50%{transform:scale(1.35);opacity:1} }
+
+    /* ── HERO URL INLINE BADGE ── */
+    .hero-url-domain-badge {
+      display: none; align-items: center; gap: 8px;
+      background: rgba(244,114,182,.08); border: 1px solid var(--violet-b);
+      border-radius: 8px; padding: 8px 14px; margin-top: 10px;
+      font-size: .78rem; color: var(--violet);
+    }
+    .hero-url-domain-badge.visible { display: flex; }
+    .hero-url-domain-badge svg { flex-shrink: 0; }
+
+    [data-theme="light"] .hero-h1 { color: #0f172a; }
+    [data-theme="light"] .hero-sub { color: #475569; }
+    [data-theme="light"] .hero-sub strong { color: #0f172a; }
+    [data-theme="light"] .hero-check { color: #475569; }
+    [data-theme="light"] .hero-url-bar { background: #fff; border-color: rgba(219,39,119,.25); box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+    [data-theme="light"] .hero-url-input { color: #0f172a; }
+    [data-theme="light"] .hero-url-input::placeholder { color: #94a3b8; }
+    /* Hero floating cards */
+    [data-theme="light"] .hero-av-name { color: #fff; }
+    [data-theme="light"] .hero-trust-badge { background: rgba(255,255,255,.9); border-color: rgba(0,0,0,.1); box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    [data-theme="light"] .hero-trust-google-label { color: #1e293b; }
+    [data-theme="light"] .hero-trust-sep { background: rgba(0,0,0,.12); }
+    [data-theme="light"] .hero-trust-stars b { color: #1e293b; }
+    [data-theme="light"] .hero-trust-count { color: #64748b; }
+
+  @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+      .hero-in { grid-template-columns:1fr;gap:32px;padding-top:24px; }
+      .hero-url-btn { font-size:.75rem; padding:8px 14px; }
+  }
+  @media (max-width: 600px) {
+      .hero { min-height: 100dvh; padding-top: 0; align-items: stretch; }
+      .hero-in { flex: 1; padding: 80px 20px 24px; gap: 0; display: flex; flex-direction: column; }
+
+      /* ── Order: trust badge → headline → sub → avatar+bubble → url → buttons ── */
+      .hero-copy { display: contents; }
+      .hero-trust-row { order: 1; justify-content: center; margin: 0 auto .7rem; }
+      .hero-callback-pill { display: none; }
+      .hero-h1    {
+        order: 2; text-align: center; white-space: normal;
+        font-size: 1.85rem; line-height: 1.1;
+        min-height: 4.4rem;
+        margin-bottom: .55rem;
+      }
+      .hero-sub   { order: 3; text-align: center; font-size: .86rem; line-height: 1.68; max-width: 300px; margin: 0 auto .9rem; }
+      .hero-right { order: 4; width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0; }
+      .hero-url-wrap  { order: 5; width: 100%; margin-bottom: 0; }
+      .hero-actions   { display: flex; order: 6; flex-direction: column; width: 100%; margin-top: 10px; }
+      .hero-book-btn {
+        width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px;
+        padding: 13px 24px; font-size: .9rem; border-radius: 13px; border-color: rgba(255,255,255,.15);
+        animation: calloutVibrate 2.8s ease-in-out infinite;
+      }
+      .hero-book-btn:hover { animation: none; }
+      .hero-checks    { display: none; }
+      .hero-setup-promise { justify-content: center; }
+
+      /* ── Avatar — large clean circle, no busy rings ── */
+      .hero-av-wrap {
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        gap: 16px; margin-bottom: 0;
+      }
+      .hero-av-video-frame {
+        width: 100%; max-width: 320px;
+      }
+      .hero-av-video-overlay { justify-content: flex-end; }
+      .hero-av-info { display: none; }
+
+      /* ── URL section — card with separate input + button ── */
+      .hero-url-wrap {
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 22px; padding: 14px;
+        box-shadow: 0 4px 24px rgba(0,0,0,.18);
+        margin-bottom: 0;
+      }
+      .hero-url-label { justify-content: center; font-size: .62rem; letter-spacing: .08em; margin-bottom: .65rem; }
+      .hero-url-row { flex-direction: column; gap: 10px; }
+      .hero-url-bar {
+        width: 100%; border-radius: 12px;
+        background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      }
+      .hero-url-input { font-size: .85rem; padding: 14px 0; }
+      .hero-url-btn {
+        width: 100%; justify-content: center; flex-shrink: unset;
+        padding: 16px 24px; font-size: 1rem; border-radius: 13px;
+        box-shadow: 0 0 28px rgba(244,114,182,.48), 0 4px 16px rgba(0,0,0,.2);
+      }
+  }
+    @media (hover: none) and (pointer: coarse) {
+      .hero { min-height: 100dvh; padding-top: 0; align-items: stretch; }
+      .hero-in { flex: 1; padding: 80px 20px 24px; gap: 0; display: flex; flex-direction: column; }
+
+      .hero-copy { display: contents; }
+      .hero-trust-row { order: 1; justify-content: center; margin: 0 auto .7rem; }
+      .hero-callback-pill { display: none; }
+      .hero-h1    {
+        order: 2; text-align: center; white-space: normal;
+        font-size: 1.85rem; line-height: 1.1;
+        min-height: 4.4rem;
+        margin-bottom: .55rem;
+      }
+      .hero-sub   { order: 3; text-align: center; font-size: .86rem; line-height: 1.68; max-width: clamp(300px, 60vw, 560px); margin: 0 auto .9rem; }
+      .hero-right { order: 4; width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0; }
+      .hero-url-wrap  { order: 5; width: 100%; margin-bottom: 0; }
+      .hero-actions   { display: flex; order: 6; flex-direction: column; width: 100%; margin-top: 10px; }
+      .hero-book-btn {
+        width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px;
+        padding: 13px 24px; font-size: .9rem; border-radius: 13px; border-color: rgba(255,255,255,.15);
+        animation: calloutVibrate 2.8s ease-in-out infinite;
+      }
+      .hero-book-btn:hover { animation: none; }
+      .hero-checks    { display: none; }
+      .hero-setup-promise { justify-content: center; }
+
+      .hero-av-wrap {
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        gap: 16px; margin-bottom: 0;
+      }
+      .hero-av-video-frame {
+        width: 100%; max-width: clamp(320px, 50vw, 460px);
+      }
+      .hero-av-video-overlay { justify-content: flex-end; }
+      .hero-av-info { display: none; }
+
+      .hero-url-wrap {
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 22px; padding: 14px;
+        box-shadow: 0 4px 24px rgba(0,0,0,.18);
+        margin-bottom: 0;
+      }
+      .hero-url-label { justify-content: center; font-size: .62rem; letter-spacing: .08em; margin-bottom: .65rem; }
+      .hero-url-row { flex-direction: column; gap: 10px; }
+      .hero-url-bar {
+        width: 100%; border-radius: 12px;
+        background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      }
+      .hero-url-input { font-size: .85rem; padding: 14px 0; }
+      .hero-url-btn {
+        width: 100%; justify-content: center; flex-shrink: unset;
+        padding: 16px 24px; font-size: 1rem; border-radius: 13px;
+        box-shadow: 0 0 28px rgba(244,114,182,.48), 0 4px 16px rgba(0,0,0,.2);
+      }
+    }
+
+    /* ══════ FINAL HERO OVERRIDES — !important guarantees these win over
+       any leftover rule from the old single-column hero, regardless of
+       specificity or source order elsewhere in this file ══════ */
+    .hero-copy { display: block !important; text-align: left !important; }
+    .hero-h1 { text-align: left !important; }
+    .hero-sub { text-align: left !important; margin: 0 0 2rem !important; max-width: 520px !important; }
+    .hero-url-wrap { margin: 0 !important; max-width: none !important; }
+    .hero-checks { justify-content: flex-start !important; }
+    .hero-right, .hero-av-wrap, .hero-av-video-frame { width: 100% !important; max-width: none !important; }
+
+    /* ══════ Nav + hero colour scheme, matched to beauty.html (scoped —
+       the rest of the page keeps its own lavender-purple palette) ══════ */
+    nav, .hero { --violet: #f472b6; --violet-d: rgba(244,114,182,.1); --violet-b: rgba(244,114,182,.22); --rose: #c084fc; --rose-d: rgba(192,132,252,.08); }
+    [data-theme="light"] nav, [data-theme="light"] .hero { --violet: #db2777; --violet-d: rgba(219,39,119,.08); --violet-b: rgba(219,39,119,.2); --rose: #9333ea; --rose-d: rgba(147,51,234,.06); }
   </style>
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <!-- Google tag (gtag.js) -->
@@ -2958,7 +3370,7 @@
     <ul class="nav-links">
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#demo">Live Demo</a></li>
-      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#pricing">Founding Offer</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="/blog/">Blog</a></li>
     </ul>
@@ -2981,7 +3393,7 @@
   <div class="nav-mobile" id="mobile-menu" role="navigation">
     <a href="#how-it-works">How It Works</a>
     <a href="#demo">Live Demo</a>
-    <a href="#pricing">Pricing</a>
+    <a href="#pricing">Founding Offer</a>
     <a href="#faq">FAQ</a>
     <a href="/blog/">Blog</a>
     <div class="nav-mobile-divider"></div>
@@ -2993,42 +3405,111 @@
 <!-- ── HERO ── -->
 <section id="home" class="hero">
   <div class="grid-bg"></div>
-  <div class="hero-waveform" id="hero-waveform" aria-hidden="true"></div>
+  <div class="hero-orb hero-orb--1"></div>
+  <div class="hero-orb hero-orb--2"></div>
+  <div class="hero-orb hero-orb--3"></div>
 
   <div class="hero-in">
     <div class="hero-copy">
-      <a href="#pricing" class="hero-offer-tag">
-        <span class="hero-offer-tag__spark" aria-hidden="true"></span>
-        $99/month founding rate for the first 10 businesses
-        <span class="hero-offer-tag__limited">Limited</span>
-      </a>
-      <h1 class="hero-h1" id="heroH1">The 24/7 <span class="h2-grad">AI receptionist</span> for Australian businesses</h1>
+      <div class="hero-trust-row">
+        <a href="#pricing" class="hero-trust-badge">
+          <div class="hero-trust-google">
+            <span style="font-size:1.3rem;line-height:1;">🇦🇺</span>
+          </div>
+          <div class="hero-trust-sep"></div>
+          <div class="hero-trust-right">
+            <div class="hero-trust-stars"><b>$99</b>/month</div>
+            <div class="hero-trust-count">First 10 businesses only</div>
+          </div>
+        </a>
+        <a href="#book" class="hero-callback-pill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Request a callback
+        </a>
+      </div>
+      <h1 class="hero-h1" id="heroH1">The 24/7 <span class="hero-h1-grad">AI call answering system</span> for Australian&nbsp;businesses.</h1>
       <p class="hero-sub">
-        Ellie answers when you can't, handles customer enquiries and turns calls into bookings.
+        <strong>Ellie</strong> answers every call, books appointments and sends SMS confirmations — 24/7, never sick, never off.
       </p>
 
       <!-- ── WEBSITE URL BAR ── -->
       <div class="hero-url-wrap">
-        <div class="hero-url-pill">
-          <span class="hero-url-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </span>
-          <input type="url" class="hero-url-input" id="hero-biz-url"
-            placeholder="Type your business website..."
-            autocomplete="url" spellcheck="false" aria-label="Your business website">
+        <div class="hero-url-row">
+          <div class="hero-url-bar">
+            <span class="hero-url-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </span>
+            <input type="url" class="hero-url-input" id="hero-biz-url"
+              placeholder="yourbusiness.com.au"
+              autocomplete="url" spellcheck="false" aria-label="Your business website">
+          </div>
           <button class="hero-url-btn" id="hero-url-btn" type="button">
-            Try Ellie Free
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l1.06-.97a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Try Your DEMO AI Receptionist
           </button>
         </div>
         <div class="hero-url-domain-badge" id="hero-domain-badge">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span id="hero-domain-text">yourdomain.com</span> &nbsp;·&nbsp; Ellie will be briefed on your business
+          <span id="hero-domain-text">yourbusiness.com.au</span> &nbsp;·&nbsp; Ellie will be briefed on your business
         </div>
       </div>
 
-      <p class="hero-fine-print">Free personalised demo · No credit card · Keep your number</p>
+      <div class="hero-actions">
+        <a href="#book" class="btn-ghost hero-book-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Request a Free Callback
+        </a>
+      </div>
+
+      <div class="hero-checks">
+        <div class="hero-check">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Answers every call, 24/7
+        </div>
+        <div class="hero-check">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Books appointments automatically
+        </div>
+        <div class="hero-check">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Never misses a call
+        </div>
+      </div>
     </div>
+
+    <!-- ── HERO RIGHT COLUMN ── -->
+    <div class="hero-right">
+      <div class="hero-av-wrap">
+        <div class="hero-av-video-frame">
+          <video class="hero-av-video" id="hero-av-video" src="assets/ellie/ellie-loop.mp4" autoplay muted loop playsinline></video>
+          <div class="hero-av-video-overlay">
+            <div class="hero-av-info">
+              <div class="hero-av-live">
+                <span class="hero-av-live-dot"></span>
+                Live · AI Receptionist
+              </div>
+              <div class="hero-av-name">Ellie</div>
+              <div class="hero-av-tagline">24/7 AI receptionist for Australian businesses</div>
+            </div>
+            <div class="hero-av-controls">
+              <div class="hero-av-sound">
+                <div class="hero-av-bar" style="--d:0s;height:8px"></div>
+                <div class="hero-av-bar" style="--d:.2s;height:16px"></div>
+                <div class="hero-av-bar" style="--d:.4s;height:22px"></div>
+                <div class="hero-av-bar" style="--d:.6s;height:16px"></div>
+                <div class="hero-av-bar" style="--d:.4s;height:22px"></div>
+                <div class="hero-av-bar" style="--d:.2s;height:16px"></div>
+                <div class="hero-av-bar" style="--d:0s;height:8px"></div>
+              </div>
+              <button class="hero-av-play-btn" id="hero-av-play" aria-label="Play Ellie intro">
+                <svg class="icon-play"  width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg class="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /hero-right -->
   </div><!-- /hero-in -->
 </section>
 
@@ -3285,35 +3766,12 @@
 
       <!-- Right: video -->
       <div class="ellie-tech-right reveal">
-        <div class="hero-av-wrap">
-          <div class="hero-av-video-frame">
-            <video class="hero-av-video" id="hero-av-video" src="assets/ellie/ellie-loop.mp4" autoplay muted loop playsinline></video>
-            <div class="hero-av-video-overlay">
-              <div class="hero-av-info">
-                <div class="hero-av-live">
-                  <span class="hero-av-live-dot"></span>
-                  Live · AI Receptionist
-                </div>
-                <div class="hero-av-name">Ellie</div>
-                <div class="hero-av-tagline">Most human-like AI receptionist in the world</div>
-              </div>
-              <div class="hero-av-controls">
-                <div class="hero-av-sound">
-                  <div class="hero-av-bar" style="--d:0s;height:8px"></div>
-                  <div class="hero-av-bar" style="--d:.2s;height:16px"></div>
-                  <div class="hero-av-bar" style="--d:.4s;height:22px"></div>
-                  <div class="hero-av-bar" style="--d:.6s;height:16px"></div>
-                  <div class="hero-av-bar" style="--d:.4s;height:22px"></div>
-                  <div class="hero-av-bar" style="--d:.2s;height:16px"></div>
-                  <div class="hero-av-bar" style="--d:0s;height:8px"></div>
-                </div>
-                <button class="hero-av-play-btn" id="hero-av-play" aria-label="Play Ellie intro">
-                  <svg class="icon-play"  width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  <svg class="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                </button>
-              </div>
-            </div>
-          </div>
+        <div class="tech-video-frame" id="tech-video-frame">
+          <video class="tech-video" id="tech-video" src="assets/ellie/ellie-team.mp4" muted loop playsinline preload="metadata"></video>
+          <button class="tech-video-play-btn" id="tech-video-play" aria-label="Play video">
+            <svg class="icon-play"  width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg class="icon-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
         </div>
       </div>
 
@@ -3327,7 +3785,7 @@
     <div class="demo-in reveal">
       <div class="demo-copy">
         <div class="sec-tag">The Personalised Demo</div>
-        <h2>Generate your<br><span class="h2-grad">own receptionist.</span></h2>
+        <h2>Generate your<br><span class="h2-grad">DEMO receptionist.</span></h2>
         <p>Enter your website below and Ellie learns your business in seconds, then answers a live call as your receptionist.</p>
 
         <!-- Step 1: URL fetch -->
@@ -4326,58 +4784,23 @@
 <!-- ── BOOK / FREE TRIAL ── -->
 <section id="book" class="cta-sec">
   <div class="container">
-    <div class="trial-flip-wrap reveal">
-      <div class="trial-flip-inner" id="trial-flip-inner">
+    <div class="cta-card reveal" style="text-align:center;max-width:560px;margin:0 auto;">
+      <div class="sec-tag" style="justify-content:center;">7-Day Free Trial</div>
+      <h2 class="book-h2">Ready to get <span class="h2-grad">started?</span></h2>
+      <p class="book-sub" style="margin-bottom:1.8rem;">Fill out a quick form and we'll set up your Ellie within 24 hours or call her directly right now and hear it for yourself.</p>
 
-        <!-- FRONT: form -->
-        <div class="trial-flip-front cta-card" style="text-align:center;">
-          <div class="sec-tag" style="justify-content:center;">7-Day Free Trial</div>
-          <h2 class="book-h2">We'll setup for your<br><span class="h2-grad">business in 24 hours.</span></h2>
-          <p class="book-sub" style="margin-bottom:1.8rem;">Leave your details and we'll set up your Ellie, starting with a quick call to learn your business.</p>
-
-          <form class="trial-form" id="trial-form" name="free-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-            <input type="hidden" name="form-name" value="free-trial">
-            <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
-            <div class="trial-fields">
-              <input type="text" name="name" class="trial-input" placeholder="Your name" autocomplete="name" minlength="2" maxlength="80" required>
-              <input type="tel" name="phone" class="trial-input" placeholder="04XX XXX XXX" inputmode="tel" autocomplete="tel" maxlength="16" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678" required>
-              <input type="email" name="email" class="trial-input" placeholder="Email address" autocomplete="email" maxlength="254">
-              <input type="text" name="business_name" class="trial-input" placeholder="Business name" maxlength="100">
-              <select name="business_type" class="trial-input trial-select" required>
-                <option value="" disabled selected>Business type</option>
-                <option>Hair &amp; Beauty</option>
-                <option>Medical &amp; Health</option>
-                <option>Trades &amp; Home Services</option>
-                <option>Automotive</option>
-                <option>Real Estate</option>
-                <option>Legal &amp; Professional</option>
-                <option>Hospitality &amp; Food</option>
-                <option>Fitness &amp; Wellness</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <button type="submit" class="trial-cta" id="trial-submit">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
-              Get a free callback
-            </button>
-            <p class="trial-trust-line">🇦🇺 Founding offer: <b>$99/month</b> for the first 10 businesses &nbsp;&middot;&nbsp; No credit card required</p>
-          </form>
-        </div>
-
-        <!-- BACK: success -->
-        <div class="trial-flip-back cta-card" style="text-align:center;">
-          <div class="trial-success-icon">
-            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
-          </div>
-          <h2 class="trial-success-h">We'll give you a quick call <span class="h2-grad">to understand your business.</span></h2>
-          <p class="book-sub">Then we'll have Ellie set up and answering your calls within 24 hours.</p>
-          <button class="trial-resubmit" id="trial-resubmit" aria-label="Submit another request">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-            Submit another request
-          </button>
-        </div>
-
+      <div class="book-cta-row">
+        <a href="get-started.html" class="trial-cta" data-track="book_get_started_clicked">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          Get Started
+        </a>
+        <a href="tel:+61485057840" class="btn-ghost book-call-btn" data-track="book_call_clicked">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call Ellie: 0485 057 840
+        </a>
       </div>
+
+      <p class="trial-trust-line">🇦🇺 Founding offer: <b>$99/month</b> for the first 10 businesses &nbsp;&middot;&nbsp; No credit card required</p>
     </div>
   </div>
 </section>

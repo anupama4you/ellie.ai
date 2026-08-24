@@ -76,6 +76,13 @@ footer a { color: var(--muted); }
 .page-head { margin-bottom: 32px; }
 .page-head h1 { font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 800; letter-spacing: -.01em; margin-bottom: 10px; }
 .page-head .sub { color: var(--muted); font-size: 16px; }
+.offer-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(90deg, var(--violet), var(--rose));
+  color: #fff; font-size: 13px; font-weight: 700;
+  padding: 8px 16px; border-radius: 999px; margin-bottom: 14px;
+}
+.offer-badge strong { font-weight: 800; }
 
 .blog-controls { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
 .search-input {
@@ -235,6 +242,7 @@ article strong { color: #fff; }
 
   /* Compact the page header + controls so an article is visible without scrolling */
   .page-head { margin-bottom: 18px; }
+  .offer-badge { font-size: 12px; padding: 6px 12px; margin-bottom: 10px; }
   .page-head h1 { font-size: 1.5rem; line-height: 1.3; margin-bottom: 4px; }
   .page-head .sub { font-size: 14px; }
 
