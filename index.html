@@ -3334,13 +3334,20 @@
 
     /* ══════ FINAL HERO OVERRIDES — !important guarantees these win over
        any leftover rule from the old single-column hero, regardless of
-       specificity or source order elsewhere in this file ══════ */
-    .hero-copy { display: block !important; text-align: left !important; }
-    .hero-h1 { text-align: left !important; }
-    .hero-sub { text-align: left !important; margin: 0 0 2rem !important; max-width: 520px !important; }
-    .hero-url-wrap { margin: 0 !important; max-width: none !important; }
-    .hero-checks { justify-content: flex-start !important; }
-    .hero-right, .hero-av-wrap, .hero-av-video-frame { width: 100% !important; max-width: none !important; }
+       specificity or source order elsewhere in this file.
+       Desktop-only (min-width: 901px) — beauty.html's own mobile rules use
+       `.hero-copy { display: contents }` to flatten hero-copy's children
+       into hero-in's flex order (trust row → h1 → sub → video → url →
+       button). An unscoped `display:block` here would break that reflow
+       entirely, which is exactly what happened before this was scoped. ══════ */
+    @media (min-width: 901px) {
+      .hero-copy { display: block !important; text-align: left !important; }
+      .hero-h1 { text-align: left !important; }
+      .hero-sub { text-align: left !important; margin: 0 0 2rem !important; max-width: 520px !important; }
+      .hero-url-wrap { margin: 0 !important; max-width: none !important; }
+      .hero-checks { justify-content: flex-start !important; }
+      .hero-right, .hero-av-wrap, .hero-av-video-frame { width: 100% !important; max-width: none !important; }
+    }
 
     /* ══════ Nav + hero colour scheme, matched to beauty.html (scoped —
        the rest of the page keeps its own lavender-purple palette) ══════ */
