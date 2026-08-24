@@ -1427,5 +1427,32 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     scheduleTalk();
   }
 
+  // ── Floating call button: random speech-bubble nudges ─────
+  const callBubble = document.getElementById('call-bubble');
+  if (callBubble) {
+    const callBubbleMsgs = [
+      'Got questions? Call us! 📞',
+      "We're just a call away 👋",
+      'Talk to Ellie now!',
+      'Free trial? Give us a ring! 🚀',
+    ];
+    let lastCallBubbleMsg = -1;
+
+    function showCallBubble() {
+      let i = Math.floor(Math.random() * callBubbleMsgs.length);
+      if (i === lastCallBubbleMsg) i = (i + 1) % callBubbleMsgs.length;
+      lastCallBubbleMsg = i;
+      callBubble.textContent = callBubbleMsgs[i];
+      callBubble.classList.add('visible');
+      setTimeout(() => callBubble.classList.remove('visible'), 4500);
+    }
+
+    function scheduleCallBubble() {
+      const delay = 12000 + Math.random() * 13000;
+      setTimeout(() => { showCallBubble(); scheduleCallBubble(); }, delay);
+    }
+    setTimeout(showCallBubble, 4000);
+    scheduleCallBubble();
+  }
 
 })();
