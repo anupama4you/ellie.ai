@@ -16,12 +16,10 @@
   });
 
   // ── Light / dark theme toggle ─────────────────────────────
-  // Light is the default brand presentation on the main site; the beauty/salon
-  // landing page defaults to dark instead. An explicit user choice (stored in
-  // localStorage) always overrides the page default.
+  // Dark is the default brand presentation everywhere. An explicit user
+  // choice (stored in localStorage) always overrides the default.
   const themeToggle = document.getElementById('theme-toggle');
-  const pageDefaultTheme = /beauty\.html/i.test(location.pathname) ? 'dark' : 'light';
-  const savedTheme = localStorage.getItem('ellie-theme') || pageDefaultTheme;
+  const savedTheme = localStorage.getItem('ellie-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
