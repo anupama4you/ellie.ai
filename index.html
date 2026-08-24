@@ -4500,13 +4500,14 @@
         <li><a href="privacy.html">Privacy Policy</a></li>
         <li><a href="terms.html">Terms of Service</a></li>
         <li><a href="mailto:hello@callellie.com">Contact</a></li>
+        <li><a href="tel:+61485057840">Call us: 0485 057 840</a></li>
       </ul>
     </div>
   </div>
   <div class="foot-copy">
     <span>© 2026 anupama.dev. All rights reserved.</span>
     <span><a href="privacy.html" style="color:inherit;">Privacy Policy</a> · <a href="terms.html" style="color:inherit;">Terms of Service</a></span>
-    <span><a href="mailto:hello@callellie.com" style="color:inherit;">hello@callellie.com</a></span>
+    <span><a href="mailto:hello@callellie.com" style="color:inherit;">hello@callellie.com</a> · <a href="tel:+61485057840" style="color:inherit;">0485 057 840</a></span>
     <span>Adelaide, South Australia 🇦🇺</span>
   </div>
 </footer>
@@ -4534,6 +4535,20 @@
   <input type="hidden" name="hours">
   <input type="hidden" name="description">
   <input type="hidden" name="business_type">
+</form>
+
+<!-- Hidden Netlify form: leads captured by the Ellie general-enquiries phone
+     line (see netlify/functions/vapi-lead-webhook.js). Registered here only
+     so Netlify's build-time form scan picks it up — it's submitted
+     server-side, never rendered or filled in by a browser. -->
+<form name="phone-lead" data-netlify="true" netlify-honeypot="bot-field" style="display:none">
+  <input type="hidden" name="form-name" value="phone-lead">
+  <input type="hidden" name="bot-field">
+  <input type="hidden" name="name">
+  <input type="hidden" name="business_name">
+  <input type="hidden" name="business_type">
+  <input type="hidden" name="phone">
+  <input type="hidden" name="notes">
 </form>
 
 </body>
