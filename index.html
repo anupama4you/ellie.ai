@@ -2183,8 +2183,14 @@
     }
     .book-cal-inner .calendly-inline-widget { display: block; }
 
-    /* ── NEW RESPONSIVE OVERRIDES ── */
-    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+    /* ── NEW RESPONSIVE OVERRIDES ──
+       Was `(max-width:900px), (hover:none) and (pointer:coarse)` — the
+       coarse-pointer branch had no width bound, so it also matched
+       desktop PCs Chrome reports as non-mouse/coarse-pointer (touchscreens,
+       VMs, RDP), collapsing the full desktop layout to the phone one.
+       max-width:900px already covers every device that branch was meant
+       for, so it's dropped rather than re-bounded into a no-op OR. ── */
+    @media (max-width: 900px) {
       .prob-body { grid-template-columns: 1fr; gap: 32px; }
       .dash-bullets { grid-template-columns:1fr 1fr; }
       .hero-social-card { bottom:-8px;left:50%;transform:translateX(-50%) !important; }
@@ -2202,7 +2208,7 @@
     }
 
     /* ── MEDIA QUERIES ── */
-    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+    @media (max-width: 900px) {
       .hero-url-btn { font-size:.9rem; padding:14px 20px; }
       .steps { grid-template-columns: repeat(2,1fr); gap: 12px; }
       .feat-grid { grid-template-columns:1fr 1fr; }
@@ -2592,108 +2598,117 @@
       border-radius: 999px; padding: 3px 9px; flex-shrink: 0;
     }
 
-    /* ── WORKFLOW EXAMPLE ── */
-    .workflow-sec { background: var(--bg3); padding: 88px 0; }
-    .workflow-hd { max-width: 640px; margin: 0 auto 2.6rem; text-align: center; }
+    /* ── WORKFLOW EXAMPLE ──
+       A single two-column "live example" panel replaces the old three-part
+       stack (icon row + photo + separate data-card grid), which told the
+       same call→booking story twice and forced the icon row into a
+       cramped, cut-off horizontal scroller on mobile. The photo anchors
+       the left column (sticky on desktop); the timeline on the right
+       merges the step icons and the transcript/data into one connected
+       narrative, which also means mobile just stacks it — no scroll
+       hacks needed. ── */
+    .workflow-sec { background: var(--bg3); padding: 96px 0; }
+    .workflow-hd { max-width: 640px; margin: 0 auto 3.2rem; text-align: center; }
     .workflow-hd .sec-tag { justify-content: center; }
-    .workflow-steps {
-      display: flex; align-items: center; justify-content: center;
-      flex-wrap: wrap; gap: 8px 4px; max-width: 920px; margin: 0 auto 2.8rem;
-    }
-    .wf-step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 108px; text-align: center; transition: transform .2s ease; }
-    .wf-step:hover { transform: translateY(-2px); }
-    .wf-step-icon {
-      width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0;
-      background: var(--violet-d); border: 1px solid var(--violet-b);
-      display: flex; align-items: center; justify-content: center; color: var(--violet);
-      transition: background .2s ease, border-color .2s ease;
-    }
-    .wf-step:hover .wf-step-icon { background: var(--violet-b); }
-    .wf-step-label { font-size: .74rem; font-weight: 600; color: var(--text); line-height: 1.35; }
 
-    /* Flowing chevron-trio "arrow" between each step — a subtle repeating
-       pulse to read as motion/direction rather than a static separator. */
-    .wf-arrow { display: flex; align-items: center; gap: 1px; color: var(--violet); flex-shrink: 0; padding: 0 1px; }
-    .wf-arrow svg { opacity: .3; animation: wfArrowFlow 1.6s ease-in-out infinite; }
-    .wf-arrow svg:nth-child(2) { animation-delay: .16s; }
-    .wf-arrow svg:nth-child(3) { animation-delay: .32s; }
-    @keyframes wfArrowFlow {
-      0%, 100% { opacity: .3; transform: translateX(0); }
-      50%      { opacity: 1;  transform: translateX(2px); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .wf-arrow svg { animation: none; opacity: .8; }
+    .wf-layout {
+      display: grid; grid-template-columns: minmax(0, 360px) 1fr;
+      gap: 60px; max-width: 1000px; margin: 0 auto; align-items: start;
     }
 
-    /* Photo + floating "booking confirmed" card — the visual payoff for the flow below */
-    .wf-hero { position: relative; max-width: 920px; margin: 0 auto 2.8rem; border-radius: 20px; overflow: hidden; }
-    .wf-hero img { width: 100%; height: clamp(200px, 30vw, 320px); object-fit: cover; display: block; }
-    .wf-hero::after {
+    /* Visual column */
+    .wf-visual-frame { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 24px 54px rgba(0,0,0,.35); }
+    .wf-visual-frame img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+    .wf-visual-frame::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(3,7,18,0) 45%, rgba(3,7,18,.6) 100%);
+      background: linear-gradient(180deg, rgba(3,7,18,0) 45%, rgba(3,7,18,.62) 100%);
       pointer-events: none;
     }
-    .wf-hero-card {
-      position: absolute; left: 20px; bottom: 20px; z-index: 2;
+    .wf-visual-badge {
+      position: absolute; left: 18px; bottom: 18px; z-index: 2;
       display: flex; align-items: center; gap: 12px;
-      background: rgba(255,255,255,.96); backdrop-filter: blur(6px);
+      background: rgba(255,255,255,.97); backdrop-filter: blur(6px);
       border-radius: 14px; padding: 11px 18px 11px 12px;
       box-shadow: 0 14px 30px rgba(0,0,0,.28);
       animation: wfHeroPop .6s cubic-bezier(.2,.8,.2,1) .2s both;
     }
-    .wf-hero-card-icon {
+    .wf-visual-badge-icon {
       width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
       background: #22c55e; color: #fff;
       display: flex; align-items: center; justify-content: center;
     }
-    .wf-hero-card strong { display: block; font-size: .86rem; color: #0f172a; line-height: 1.3; }
-    .wf-hero-card span { font-size: .76rem; color: #475569; }
+    .wf-visual-badge strong { display: block; font-size: .86rem; color: #0f172a; line-height: 1.3; }
+    .wf-visual-badge span { font-size: .76rem; color: #475569; }
     @keyframes wfHeroPop {
       from { opacity: 0; transform: translateY(10px) scale(.94); }
       to   { opacity: 1; transform: none; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .wf-hero-card { animation: none; }
+      .wf-visual-badge { animation: none; }
     }
-    @media (max-width: 560px) {
-      .wf-hero-card { left: 14px; bottom: 14px; padding: 9px 14px 9px 10px; }
-      .wf-hero-card strong { font-size: .8rem; }
-      .wf-hero-card span { font-size: .72rem; }
+    .wf-visual-stat {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 18px; padding: 14px 16px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
     }
-    .wf-example { max-width: 920px; margin: 0 auto; position: relative; }
-    .wf-example-tag {
-      display: inline-flex; font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      color: var(--muted); background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 999px; padding: 4px 12px; margin-bottom: 14px;
+    .wf-visual-stat-icon {
+      width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+      background: var(--violet-d); border: 1px solid var(--violet-b); color: var(--violet);
+      display: flex; align-items: center; justify-content: center;
     }
-    .wf-example-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .wf-card {
-      background: var(--bg3); border: 1px solid var(--border); border-radius: 14px;
-      padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;
+    .wf-visual-stat p { margin: 0; font-size: .84rem; color: var(--muted); line-height: 1.5; }
+    .wf-visual-stat strong { color: var(--text); }
+
+    @media (min-width: 861px) {
+      .wf-visual { position: sticky; top: 100px; }
     }
-    .wf-card--done { border-color: rgba(34,197,94,.3); background: rgba(34,197,94,.05); }
-    .wf-card-label { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--violet); }
-    .wf-card-quote { font-size: .84rem; color: var(--text); line-height: 1.5; }
-    .wf-card-fields { display: flex; flex-direction: column; gap: 5px; }
-    .wf-card-fields div { display: flex; justify-content: space-between; gap: 8px; font-size: .8rem; }
-    .wf-card-fields dt { color: var(--muted); }
-    .wf-card-fields dd { color: var(--text); font-weight: 600; }
+
+    /* Timeline column */
+    .wf-timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+    .wf-timeline::before {
+      content: ''; position: absolute; left: 21px; top: 6px; bottom: 6px; width: 2px;
+      background: linear-gradient(180deg, var(--violet) 0%, var(--violet) 55%, var(--green) 100%);
+      opacity: .22;
+    }
+    .wf-tl-item { position: relative; display: flex; gap: 20px; padding-bottom: 34px; }
+    .wf-tl-item:last-child { padding-bottom: 0; }
+    .wf-tl-node {
+      position: relative; z-index: 1; flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg3); border: 1px solid var(--violet-b); color: var(--violet);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .wf-tl-item--done .wf-tl-node { border-color: rgba(34,197,94,.4); color: var(--green); }
+    .wf-tl-body { flex: 1; min-width: 0; padding-top: 8px; }
+    .wf-tl-eyebrow {
+      display: block; font-size: .7rem; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--violet); margin-bottom: 7px;
+    }
+    .wf-tl-item--done .wf-tl-eyebrow { color: var(--green); }
+    .wf-tl-quote { margin: 0; font-size: .94rem; color: var(--text); line-height: 1.6; }
+    .wf-tl-quote--spoken { font-style: italic; }
+    .wf-tl-note { margin: 0; font-size: .88rem; color: var(--muted); line-height: 1.6; }
+    .wf-tl-fields {
+      margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 22px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    }
+    .wf-tl-fields div { display: flex; flex-direction: column; gap: 2px; }
+    .wf-tl-fields dt { font-size: .68rem; color: var(--muted); }
+    .wf-tl-fields dd { margin: 0; font-size: .88rem; font-weight: 600; color: var(--text); }
+    .wf-tl-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.28);
+      color: var(--text); font-size: .92rem; font-weight: 600;
+      padding: 9px 16px; border-radius: 10px;
+    }
+    .wf-tl-chip svg { color: var(--green); flex-shrink: 0; }
+
     @media (max-width: 860px) {
-      .wf-example-grid { grid-template-columns: 1fr 1fr; }
-      .wf-step { width: 90px; }
+      .wf-layout { grid-template-columns: 1fr; gap: 40px; max-width: 480px; }
+      .wf-visual-frame img { aspect-ratio: 16 / 10; }
     }
-    @media (max-width: 560px) {
-      .wf-example-grid { grid-template-columns: 1fr; }
-      /* Stays horizontal on mobile too, just scrollable — bleeds edge-to-edge
-         so the row isn't cramped inside the container's side padding. */
-      .workflow-steps {
-        flex-wrap: nowrap; justify-content: flex-start;
-        overflow-x: auto; scrollbar-width: none;
-        margin: 0 -24px 2.8rem; padding: 4px 24px;
-      }
-      .workflow-steps::-webkit-scrollbar { display: none; }
-      .wf-step { width: 78px; flex-shrink: 0; }
-      .wf-step-label { font-size: .7rem; }
+    @media (max-width: 420px) {
+      .wf-tl-fields { grid-template-columns: 1fr; }
     }
 
     /* ── HUMAN HANDOFF ── */
@@ -2719,7 +2734,14 @@
     @media (max-width: 860px) { .au-trust-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { .au-trust-grid { grid-template-columns: 1fr 1fr; } }
 
-    /* ── INDUSTRIES ── */
+    /* ── INDUSTRIES ──
+       Desktop keeps the auto-scrolling marquee (pauses on hover). Below
+       860px that same transform-driven marquee becomes a real swipeable
+       carousel instead — auto-scroll can't be steered by touch, so on
+       mobile it just fought whatever the user tried to swipe. The
+       duplicate aria-hidden card set (needed for the marquee's seamless
+       loop) is hidden in swipe mode so a manual swipe doesn't run into a
+       repeated copy of the same five cards. ── */
     .industries-sec { background: var(--bg); padding: 88px 0; }
     .industries-hd { max-width: 620px; margin: 0 auto 2.4rem; text-align: center; }
     .industries-hd .sec-tag { justify-content: center; }
@@ -2739,6 +2761,24 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .industries-grid { animation: none; }
+    }
+    @media (max-width: 860px) {
+      .industries-grid {
+        animation: none; width: auto;
+        overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 24px;
+        -webkit-overflow-scrolling: touch; scrollbar-width: none;
+        padding: 4px 24px 4px;
+      }
+      .industries-grid::-webkit-scrollbar { display: none; }
+      .industry-card[aria-hidden="true"] { display: none; }
+      .industry-card { scroll-snap-align: start; scroll-snap-stop: always; }
+    }
+    .industries-swipe-hint {
+      display: none; align-items: center; justify-content: center; gap: 6px;
+      font-size: .74rem; color: var(--muted); margin-top: 16px; text-align: center;
+    }
+    @media (max-width: 860px) {
+      .industries-swipe-hint { display: flex; }
     }
     .industry-card {
       position: relative; flex: 0 0 270px;
@@ -2778,7 +2818,7 @@
     .industry-card strong { font-size: 1rem; color: var(--text); }
     .industry-sub { font-size: .8rem; color: var(--muted); line-height: 1.5; }
     .industry-msg { font-size: .82rem; color: var(--violet); font-weight: 600; font-style: italic; margin-top: 4px; line-height: 1.4; }
-    @media (max-width: 560px) { .industry-card { flex-basis: 240px; } }
+    @media (max-width: 860px) { .industry-card { flex: 0 0 min(78vw, 300px); } }
 
     /* ── FROM THE BLOG ── */
     .blog-sec { background: var(--bg); padding: 88px 0; }
@@ -2864,22 +2904,6 @@
     .compare-table--4col { min-width: 620px; }
     @media (max-width: 520px) { .compare-table--4col { min-width: 620px !important; width: auto !important; } }
 
-    /* ── STICKY MOBILE CTA ── */
-    .sticky-mobile-cta {
-      display: none; position: fixed; left: 14px; right: 14px; z-index: 80;
-      bottom: max(14px, env(safe-area-inset-bottom));
-      align-items: center; justify-content: center; gap: 8px;
-      background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff;
-      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .92rem;
-      padding: 14px 20px; border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08);
-      transform: translateY(140%); transition: transform .3s ease;
-    }
-    @media (max-width: 640px) {
-      .sticky-mobile-cta { display: flex; }
-      .sticky-mobile-cta.visible { transform: translateY(0); }
-    }
-
     /* ═══════════ LIGHT THEME: FLAT & CONFIDENT (default brand look) ═══════════
        Light is the primary presentation now — closer to johnni.ai / heyjodie.com:
        solid single-accent buttons, soft neutral shadows, no neon glow or dual
@@ -2921,9 +2945,6 @@
     [data-theme="light"] .pricing-cta:hover { box-shadow: 0 8px 26px rgba(15,23,42,.24); }
     [data-theme="light"] .cta-submit { background: var(--violet); box-shadow: 0 6px 20px rgba(15,23,42,.18); }
     [data-theme="light"] .cta-submit:hover:not(:disabled) { box-shadow: 0 8px 26px rgba(15,23,42,.24); }
-    [data-theme="light"] .sticky-mobile-cta {
-      background: var(--violet); box-shadow: 0 8px 24px rgba(15,23,42,.22), 0 0 0 1px rgba(15,23,42,.04);
-    }
     [data-theme="light"] .demo-generate-btn { background: var(--violet); }
     [data-theme="light"] .trial-success-icon { background: var(--violet); }
     [data-theme="light"] .log-avatar.ellie-av { background: var(--violet); }
@@ -2958,10 +2979,6 @@
     }
     [data-theme="light"] .call-bubble { color: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12); }
     .call-bubble.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-    @media (max-width: 640px) {
-      /* Clears the full-width .sticky-mobile-cta bar so they don't overlap */
-      .call-fab-wrap { bottom: 78px; }
-    }
     @media (max-width: 480px) {
       .call-fab-wrap { right: 14px; }
       .call-fab { width: 52px; height: 52px; }
@@ -3212,7 +3229,7 @@
     [data-theme="light"] .hero-trust-stars b { color: #1e293b; }
     [data-theme="light"] .hero-trust-count { color: #64748b; }
 
-  @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  @media (max-width: 900px) {
       .hero-in { grid-template-columns:1fr;gap:32px;padding-top:24px; }
       .hero-url-btn { font-size:.75rem; padding:8px 14px; }
   }
@@ -3275,7 +3292,7 @@
         box-shadow: 0 0 28px rgba(244,114,182,.48), 0 4px 16px rgba(0,0,0,.2);
       }
   }
-    @media (hover: none) and (pointer: coarse) {
+    @media (max-width: 900px) and (hover: none) and (pointer: coarse) {
       .hero { min-height: 100dvh; padding-top: 0; align-items: stretch; }
       .hero-in { flex: 1; padding: 80px 20px 24px; gap: 0; display: flex; flex-direction: column; }
 
@@ -3377,6 +3394,7 @@
     <ul class="nav-links">
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#demo">Live Demo</a></li>
+      <li><a href="#integrations">Integrations</a></li>
       <li><a href="#pricing">Founding Offer</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="/blog/">Blog</a></li>
@@ -3400,6 +3418,7 @@
   <div class="nav-mobile" id="mobile-menu" role="navigation">
     <a href="#how-it-works">How It Works</a>
     <a href="#demo">Live Demo</a>
+    <a href="#integrations">Integrations</a>
     <a href="#pricing">Founding Offer</a>
     <a href="#faq">FAQ</a>
     <a href="/blog/">Blog</a>
@@ -4441,96 +4460,83 @@
       <p class="sec-p" style="margin:0 auto;text-align:center;">An illustrative example, not a real customer.</p>
     </div>
 
-    <div class="wf-hero reveal">
-      <img src="assets/ellie/booking-confirmed.jpg" alt="Tradesperson checking a booking confirmation on his phone" loading="lazy">
-      <div class="wf-hero-card">
-        <span class="wf-hero-card-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </span>
-        <div>
-          <strong>Booking confirmed</strong>
-          <span>Tuesday, 10:30 AM</span>
+    <div class="wf-layout reveal">
+      <div class="wf-visual">
+        <div class="wf-visual-frame">
+          <img src="assets/ellie/booking-confirmed.jpg" alt="Tradesperson checking a booking confirmation on his phone" loading="lazy">
+          <div class="wf-visual-badge">
+            <span class="wf-visual-badge-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div>
+              <strong>Booking confirmed</strong>
+              <span>Tuesday, 10:30 AM</span>
+            </div>
+          </div>
+        </div>
+        <div class="wf-visual-stat">
+          <span class="wf-visual-stat-icon">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <p><strong>Under 2 minutes.</strong> Call answered to job booked — no hold music, no missed calls.</p>
         </div>
       </div>
-    </div>
 
-    <div class="workflow-steps reveal">
-      <div class="wf-step">
-        <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-        <span class="wf-step-label">Customer calls</span>
-      </div>
-      <div class="wf-arrow" aria-hidden="true">
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-      </div>
-      <div class="wf-step">
-        <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0z"/></svg></div>
-        <span class="wf-step-label">Ellie answers</span>
-      </div>
-      <div class="wf-arrow" aria-hidden="true">
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-      </div>
-      <div class="wf-step">
-        <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <span class="wf-step-label">Understands what they need</span>
-      </div>
-      <div class="wf-arrow" aria-hidden="true">
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-      </div>
-      <div class="wf-step">
-        <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <span class="wf-step-label">Qualifies &amp; books</span>
-      </div>
-      <div class="wf-arrow" aria-hidden="true">
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-      </div>
-      <div class="wf-step">
-        <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
-        <span class="wf-step-label">Confirmation sent</span>
-      </div>
-      <div class="wf-arrow" aria-hidden="true">
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4-4 4"/></svg>
-      </div>
-      <div class="wf-step">
-        <div class="wf-step-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-        <span class="wf-step-label">You see the result</span>
-      </div>
-    </div>
-
-    <div class="wf-example reveal">
-      <span class="wf-example-tag">Illustrative example</span>
-      <div class="wf-example-grid">
-        <div class="wf-card">
-          <span class="wf-card-label">Incoming call</span>
-          <p class="wf-card-quote">"Hi, my hot water system stopped working."</p>
-        </div>
-        <div class="wf-card">
-          <span class="wf-card-label">New enquiry</span>
-          <dl class="wf-card-fields">
-            <div><dt>Name</dt><dd>James</dd></div>
-            <div><dt>Service</dt><dd>Hot water repair</dd></div>
-            <div><dt>Location</dt><dd>Glenelg</dd></div>
-            <div><dt>Priority</dt><dd>Urgent</dd></div>
-          </dl>
-        </div>
-        <div class="wf-card wf-card--done">
-          <span class="wf-card-label">Appointment booked</span>
-          <p class="wf-card-quote">Tuesday, 10:30 AM ✓</p>
-        </div>
-        <div class="wf-card wf-card--done">
-          <span class="wf-card-label">SMS confirmation sent</span>
-          <p class="wf-card-quote">"You're booked in for Tuesday 10:30 AM — see you then!" ✓</p>
-        </div>
-      </div>
+      <ol class="wf-timeline">
+        <li class="wf-tl-item">
+          <span class="wf-tl-node">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <div class="wf-tl-body">
+            <span class="wf-tl-eyebrow">Incoming call</span>
+            <p class="wf-tl-quote wf-tl-quote--spoken">"Hi, my hot water system stopped working."</p>
+          </div>
+        </li>
+        <li class="wf-tl-item">
+          <span class="wf-tl-node">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <div class="wf-tl-body">
+            <span class="wf-tl-eyebrow">Ellie qualifies the job</span>
+            <dl class="wf-tl-fields">
+              <div><dt>Name</dt><dd>James</dd></div>
+              <div><dt>Service</dt><dd>Hot water repair</dd></div>
+              <div><dt>Location</dt><dd>Glenelg</dd></div>
+              <div><dt>Priority</dt><dd>Urgent</dd></div>
+            </dl>
+          </div>
+        </li>
+        <li class="wf-tl-item wf-tl-item--done">
+          <span class="wf-tl-node">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>
+          </span>
+          <div class="wf-tl-body">
+            <span class="wf-tl-eyebrow">Appointment booked</span>
+            <span class="wf-tl-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Tuesday, 10:30 AM
+            </span>
+          </div>
+        </li>
+        <li class="wf-tl-item wf-tl-item--done">
+          <span class="wf-tl-node">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <div class="wf-tl-body">
+            <span class="wf-tl-eyebrow">SMS confirmation sent</span>
+            <p class="wf-tl-quote wf-tl-quote--spoken">"You're booked in for Tuesday 10:30 AM — see you then!"</p>
+          </div>
+        </li>
+        <li class="wf-tl-item wf-tl-item--done">
+          <span class="wf-tl-node">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </span>
+          <div class="wf-tl-body">
+            <span class="wf-tl-eyebrow">You see the result</span>
+            <p class="wf-tl-note">A new job lands straight in your calendar — you didn't lift a finger.</p>
+          </div>
+        </li>
+      </ol>
     </div>
   </div>
 </section>
@@ -4734,6 +4740,10 @@
       </div>
     </div>
   </div>
+  <p class="industries-swipe-hint">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 3 12l6 6"/><path d="M15 6l6 6-6 6"/></svg>
+    Swipe to see more industries
+  </p>
 </section>
 
 <!-- ── FOUNDING OFFER + PRICING ── -->
@@ -4981,12 +4991,6 @@
     <span>Adelaide, South Australia 🇦🇺</span>
   </div>
 </footer>
-
-<!-- ── STICKY MOBILE CTA ── -->
-<a href="#book" id="sticky-mobile-cta" class="sticky-mobile-cta" data-track="sticky_mobile_cta_clicked">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-  Request a Callback
-</a>
 
 <!-- ── FLOATING CALL BUTTON ── -->
 <div class="call-fab-wrap">

@@ -1363,37 +1363,6 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     heroWaveform.appendChild(frag);
   }
 
-  // ── Sticky mobile CTA ──────────────────────────────────────
-  const stickyCta = document.getElementById('sticky-mobile-cta');
-  if (stickyCta) {
-    const heroSec = document.getElementById('home');
-    const bookSec = document.getElementById('book');
-    let pastHero = false, nearFooter = false;
-
-    function refreshStickyVisibility() {
-      stickyCta.classList.toggle('visible', pastHero && !nearFooter);
-    }
-    if (heroSec) {
-      new IntersectionObserver((entries) => {
-        pastHero = !entries[0].isIntersecting;
-        refreshStickyVisibility();
-      }, { threshold: 0 }).observe(heroSec);
-    }
-    if (bookSec) {
-      new IntersectionObserver((entries) => {
-        nearFooter = entries[0].isIntersecting;
-        refreshStickyVisibility();
-      }, { threshold: 0 }).observe(bookSec);
-    }
-
-    stickyCta.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.querySelector('#trial-form input[name="name"]');
-      (bookSec || document.getElementById('book'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(() => target?.focus(), 450);
-    });
-  }
-
   // ── Pricing / founding offer view tracking ────────────────
   const pricingSec = document.getElementById('pricing');
   if (pricingSec) {
