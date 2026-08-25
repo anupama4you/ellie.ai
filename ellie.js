@@ -1097,6 +1097,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     const wizPhone    = document.getElementById('wiz-phone');
     const wizEmail    = document.getElementById('wiz-email');
     const wizBizType  = document.getElementById('wiz-business_type');
+    const wizFeatures = document.getElementById('wiz-features');
     const wizHoneypot = wizForm.querySelector('input[name="bot-field"]');
     const wizLoadedAt = Date.now();
     limitPhoneInput(wizPhone);
@@ -1105,22 +1106,240 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     const WIZ_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const WIZ_MIN_HUMAN_FILL_MS = 1500;
 
-    let wizStepIndex = 0;
-    let wizStatCounted = false;
-    let wizInfoCounted = false;
-    const currentWizStep = () => wizSteps[wizStepIndex];
-    const wizStatNumEl = document.getElementById('wiz-stat-num');
-    const wizInfoCostEl = document.getElementById('wiz-info-cost');
-    const wizInfoAccEl  = document.getElementById('wiz-info-acc');
+    // Per-industry copy + feature set — drives the Step 2 transition line,
+    // the Step 3 "what's it called" question, and the Step 5 checklist.
+    const WIZ_BIZ_CONFIG = {
+      'Hair & Beauty': {
+        transition: "Perfect 💇 Let's teach Ellie how your bookings work.",
+        nameQuestion: "What's your salon or business called?",
+        featureHeading: "What should Ellie take off your plate? 💇",
+        features: [
+          { icon: '📞', title: 'Answer calls 24/7', desc: 'Never let a client hit voicemail.' },
+          { icon: '📅', title: 'Book appointments', desc: 'Help clients find a time that works.' },
+          { icon: '🔄', title: 'Reschedule & cancel bookings', desc: 'Handle changes without interrupting you.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Prices, services, opening hours and more.' },
+          { icon: '👥', title: 'Book with the right staff member', desc: 'Route bookings based on staff and availability.' },
+          { icon: '✨', title: 'Handle new client enquiries', desc: 'Capture details from potential clients.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Trades & Home Services': {
+        transition: "Nice 🔨 Let's teach Ellie how you handle new jobs.",
+        nameQuestion: "What's your business called?",
+        featureHeading: "What should Ellie take off your plate? 🔨",
+        features: [
+          { icon: '📞', title: "Answer calls while you're on the tools", desc: "Ellie picks up when you can't." },
+          { icon: '🛠️', title: 'Capture new job enquiries', desc: "Get the job details while they're calling." },
+          { icon: '🎯', title: 'Qualify potential jobs', desc: 'Collect the information you need upfront.' },
+          { icon: '📅', title: 'Book jobs or appointments', desc: 'Schedule customers based on your availability.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Service areas, hours and common enquiries.' },
+          { icon: '🚨', title: 'Identify urgent calls', desc: 'Flag important enquiries appropriately.' },
+          { icon: '📝', title: 'Send job & call summaries', desc: 'Get the details straight after the call.' },
+        ],
+      },
+      'Medical & Health': {
+        transition: "Great 🩺 Let's set up how Ellie should handle your appointments.",
+        nameQuestion: "What's your clinic or practice called?",
+        featureHeading: "What should Ellie help your practice with? 🩺",
+        features: [
+          { icon: '📞', title: 'Answer calls 24/7', desc: 'Never let a patient hit voicemail.' },
+          { icon: '📅', title: 'Book appointments', desc: 'Help patients find a time that works.' },
+          { icon: '🔄', title: 'Reschedule or cancel appointments', desc: 'Handle changes without interrupting your day.' },
+          { icon: '💬', title: 'Answer general practice questions', desc: 'Hours, location and general enquiries.' },
+          { icon: '👥', title: 'Find the right practitioner', desc: 'Route patients to the right person.' },
+          { icon: '📋', title: 'Capture new patient enquiries', desc: 'Get the details before they call back.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Automotive': {
+        transition: "Perfect 🚗 Let's teach Ellie how you handle bookings and customer enquiries.",
+        nameQuestion: "What's your workshop or business called?",
+        featureHeading: "What should Ellie take off your plate? 🚗",
+        features: [
+          { icon: '📞', title: "Answer calls while you're under the hood", desc: "Ellie picks up when you can't." },
+          { icon: '📅', title: 'Book services & repairs', desc: 'Help customers find a time that works.' },
+          { icon: '🔄', title: 'Reschedule & cancel bookings', desc: 'Handle changes without interrupting the workshop.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Pricing, services and opening hours.' },
+          { icon: '🚗', title: 'Capture new customer enquiries', desc: 'Get vehicle and job details upfront.' },
+          { icon: '🚨', title: 'Identify urgent jobs', desc: 'Flag time-sensitive repairs appropriately.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Real Estate': {
+        transition: "Nice 🏠 Let's set up how Ellie should handle property enquiries.",
+        nameQuestion: "What's your agency called?",
+        featureHeading: "What should Ellie take off your plate? 🏠",
+        features: [
+          { icon: '📞', title: 'Answer calls 24/7', desc: 'Never miss a buyer, seller or tenant enquiry.' },
+          { icon: '🏠', title: 'Capture property enquiries', desc: "Get the details on the property they're calling about." },
+          { icon: '📅', title: 'Book inspections & appraisals', desc: 'Help enquirers find a time that works.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Listings, open homes and general enquiries.' },
+          { icon: '👥', title: 'Route to the right agent', desc: 'Match enquiries to the right person.' },
+          { icon: '✨', title: 'Qualify new leads', desc: 'Collect the information your team needs to follow up.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Legal & Professional': {
+        transition: "Perfect ⚖️ Let's teach Ellie how you handle new client enquiries.",
+        nameQuestion: "What's your firm called?",
+        featureHeading: "What should Ellie help your practice with? ⚖️",
+        features: [
+          { icon: '📞', title: 'Answer calls 24/7', desc: 'Never let a new enquiry hit voicemail.' },
+          { icon: '✨', title: 'Capture new client enquiries', desc: 'Get the details before they call a competitor.' },
+          { icon: '🎯', title: 'Qualify enquiries', desc: 'Collect the information your team needs upfront.' },
+          { icon: '📅', title: 'Book consultations', desc: 'Help enquirers find a time that works.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Services, fee structure and general enquiries.' },
+          { icon: '👥', title: 'Route to the right person', desc: 'Match enquiries to the right team member.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Hospitality & Food': {
+        transition: "Great 🍽️ Let's set up how Ellie should handle bookings and customer calls.",
+        nameQuestion: "What's your venue called?",
+        featureHeading: "What should Ellie take off your plate? 🍽️",
+        features: [
+          { icon: '📞', title: 'Answer calls 24/7', desc: 'Never miss a booking because the phone was busy.' },
+          { icon: '📅', title: 'Take bookings', desc: 'Help guests find a table or time that works.' },
+          { icon: '🔄', title: 'Reschedule & cancel bookings', desc: 'Handle changes without interrupting service.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Hours, menu and general enquiries.' },
+          { icon: '👥', title: 'Handle group & event enquiries', desc: 'Capture the details for your team to follow up.' },
+          { icon: '🚨', title: 'Identify urgent enquiries', desc: 'Flag time-sensitive requests appropriately.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Fitness & Wellness': {
+        transition: "Nice 💪 Let's teach Ellie how you handle bookings and new enquiries.",
+        nameQuestion: "What's your studio or gym called?",
+        featureHeading: "What should Ellie take off your plate? 💪",
+        features: [
+          { icon: '📞', title: "Answer calls while you're training clients", desc: "Ellie picks up when you can't." },
+          { icon: '📅', title: 'Book classes & sessions', desc: 'Help members find a time that works.' },
+          { icon: '🔄', title: 'Reschedule & cancel bookings', desc: 'Handle changes without interrupting your session.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Pricing, class times and general enquiries.' },
+          { icon: '✨', title: 'Handle new member enquiries', desc: 'Capture details from potential members.' },
+          { icon: '👥', title: 'Book with the right trainer', desc: 'Route bookings based on availability.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+      'Other': {
+        transition: "Perfect ✨ Let's teach Ellie how your business works.",
+        nameQuestion: "What's your business called?",
+        featureHeading: "What should Ellie take off your plate? ✨",
+        features: [
+          { icon: '📞', title: 'Answer calls 24/7', desc: 'Never let a call hit voicemail.' },
+          { icon: '📅', title: 'Book appointments', desc: 'Help customers find a time that works.' },
+          { icon: '🔄', title: 'Reschedule & cancel bookings', desc: 'Handle changes without interrupting you.' },
+          { icon: '💬', title: 'Answer common questions', desc: 'Hours, services and general enquiries.' },
+          { icon: '✨', title: 'Capture new enquiries', desc: 'Get the details from potential customers.' },
+          { icon: '🚨', title: 'Identify urgent calls', desc: 'Flag important enquiries appropriately.' },
+          { icon: '📝', title: 'Send call summaries', desc: 'Know what happened without answering the phone.' },
+        ],
+      },
+    };
 
-    function animateWizCount(el, target, stepMs) {
-      if (!el) return;
-      let n = 0;
-      const iv = setInterval(() => {
-        n = Math.min(n + 1, target);
-        el.textContent = n;
-        if (n >= target) clearInterval(iv);
-      }, stepMs);
+    // Step 2/3 sub-panels
+    const wizQ2 = document.getElementById('wiz-q2');
+    const wizStep2Main = document.querySelector('.lp-wiz-step2-main');
+    const wizStep2Transition = document.getElementById('wiz-step2-transition');
+    const wizStep2TransitionText = document.getElementById('wiz-step2-transition-text');
+
+    const wizQ3 = document.getElementById('wiz-q3');
+    const wizStep3Main = document.querySelector('.lp-wiz-step3-main');
+    const wizStep3Transition = document.getElementById('wiz-step3-transition');
+    const wizStep3TransitionText = document.getElementById('wiz-step3-transition-text');
+
+    // Step 4
+    const wizStep4Btn = document.getElementById('wiz-step4-continue');
+
+    // Step 5
+    const wizQ5 = document.getElementById('wiz-q5');
+    const wizFeaturesOptionsEl = document.getElementById('wiz-features-options');
+    const wizStep5Btn = document.getElementById('wiz-step5-continue');
+
+    // Step 6
+    const wizBuildingEl = document.getElementById('wiz-building');
+    const wizBuildingH  = document.getElementById('wiz-building-h');
+    const wizChecklist  = document.getElementById('wiz-checklist');
+    const wizRevealEl   = document.getElementById('wiz-reveal');
+    const wizRevealBiz  = document.getElementById('wiz-reveal-biz');
+    const wizRevealList = document.getElementById('wiz-reveal-list');
+    const wizRevealPositioning = document.getElementById('wiz-reveal-positioning');
+
+    let wizStepIndex = 0;
+    let wizSelectedFeatures = [];
+    let leadCaptured = false;
+    let wizBlocked = false;
+    const currentWizStep = () => wizSteps[wizStepIndex];
+
+    function firstName() { return (wizName.value.trim().split(/\s+/)[0]) || 'there'; }
+    function bizName()   { return wizBizName.value.trim() || 'your business'; }
+    function bizConfig() { return WIZ_BIZ_CONFIG[wizBizType.value] || WIZ_BIZ_CONFIG['Other']; }
+
+    function resetStep2() {
+      wizStep2Main.style.display = '';
+      wizStep2Transition.style.display = 'none';
+      wizQ2.textContent = `Nice to meet you, ${firstName()}! What kind of business are we helping?`;
+    }
+
+    function resetStep3() {
+      wizStep3Main.style.display = '';
+      wizStep3Transition.style.display = 'none';
+      wizQ3.textContent = bizConfig().nameQuestion;
+    }
+
+    function renderStep5() {
+      const cfg = bizConfig();
+      wizQ5.textContent = cfg.featureHeading;
+      wizFeaturesOptionsEl.innerHTML = '';
+      wizSelectedFeatures = [];
+      wizFeatures.value = '';
+      wizStep5Btn.disabled = true;
+      cfg.features.forEach(f => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'lp-wiz-option lp-wiz-option--multi';
+        btn.innerHTML = `
+          <span class="lp-wiz-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="lp-wiz-option--multi-body">
+            <span class="lp-wiz-option--multi-title">${f.icon} ${f.title}</span>
+            <span class="lp-wiz-option--multi-desc">${f.desc}</span>
+          </span>`;
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('selected');
+          const idx = wizSelectedFeatures.indexOf(f.title);
+          if (btn.classList.contains('selected') && idx === -1) wizSelectedFeatures.push(f.title);
+          if (!btn.classList.contains('selected') && idx !== -1) wizSelectedFeatures.splice(idx, 1);
+          wizFeatures.value = wizSelectedFeatures.join(', ');
+          wizStep5Btn.disabled = wizSelectedFeatures.length === 0;
+        });
+        wizFeaturesOptionsEl.appendChild(btn);
+      });
+    }
+
+    function runBuildingSequence() {
+      wizBuildingEl.style.display = '';
+      wizRevealEl.style.display = 'none';
+      wizBuildingH.textContent = `Personalising Ellie for ${bizName()}...`;
+      const items = Array.from(wizChecklist.children);
+      items.forEach(li => li.classList.remove('show', 'done'));
+
+      items.forEach((li, i) => setTimeout(() => li.classList.add('show'), 150 + i * 450));
+      items.slice(0, 3).forEach((li, i) => setTimeout(() => li.classList.add('done'), 550 + i * 450));
+
+      setTimeout(() => {
+        wizBuildingEl.style.display = 'none';
+        wizRevealEl.style.display = '';
+        wizRevealEl.classList.add('lp-wiz-fade-in');
+        populateReveal();
+      }, 2300);
+    }
+
+    function populateReveal() {
+      wizRevealBiz.textContent = `Built around ${bizName()}`;
+      wizRevealList.innerHTML = wizSelectedFeatures.map(title => `
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> ${title}</li>
+      `).join('');
+      wizRevealPositioning.textContent = `This isn't a generic answering bot. We'll customise Ellie around ${bizName()}'s services, staff, hours, booking rules and the way you want calls handled.`;
     }
 
     function showWizStep(idx) {
@@ -1133,21 +1352,17 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         d.classList.toggle('done', !isNaN(stepNum) && n < stepNum);
         d.classList.toggle('active', !isNaN(stepNum) && n === stepNum);
       });
-      const onSuccess = wizSteps[idx].dataset.step === 'success';
-      if (wizBackBtn) wizBackBtn.style.visibility = onSuccess ? 'hidden' : 'visible';
-      if (wizProgress) wizProgress.style.visibility = onSuccess ? 'hidden' : 'visible';
+      const step = wizSteps[idx].dataset.step;
+      const hideChrome = step === 'success' || step === '6';
+      if (wizBackBtn) wizBackBtn.style.visibility = hideChrome ? 'hidden' : 'visible';
+      if (wizProgress) wizProgress.style.visibility = hideChrome ? 'hidden' : 'visible';
       const firstInput = wizSteps[idx].querySelector('input.lp-wiz-input');
-      if (firstInput) setTimeout(() => firstInput.focus(), 300);
+      if (firstInput) setTimeout(() => firstInput.focus({ preventScroll: true }), 300);
 
-      if (wizSteps[idx].dataset.step === '6' && !wizStatCounted) {
-        wizStatCounted = true;
-        animateWizCount(wizStatNumEl, 27, 35);
-      }
-      if (wizSteps[idx].dataset.step === '8' && !wizInfoCounted) {
-        wizInfoCounted = true;
-        animateWizCount(wizInfoCostEl, 25, 45);
-        animateWizCount(wizInfoAccEl, 98, 12);
-      }
+      if (step === '2') resetStep2();
+      if (step === '3') resetStep3();
+      if (step === '5') renderStep5();
+      if (step === '6') runBuildingSequence();
     }
 
     function openWizard() {
@@ -1180,120 +1395,172 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     }
 
     // Enter key: advance the current step instead of implicitly submitting
-    // the form (the form only has one native submit button, on the final step).
+    // the form (the form only has one native submit button, on Step 6).
     wizForm.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' || currentWizStep().dataset.step === '10') return;
+      if (e.key !== 'Enter' || currentWizStep().dataset.step === '6') return;
       e.preventDefault();
       const btn = currentWizStep().querySelector('[data-next]');
       if (btn && !btn.disabled) btn.click();
     });
 
-    // Steps with a single text input + Continue button (name, business name, phone)
-    [
-      { input: wizName,    validate: () => WIZ_NAME_RE.test(wizName.value.trim()) },
-      { input: wizBizName, validate: () => wizBizName.value.trim().length > 0 && wizBizName.value.trim().length <= 100 },
-      { input: wizPhone,   validate: () => isValidAuPhone(wizPhone.value) },
-    ].forEach(({ input, validate }) => {
-      if (!input) return;
-      const btn = input.closest('.lp-wiz-step').querySelector('[data-next]');
-      const check = () => { btn.disabled = !validate(); };
-      input.addEventListener('input', check);
-      check();
-      btn.addEventListener('click', () => { if (!btn.disabled) wizGoNext(); });
-    });
+    // Step 1 — name
+    if (wizName) {
+      const btn1 = wizName.closest('.lp-wiz-step').querySelector('[data-next]');
+      const check1 = () => { btn1.disabled = !WIZ_NAME_RE.test(wizName.value.trim()); };
+      wizName.addEventListener('input', check1);
+      check1();
+      btn1.addEventListener('click', () => { if (!btn1.disabled) wizGoNext(); });
+    }
 
-    // Steps with option cards — click sets the hidden field and auto-advances
-    wizForm.querySelectorAll('.lp-wiz-options').forEach(group => {
-      const hidden = document.getElementById('wiz-' + group.dataset.field);
-      group.querySelectorAll('.lp-wiz-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-          group.querySelectorAll('.lp-wiz-option').forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          if (hidden) hidden.value = opt.textContent.trim();
-          setTimeout(wizGoNext, 320);
-        });
+    // Step 2 — business type (auto-advances via an inline transition line)
+    document.querySelectorAll('.lp-wiz-step2-main .lp-wiz-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.lp-wiz-step2-main .lp-wiz-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        const val = opt.dataset.value || opt.textContent.trim();
+        wizBizType.value = val;
+        const cfg = WIZ_BIZ_CONFIG[val] || WIZ_BIZ_CONFIG['Other'];
+        wizStep2TransitionText.textContent = cfg.transition;
+        wizStep2Main.style.display = 'none';
+        wizStep2Transition.style.display = 'block';
+        wizStep2Transition.classList.add('lp-wiz-fade-in');
+        setTimeout(wizGoNext, 1300);
       });
     });
 
-    // Informational steps with no field to fill in (e.g. the dashboard
-    // showcase) — just a Continue button that advances.
-    wizForm.querySelectorAll('[data-info-next]').forEach(btn => {
-      btn.addEventListener('click', wizGoNext);
-    });
+    // Step 3 — business name (continue shows an inline transition line first)
+    if (wizBizName) {
+      const btn3 = wizStep3Main.querySelector('[data-next]');
+      const check3 = () => {
+        const v = wizBizName.value.trim();
+        btn3.disabled = !(v.length > 0 && v.length <= 100);
+      };
+      wizBizName.addEventListener('input', check3);
+      check3();
+      btn3.addEventListener('click', () => {
+        if (btn3.disabled) return;
+        wizStep3TransitionText.textContent = `Love it. Let's get Ellie ready for ${bizName()} ✨`;
+        wizStep3Main.style.display = 'none';
+        wizStep3Transition.style.display = 'block';
+        wizStep3Transition.classList.add('lp-wiz-fade-in');
+        setTimeout(wizGoNext, 1200);
+      });
+    }
 
+    // Lead capture — fires once (with the Meta pixel/CAPI) the moment we
+    // first have valid contact details, then again (Netlify only, no
+    // duplicate pixel) once they finish configuring their Ellie. This way
+    // the lead is saved even if they abandon the flow after Step 4.
+    function captureLead({ complete }) {
+      if (wizBlocked) return;
+
+      if (!complete) {
+        if (leadCaptured) return;
+        if ((wizHoneypot && wizHoneypot.value) || (Date.now() - wizLoadedAt) < WIZ_MIN_HUMAN_FILL_MS) {
+          wizBlocked = true;
+          return;
+        }
+        leadCaptured = true;
+
+        const email = wizEmail.value.trim();
+        const fbPhone = wizPhone.value.trim() ? toE164Digits(wizPhone.value) : '';
+        const fbEventId = (crypto.randomUUID ? crypto.randomUUID() : `lead-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+
+        if (typeof fbq === 'function') {
+          const advancedMatching = {};
+          if (fbPhone) advancedMatching.ph = fbPhone;
+          if (email) advancedMatching.em = email.toLowerCase();
+          if (Object.keys(advancedMatching).length) fbq('init', '1377367451165227', advancedMatching);
+          fbq('track', 'Lead', {}, { eventID: fbEventId });
+        }
+
+        fetch('/.netlify/functions/meta-capi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            em: email || undefined,
+            ph: fbPhone || undefined,
+            eventId: fbEventId,
+            eventSourceUrl: location.href,
+            fbp: getCookie('_fbp'),
+            fbc: getCookie('_fbc'),
+          }),
+        }).catch(() => {});
+
+        track('trial_started', { business_type: wizBizType.value });
+        track('callback_requested', {});
+      }
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(wizForm)).toString(),
+      }).catch(() => {});
+    }
+
+    // Step 4 — contact info. This is the checkpoint: as soon as it's valid,
+    // we save the lead before moving on to the (optional, enriching) steps.
+    if (wizPhone && wizStep4Btn) {
+      const updateStep4Btn = () => { wizStep4Btn.disabled = !isValidAuPhone(wizPhone.value); };
+      wizPhone.addEventListener('input', updateStep4Btn);
+      updateStep4Btn();
+
+      wizStep4Btn.addEventListener('click', () => {
+        if (wizStep4Btn.disabled) return;
+        const email = wizEmail.value.trim();
+        if (email && (email.length > 254 || !WIZ_EMAIL_RE.test(email))) {
+          flashInvalid(wizEmail);
+          return;
+        }
+        captureLead({ complete: false });
+        if (wizBlocked) return;
+        wizGoNext();
+      });
+    }
+
+    // Step 5 — feature checklist, continue button
+    if (wizStep5Btn) {
+      wizStep5Btn.addEventListener('click', () => { if (!wizStep5Btn.disabled) wizGoNext(); });
+    }
+
+    // Step 6 — final CTA ("Build My Ellie"): save the complete lead
+    // (features included) and show the success screen.
     wizForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (wizBlocked) return;
 
-      if ((wizHoneypot && wizHoneypot.value) || (Date.now() - wizLoadedAt) < WIZ_MIN_HUMAN_FILL_MS) {
-        return;
-      }
-
-      const name = wizName ? wizName.value.trim() : '';
+      const name = wizName.value.trim();
       if (!WIZ_NAME_RE.test(name)) { showWizStep(0); return; }
 
-      if (wizPhone && !isValidAuPhone(wizPhone.value)) {
-        showWizStep(wizSteps.findIndex(s => s.dataset.step === '9'));
+      if (!isValidAuPhone(wizPhone.value)) {
+        showWizStep(wizSteps.findIndex(s => s.dataset.step === '4'));
         return;
       }
-
-      const email = wizEmail ? wizEmail.value.trim() : '';
+      const email = wizEmail.value.trim();
       if (email && (email.length > 254 || !WIZ_EMAIL_RE.test(email))) {
+        showWizStep(wizSteps.findIndex(s => s.dataset.step === '4'));
         flashInvalid(wizEmail);
         return;
       }
 
-      // Shared between the browser pixel and the server-side Conversions API call
-      // below so Meta dedupes them into one Lead instead of counting it twice.
-      const fbEventId = (crypto.randomUUID ? crypto.randomUUID() : `lead-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-      const fbPhone = wizPhone && wizPhone.value.trim() ? toE164Digits(wizPhone.value) : '';
-
-      if (typeof fbq === 'function') {
-        const advancedMatching = {};
-        if (fbPhone) advancedMatching.ph = fbPhone;
-        if (email) advancedMatching.em = email.toLowerCase();
-        if (Object.keys(advancedMatching).length) fbq('init', '1377367451165227', advancedMatching);
-        fbq('track', 'Lead', {}, { eventID: fbEventId });
-      }
-
-      fetch('/.netlify/functions/meta-capi', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          em: email || undefined,
-          ph: fbPhone || undefined,
-          eventId: fbEventId,
-          eventSourceUrl: location.href,
-          fbp: getCookie('_fbp'),
-          fbc: getCookie('_fbc'),
-        }),
-      }).catch(() => {});
-
-      track('trial_started', { business_type: wizBizType ? wizBizType.value : '' });
-      track('callback_requested', {});
+      track('trial_completed', { business_type: wizBizType.value, features: wizFeatures.value });
 
       if (typeof confetti === 'function') {
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         setTimeout(() => confetti({ particleCount: 60, spread: 120, origin: { y: 0.55 } }), 350);
       }
 
+      const firstNm = name.split(' ')[0];
       const successH = document.getElementById('wiz-success-h');
-      if (successH) {
-        successH.textContent = '';
-        successH.append(`You're all set, ${name.split(' ')[0]}! `);
-        const span = document.createElement('span');
-        span.className = 'h2-grad';
-        span.textContent = '🎉';
-        successH.append(span);
-      }
+      if (successH) successH.textContent = `We're building your Ellie, ${firstNm}! 🎉`;
+      const successSub = document.getElementById('wiz-success-sub');
+      if (successSub) successSub.textContent = `Thanks, ${firstNm}! We'll use your answers to start preparing Ellie for ${bizName()}.`;
+      const next2Sub = document.getElementById('wiz-next-2-sub');
+      if (next2Sub) next2Sub.textContent = `We configure her specifically around ${bizName()}.`;
+
       showWizStep(wizSteps.findIndex(s => s.dataset.step === 'success'));
 
-      try {
-        await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(wizForm)).toString(),
-        });
-      } catch {}
+      captureLead({ complete: true });
     });
   }
 

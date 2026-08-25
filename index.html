@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ellie is an Australian AI receptionist that answers your calls 24/7, books appointments and sends SMS confirmations. Try the free personalised demo — enter your website and hear Ellie answer for your own business.">
-  <title>AI Receptionist Australia — Never Miss a Customer Call | Ellie</title>
+  <meta name="description" content="Ellie is a managed AI front desk for Australian businesses — built around your staff, services and hours, not a generic AI receptionist. She answers calls, qualifies enquiries, books appointments and takes the next step. Try a free personalised demo.">
+  <title>Ellie — AI Front Desk for Australian Businesses</title>
   <link rel="canonical" href="https://callellie.com/">
 
   <!-- Open Graph / link preview -->
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="https://callellie.com/">
-  <meta property="og:title"       content="Ellie — AI Receptionist for Australian Small Business">
-  <meta property="og:description" content="Never lose another customer because you couldn't answer the phone. Ellie answers, qualifies and books your customers 24/7 with a natural Australian voice.">
+  <meta property="og:title"       content="Ellie — She Doesn't Just Answer Your Phone. She Runs Your Front Desk.">
+  <meta property="og:description" content="A managed AI front desk built around your business — your staff, services and hours. Ellie answers, qualifies, books and takes the next step, 24/7. We set her up for you.">
   <meta property="og:image"       content="https://callellie.com/assets/ellie/ellie-preview.png">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
 
   <!-- Twitter / X card -->
   <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="Ellie — AI Receptionist for Australian Small Business">
-  <meta name="twitter:description" content="Never lose another customer because you couldn't answer the phone. Ellie answers, qualifies and books your customers 24/7 with a natural Australian voice.">
+  <meta name="twitter:title"       content="Ellie — AI Front Desk for Australian Businesses">
+  <meta name="twitter:description" content="A managed AI front desk built around your business — your staff, services and hours. Ellie answers, qualifies, books and takes the next step, 24/7. We set her up for you.">
   <meta name="twitter:image"       content="https://callellie.com/assets/ellie/ellie-preview.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,17 +42,18 @@
         "url": "https://callellie.com/",
         "logo": "https://callellie.com/assets/ellie/logo.png",
         "image": "https://callellie.com/assets/ellie/ellie-preview.png",
-        "description": "Ellie is an AI phone receptionist for Australian small businesses. She answers calls 24/7, books appointments, and sends SMS confirmations.",
+        "description": "Ellie is a managed AI front desk for Australian small businesses, configured around each business's staff, services and hours. She answers calls, qualifies enquiries, books appointments and takes the next step.",
         "email": "hello@callellie.com",
         "areaServed": { "@type": "Country", "name": "Australia" }
       },
       {
         "@type": "SoftwareApplication",
         "@id": "https://callellie.com/#software",
-        "name": "Ellie AI Receptionist",
+        "name": "Ellie — AI Front Desk",
+        "alternateName": "Ellie AI Receptionist",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web",
-        "description": "AI phone receptionist that answers calls 24/7, understands natural speech in an Australian voice, learns your business, qualifies enquiries and books appointments.",
+        "description": "A managed AI front desk that's configured around your business — your staff, services and hours. Ellie answers calls, understands natural speech in an Australian voice, qualifies enquiries and books appointments.",
         "provider": { "@id": "https://callellie.com/#organization" },
         "offers": {
           "@type": "Offer",
@@ -103,6 +104,11 @@
             "@type": "Question",
             "name": "How quickly can I get set up?",
             "acceptedAnswer": { "@type": "Answer", "text": "Most businesses go live within 24 hours of their callback. Ellie learns your business from your website in seconds — we handle the rest." }
+          },
+          {
+            "@type": "Question",
+            "name": "Why Ellie instead of another AI receptionist?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Most AI receptionists are generic software you configure yourself. Ellie is built around your actual business — your staff, services, hours and rules — and we set her up for you, not the other way around." }
           }
         ]
       }
@@ -539,6 +545,8 @@
       background: rgba(255,255,255,.07);
       border: 1px solid rgba(255,255,255,.13);
       border-radius: 14px; padding: 9px 14px;
+      height: 46px; box-sizing: border-box;
+      width: 184px; justify-content: center;
       box-shadow: 0 2px 16px rgba(0,0,0,.18);
       text-decoration: none; cursor: pointer;
       transition: transform .15s, border-color .15s;
@@ -557,6 +565,8 @@
       border: 1px solid rgba(255,255,255,.13);
       color: var(--violet); font-size: .78rem; font-weight: 700;
       padding: 9px 14px; border-radius: 14px; white-space: nowrap;
+      height: 46px; box-sizing: border-box;
+      width: 184px; justify-content: center;
       text-decoration: none;
       box-shadow: 0 2px 16px rgba(0,0,0,.18);
       animation: calloutVibrate 2.8s ease-in-out infinite;
@@ -570,6 +580,13 @@
       90% { transform: translate(2px,-1px) rotate(2deg); }
       92% { transform: translate(-1px,0) rotate(-1deg); }
       94% { transform: translate(0,0) rotate(0deg); }
+    }
+    .hero-callback-pill.hero-getstart { animation: none; }
+    .hero-callback-pill.hero-getstart:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
+    .hero-arrow-icon { flex-shrink: 0; animation: heroArrowNudge 1.4s ease-in-out infinite; }
+    @keyframes heroArrowNudge {
+      0%, 100% { transform: translateX(0); }
+      50%      { transform: translateX(4px); }
     }
     .hero-actions { display: none; }
     /* ── Founding offer tag, attached to the headline — quiet status-badge style,
@@ -3035,6 +3052,8 @@
       background: rgba(255,255,255,.07);
       border: 1px solid rgba(255,255,255,.13);
       border-radius: 14px; padding: 9px 14px;
+      height: 46px; box-sizing: border-box;
+      width: 184px; justify-content: center;
       box-shadow: 0 2px 16px rgba(0,0,0,.18);
       text-decoration: none; cursor: pointer;
       transition: transform .15s, border-color .15s;
@@ -3053,6 +3072,8 @@
       border: 1px solid rgba(255,255,255,.13);
       color: var(--violet); font-size: .78rem; font-weight: 700;
       padding: 9px 14px; border-radius: 14px; white-space: nowrap;
+      height: 46px; box-sizing: border-box;
+      width: 184px; justify-content: center;
       text-decoration: none;
       box-shadow: 0 2px 16px rgba(0,0,0,.18);
       animation: calloutVibrate 2.8s ease-in-out infinite;
@@ -3387,9 +3408,9 @@
 <!-- ── NAV ── -->
 <nav id="main-nav">
   <div class="nav-in">
-    <a href="index.html" class="nav-logo" aria-label="Ellie AI Receptionist — home">
-      <img src="assets/ellie/logo.png" class="logo-dark" alt="Ellie AI Receptionist by anupama.dev">
-      <img src="assets/ellie/dark-logo.png" class="logo-light" alt="Ellie AI Receptionist by anupama.dev">
+    <a href="index.html" class="nav-logo" aria-label="Ellie — AI front desk for Australian businesses — home">
+      <img src="assets/ellie/logo.png" class="logo-dark" alt="Ellie — AI front desk for Australian businesses">
+      <img src="assets/ellie/dark-logo.png" class="logo-light" alt="Ellie — AI front desk for Australian businesses">
     </a>
     <ul class="nav-links">
       <li><a href="#how-it-works">How It Works</a></li>
@@ -3402,8 +3423,8 @@
     <div class="nav-right">
       <div class="nav-ctas">
         <a href="#demo" class="nav-book">Try Ellie Free</a>
-        <a href="#book" class="nav-cta">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px;margin-top:-1px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Request a callback
+        <a href="get-started.html" class="nav-cta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px;margin-top:-1px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Build my Ellie
         </a>
       </div>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
@@ -3424,7 +3445,7 @@
     <a href="/blog/">Blog</a>
     <div class="nav-mobile-divider"></div>
     <a href="#demo">Try Ellie Free</a>
-    <a href="#book" style="color:var(--violet);font-weight:600;">Request a callback →</a>
+    <a href="get-started.html" style="color:var(--violet);font-weight:600;">Build my Ellie →</a>
   </div>
 </nav>
 
@@ -3438,24 +3459,24 @@
   <div class="hero-in">
     <div class="hero-copy">
       <div class="hero-trust-row">
-        <a href="#pricing" class="hero-trust-badge">
+        <a href="#book" class="hero-trust-badge">
           <div class="hero-trust-google">
             <span style="font-size:1.3rem;line-height:1;">🇦🇺</span>
           </div>
           <div class="hero-trust-sep"></div>
           <div class="hero-trust-right">
-            <div class="hero-trust-stars"><b>$99</b>/month</div>
-            <div class="hero-trust-count">First 10 businesses only</div>
+            <div class="hero-trust-stars"><b>Free</b> for 7 Days</div>
+            <div class="hero-trust-count">No credit card required</div>
           </div>
         </a>
-        <a href="#book" class="hero-callback-pill">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Request a callback
+        <a href="get-started.html" class="hero-callback-pill hero-getstart" data-track="hero_get_started_clicked">
+          Get Started
+          <svg class="hero-arrow-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <h1 class="hero-h1" id="heroH1">The 24/7 <span class="hero-h1-grad">AI call answering system</span> for Australian&nbsp;businesses.</h1>
+      <h1 class="hero-h1" id="heroH1">Ellie doesn't just answer your phone. <span class="hero-h1-grad">She runs your front desk.</span></h1>
       <p class="hero-sub">
-        <strong>Ellie</strong> answers every call, books appointments and sends SMS confirmations — 24/7, never sick, never off.
+        <strong>Ellie</strong> answers calls, qualifies enquiries, books appointments and knows when to bring in your team - configured around your staff, services and hours. We set her up. You just answer the door.
       </p>
 
       <!-- ── WEBSITE URL BAR ── -->
@@ -3471,7 +3492,7 @@
           </div>
           <button class="hero-url-btn" id="hero-url-btn" type="button">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l1.06-.97a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            Try Your DEMO AI Receptionist
+            Try Your Own Ellie Demo
           </button>
         </div>
         <div class="hero-url-domain-badge" id="hero-domain-badge">
@@ -3490,15 +3511,15 @@
       <div class="hero-checks">
         <div class="hero-check">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Answers every call, 24/7
+          Built around your business
         </div>
         <div class="hero-check">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Books appointments automatically
+          Books & takes the next step
         </div>
         <div class="hero-check">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Never misses a call
+          We set it up for you
         </div>
       </div>
     </div>
@@ -3512,10 +3533,10 @@
             <div class="hero-av-info">
               <div class="hero-av-live">
                 <span class="hero-av-live-dot"></span>
-                Live · AI Receptionist
+                Live · AI Front Desk
               </div>
               <div class="hero-av-name">Ellie</div>
-              <div class="hero-av-tagline">24/7 AI receptionist for Australian businesses</div>
+              <div class="hero-av-tagline">Your AI front desk</div>
             </div>
             <div class="hero-av-controls">
               <div class="hero-av-sound">
@@ -3574,6 +3595,48 @@
     </div>
   </div>
 </div>
+
+<!-- ── DIFFERENTIATION ── -->
+<section class="problem" id="different">
+  <div class="container">
+    <div class="prob-hd reveal">
+      <div class="sec-tag">Why Ellie</div>
+      <h2 class="sec-h2">Not another plug-and-play <span class="h2-grad">AI receptionist.</span></h2>
+    </div>
+
+    <p class="prob-sub reveal" style="max-width:640px;">Every business handles customers differently. That's why we don't hand you generic software and expect you to figure it out — we learn how your business works, configure Ellie around your team and workflows, test it with you, and get her ready to answer real customers.</p>
+
+    <div class="dash-bullets reveal" style="margin-top:2.4rem;">
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">1. Tell us how your business works</div>
+          <div class="dash-bullet-desc">Staff, services, hours, bookings and how you like calls handled.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">2. We build your Ellie</div>
+          <div class="dash-bullet-desc">We configure the receptionist and connect the workflows your business actually needs.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">3. Ellie gets to work</div>
+          <div class="dash-bullet-desc">Calls, bookings, enquiries and escalations — handled around the clock.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ── PROBLEM ── -->
 <section id="problem" class="problem">
@@ -3704,6 +3767,74 @@
 
     </div>
 
+  </div>
+</section>
+
+<!-- ── ELLIE ACTIONS ── -->
+<section class="how" id="actions">
+  <div class="container">
+    <div class="how-hd reveal">
+      <div class="sec-tag">More Than Answering</div>
+      <h2 class="sec-h2">Every conversation can lead to <span class="h2-grad">an action.</span></h2>
+      <p>A competitor-style AI answers your calls. Ellie handles the enquiry and completes the next step.</p>
+    </div>
+
+    <div class="dash-bullets reveal" style="margin-top:1rem;">
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">Book</div>
+          <div class="dash-bullet-desc">Find availability and make the appointment.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">Qualify</div>
+          <div class="dash-bullet-desc">Ask the questions your team needs before following up.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">Route</div>
+          <div class="dash-bullet-desc">Send important calls to the right person.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">Notify</div>
+          <div class="dash-bullet-desc">Send your team the information they need immediately.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">Confirm</div>
+          <div class="dash-bullet-desc">Send SMS confirmations so nothing falls through the cracks.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">Update</div>
+          <div class="dash-bullet-desc">Push information into connected business systems where supported.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -4075,9 +4206,9 @@
   <div class="container">
 
     <div class="dashboard-hd reveal">
-      <div class="sec-tag" style="justify-content:center;">Your Dashboard</div>
-      <h2 class="sec-h2">Every call. Every booking.<br><span class="h2-grad">One place.</span></h2>
-      <p>You don't need to listen to every recording to know what happened. Calls, bookings and analytics. all visible in one dashboard.</p>
+      <div class="sec-tag" style="justify-content:center;">Shows The Value</div>
+      <h2 class="sec-h2">See what Ellie actually<br><span class="h2-grad">got done.</span></h2>
+      <p>Not just call counts. Enquiries qualified, appointments booked and calls escalated — the outcomes, not just the noise.</p>
     </div>
 
     <!-- Real dashboard UI, recreated in HTML/CSS (not a screenshot) — sample
@@ -4267,7 +4398,7 @@
         </div>
         <div>
           <div class="dash-bullet-title">Real-time Analytics</div>
-          <div class="dash-bullet-desc">Call volume, booking rates, peak hours, and revenue earned — tracked live. Know your numbers without lifting a finger.</div>
+          <div class="dash-bullet-desc">Calls handled, enquiries qualified, bookings made and calls escalated — tracked live, so you can see the outcomes, not just the call count.</div>
         </div>
       </div>
       <div class="dash-bullet reveal">
@@ -4541,20 +4672,77 @@
   </div>
 </section>
 
-<!-- ── HUMAN HANDOFF / SAFE FALLBACK ── -->
-<section class="handoff-sec">
+<!-- ── STAFF-AWARE BOOKING ── -->
+<section class="handoff-sec" id="staff-booking">
   <div class="container">
     <div class="handoff-in reveal">
       <div class="handoff-copy">
-        <div class="sec-tag">Trust &amp; Safety</div>
-        <h2 class="sec-h2">AI when it can help.<br><span class="h2-grad">Your team when it should.</span></h2>
-        <p class="sec-p">Ellie doesn't guess. If she doesn't genuinely know the answer, she says so, takes a message, and makes sure it reaches your team instead of inventing pricing, hours or details she was never given.</p>
+        <div class="sec-tag">Built Around Your Team</div>
+        <h2 class="sec-h2">One receptionist.<br><span class="h2-grad">Your whole team.</span></h2>
+        <p class="sec-p">For businesses with more than one person on the roster, we configure Ellie around your actual staff, their services and their working hours during onboarding — so bookings land with the right person, not just the first opening.</p>
         <ul class="handoff-list">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Configured around each staff member's services and hours</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Checks calendar availability before booking</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Books, reschedules and cancels appointments</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Sends an SMS confirmation the moment it's booked</li>
+        </ul>
+
+        <div style="max-width:460px;margin:2rem auto 0;padding:20px 22px;border-radius:16px;border:1px solid var(--border);background:var(--bg2);text-align:left;">
+          <p style="margin:0 0 12px;font-size:.88rem;line-height:1.6;color:var(--muted);"><strong style="color:var(--text);">Customer:</strong> "Can I get a haircut tomorrow afternoon? Anyone is fine."</p>
+          <p style="margin:0;font-size:.88rem;line-height:1.6;color:var(--muted);"><strong style="color:var(--violet);">Ellie:</strong> "Absolutely — Emma has 2:30 or 3:30, and Sarah has 3:15. Which works best?"</p>
+        </div>
+        <p class="wf-tl-note" style="margin-top:12px;text-align:center;">An illustrative example of how staff-aware booking is configured — not a live call.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SMART ESCALATION / HUMAN HANDOFF ── -->
+<section class="handoff-sec" id="escalation">
+  <div class="container">
+    <div class="handoff-in reveal">
+      <div class="handoff-copy">
+        <div class="sec-tag">Smart Escalation</div>
+        <h2 class="sec-h2">Ellie knows when to handle it —<br><span class="h2-grad">and when a human should.</span></h2>
+        <p class="sec-p">Ellie doesn't guess, and she isn't trying to replace your team's judgement. If she doesn't genuinely know the answer, she says so, takes a message, and makes sure it reaches the right person instead of inventing pricing, hours or details she was never given.</p>
+
+        <div style="max-width:560px;margin:1.6rem auto 0;border-radius:16px;border:1px solid var(--border);background:var(--bg2);overflow:hidden;text-align:left;">
+          <table style="width:100%;border-collapse:collapse;font-size:.86rem;">
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Normal booking</td>
+                <td style="padding:12px 16px;color:var(--muted);">Ellie handles it</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px 16px;color:var(--text);font-weight:600;">New enquiry</td>
+                <td style="padding:12px 16px;color:var(--muted);">Ellie qualifies it</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Asks for a specific person</td>
+                <td style="padding:12px 16px;color:var(--muted);">Warm transfer where set up, or a message to that person</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Urgent enquiry</td>
+                <td style="padding:12px 16px;color:var(--muted);">Flagged and your team notified</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Complaint</td>
+                <td style="padding:12px 16px;color:var(--muted);">Message taken and escalated to your team</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;color:var(--text);font-weight:600;">After-hours enquiry</td>
+                <td style="padding:12px 16px;color:var(--muted);">Captured and ready for you the next business day</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ul class="handoff-list" style="margin-top:1.6rem;">
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Takes a detailed message when she can't help</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Flags urgent or unusual enquiries for your attention</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Never invents pricing, hours or details she wasn't given</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Intelligent live call transfer to your team</li>
         </ul>
+        <p class="sec-p" style="margin-top:1.4rem;font-weight:600;color:var(--text);">Automation where it helps. Humans where they matter.</p>
       </div>
     </div>
   </div>
@@ -4746,6 +4934,74 @@
   </p>
 </section>
 
+<!-- ── MANAGED SETUP ── -->
+<section class="how" id="managed-setup">
+  <div class="container">
+    <div class="how-hd reveal">
+      <div class="sec-tag">Managed Setup</div>
+      <h2 class="sec-h2">We build <span class="h2-grad">your Ellie</span> for you.</h2>
+      <p>No complicated prompts. No hours configuring workflows. No figuring out AI software yourself. Tell us how your business handles calls and we'll customise Ellie around it.</p>
+    </div>
+
+    <div class="dash-bullets reveal" style="margin-top:1rem;">
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">1. Business discovery</div>
+          <div class="dash-bullet-desc">We learn your team, services and call workflow.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">2. Custom setup</div>
+          <div class="dash-bullet-desc">We configure Ellie around your business.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">3. Integrations</div>
+          <div class="dash-bullet-desc">We connect the supported systems you need.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">4. Test calls</div>
+          <div class="dash-bullet-desc">We run realistic customer scenarios with you before go-live.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">5. Go live</div>
+          <div class="dash-bullet-desc">Ellie starts handling calls for your business.</div>
+        </div>
+      </div>
+      <div class="dash-bullet">
+        <div class="dash-bullet-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div>
+          <div class="dash-bullet-title">6. Improve</div>
+          <div class="dash-bullet-desc">We refine call flows and workflows as your business evolves.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── FOUNDING OFFER + PRICING ── -->
 <section class="founding-sec" id="pricing">
   <div class="container">
@@ -4764,17 +5020,17 @@
       </div>
       <p class="pricing-note">For the first 10 founding businesses. Your $99 founding rate stays locked in while your subscription remains active.</p>
       <ul class="pricing-features">
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Custom-built around your business</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 24/7 AI call answering</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Natural Australian voice</li>
-        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Business knowledge from your website</li>
-        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Appointment booking</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Learns your services &amp; FAQs</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Appointment &amp; job booking</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> SMS confirmations</li>
-        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Dashboard &amp; call history</li>
-        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Call recordings &amp; analytics</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Dashboard, recordings &amp; call history</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Supported integrations</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Free setup, no lock-in</li>
       </ul>
-      <a href="#book" class="pricing-cta" data-track="founding_offer_cta_clicked">Start My 7-Day Free Trial</a>
+      <a href="get-started.html" class="pricing-cta" data-track="founding_offer_cta_clicked">Build My Ellie — Free for 7 Days</a>
       <p class="pricing-fine">$0 today · No setup fee · Cancel anytime</p>
     </div>
   </div>
@@ -4803,13 +5059,13 @@
   <div class="container">
     <div class="cta-card reveal" style="text-align:center;max-width:560px;margin:0 auto;">
       <div class="sec-tag" style="justify-content:center;">7-Day Free Trial</div>
-      <h2 class="book-h2">Ready to get <span class="h2-grad">started?</span></h2>
-      <p class="book-sub" style="margin-bottom:1.8rem;">Fill out a quick form and we'll set up your Ellie within 24 hours or call her directly right now and hear it for yourself.</p>
+      <h2 class="book-h2">Let's build an Ellie <span class="h2-grad">for your business.</span></h2>
+      <p class="book-sub" style="margin-bottom:1.8rem;">Tell us how your business works and we'll customise Ellie around your services, staff, bookings and call rules — ready for you to test within 24 hours.</p>
 
       <div class="book-cta-row">
         <a href="get-started.html" class="trial-cta" data-track="book_get_started_clicked">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          Get Started
+          Build My Ellie
         </a>
         <a href="tel:+61485057840" class="btn-ghost book-call-btn" data-track="book_call_clicked">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -4928,6 +5184,13 @@
         </button>
         <div class="faq-a"><p>Most businesses go live within 24 hours of their callback. Ellie learns your business from your website in seconds — we handle the rest.</p></div>
       </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">
+          Why Ellie instead of another AI receptionist?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Most AI receptionists are generic software you configure yourself. Ellie is built around your actual business — your staff, services, hours and rules — and we set her up for you, not the other way around.</p></div>
+      </div>
     </div>
   </div>
 </section>
@@ -4951,10 +5214,10 @@
 <footer>
   <div class="foot-in">
     <div class="foot-brand" id="about-ellie" style="max-width:280px;">
-      <a href="index.html" class="nav-logo" aria-label="Ellie AI Receptionist — home" style="margin-bottom:.6rem;">
-        <img src="assets/ellie/logo.png" alt="Ellie AI Receptionist by anupama.dev" style="height:34px;" loading="lazy">
+      <a href="index.html" class="nav-logo" aria-label="Ellie — AI front desk for Australian businesses — home" style="margin-bottom:.6rem;">
+        <img src="assets/ellie/logo.png" alt="Ellie — AI front desk for Australian businesses" style="height:34px;" loading="lazy">
       </a>
-      <p style="max-width:none;">Ellie is an AI receptionist for small businesses. She answers calls, books appointments, and sends SMS confirmations 24/7. If connected, she only uses your Google Calendar to check availability and create bookings. <a href="privacy.html" style="color:inherit;text-decoration:underline;">Privacy Policy</a></p>
+      <p style="max-width:none;">Ellie is a managed AI front desk for small businesses, built around your staff, services and hours. She answers calls, books appointments, and sends SMS confirmations 24/7. If connected, she only uses your Google Calendar to check availability and create bookings. <a href="privacy.html" style="color:inherit;text-decoration:underline;">Privacy Policy</a></p>
     </div>
     <div class="foot-col">
       <h4>Ellie</h4>

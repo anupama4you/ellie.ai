@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Try Ellie completely free for 7 days. She answers every call your business gets, books the job, and sends an SMS confirmation — no credit card, no lock-in contract.">
-  <title>Get Ellie Free for 7 Days — AI Receptionist for Australian Businesses</title>
+  <meta name="description" content="Ellie is a managed AI front desk built around your business — your staff, services and hours. She answers calls, handles enquiries, books customers and gets the right information to the right person, 24/7. Free for 7 days, no credit card required.">
+  <title>Ellie — Your AI Front Desk for Australian Businesses</title>
   <link rel="canonical" href="https://callellie.com/get-started">
 
   <!-- Open Graph / link preview -->
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="https://callellie.com/get-started">
-  <meta property="og:title"       content="Get Ellie Free for 7 Days — AI Receptionist for Australian Businesses">
-  <meta property="og:description" content="Ellie answers every call, books the job, and texts a confirmation — 24/7. Try her completely free for 7 days, no credit card required.">
+  <meta property="og:title"       content="Ellie — Your AI Front Desk for Australian Businesses">
+  <meta property="og:description" content="Built around your staff, services and hours — not a generic answering service. Ellie answers, handles enquiries, books customers and knows when to loop in your team. Free for 7 days.">
   <meta property="og:image"       content="https://callellie.com/assets/ellie/ellie-preview.png">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
 
   <!-- Twitter / X card -->
   <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="Get Ellie Free for 7 Days — AI Receptionist for Australian Businesses">
-  <meta name="twitter:description" content="Ellie answers every call, books the job, and texts a confirmation — 24/7. Try her completely free for 7 days, no credit card required.">
+  <meta name="twitter:title"       content="Ellie — Your AI Front Desk for Australian Businesses">
+  <meta name="twitter:description" content="Built around your staff, services and hours — not a generic answering service. Ellie answers, handles enquiries, books customers and knows when to loop in your team. Free for 7 days.">
   <meta name="twitter:image"       content="https://callellie.com/assets/ellie/ellie-preview.png">
   <meta name="robots" content="noindex, follow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2904,7 +2904,6 @@
 
   /* Nav: logo-only, no exit links */
   #main-nav .nav-in { justify-content: space-between; }
-  .lp-nav-logo { pointer-events: none; } /* logo isn't a link away from this page */
 
   /* Nav is position:fixed (68px tall) and overlaps whatever scrolls to the
      top of the viewport — this keeps scrollIntoView()/anchor jumps from
@@ -2930,10 +2929,21 @@
     text-wrap: balance;
   }
   [data-theme="light"] .lp-h1 { color: #0f172a; }
+  .lp-key-line {
+    font-family: 'Bricolage Grotesque', 'Inter', sans-serif; font-weight: 700;
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem); color: var(--text); margin: 0 0 1rem;
+  }
+  [data-theme="light"] .lp-key-line { color: #0f172a; }
   .lp-sub {
     font-size: clamp(1rem, 1.8vw, 1.25rem); line-height: 1.65; color: var(--muted);
     max-width: 740px; margin: 0 auto 1.8rem;
   }
+  .lp-offer-checks {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 8px 20px; margin: 0 auto; font-size: .86rem; color: var(--muted); font-weight: 600;
+  }
+  .lp-offer-checks span { display: inline-flex; align-items: center; gap: 6px; }
+  .lp-offer-checks svg { color: var(--green); flex-shrink: 0; }
   .lp-cta {
     display: inline-flex; align-items: center; justify-content: center; gap: 12px;
     width: 100%; max-width: 420px;
@@ -2958,7 +2968,7 @@
   .lp-tp-stars { color: #f59e0b; letter-spacing: 1px; font-size: .85rem; }
 
   /* Wizard section */
-  .lp-wiz-sec { background: var(--bg); min-height: 78vh; display: flex; align-items: center; padding: 40px 0 60px; }
+  .lp-wiz-sec { background: var(--bg); min-height: 78vh; display: flex; align-items: center; padding: 88px 0 60px; }
   .lp-wiz-container { max-width: 620px; margin: 0 auto; padding: 0 20px; width: 100%; }
   .lp-wiz-top { display: flex; align-items: center; margin-bottom: 2.6rem; }
   .lp-wiz-back {
@@ -2984,52 +2994,11 @@
   [data-theme="light"] .lp-wiz-q { color: #0f172a; }
   .lp-wiz-input { width: 100%; text-align: center; font-size: 1.1rem; margin-bottom: 1.4rem; }
 
-  .lp-wiz-stat { margin-bottom: 1.6rem; }
-  .lp-wiz-stat-num {
-    font-family: 'Archivo Black', 'Bricolage Grotesque', 'Inter', sans-serif;
-    font-size: clamp(2.6rem, 7vw, 4rem); line-height: 1; margin-bottom: .3rem;
-    background: linear-gradient(135deg, var(--violet), var(--rose));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .lp-wiz-stat-label { font-size: .95rem; font-weight: 600; color: var(--text); margin-bottom: .7rem; }
-  [data-theme="light"] .lp-wiz-stat-label { color: #0f172a; }
-  .lp-wiz-stat-sub { font-size: .85rem; color: var(--muted); line-height: 1.55; margin-bottom: .6rem; }
-  .lp-wiz-stat-source { display: inline-block; font-size: .74rem; color: var(--muted); text-decoration: underline; opacity: .8; }
-  .lp-wiz-stat-source:hover { opacity: 1; color: var(--violet); }
-
   .lp-wiz-home-link {
     display: inline-block; margin-top: 1.6rem; font-size: .85rem; font-weight: 600;
     color: var(--violet); opacity: .85; text-decoration: none;
   }
   .lp-wiz-home-link:hover { opacity: 1; text-decoration: underline; }
-
-  /* "Oh, and one more thing..." dashboard info step */
-  .lp-wiz-info { margin-bottom: 1.6rem; }
-  .lp-wiz-info-img {
-    border-radius: 16px; overflow: hidden; border: 1px solid var(--border);
-    box-shadow: 0 20px 60px rgba(0,0,0,.35); margin-bottom: 1.2rem;
-    opacity: 0; transform: translateY(14px) scale(.98);
-    animation: lpInfoImgIn .6s .1s cubic-bezier(.22,1,.36,1) forwards;
-  }
-  [data-theme="light"] .lp-wiz-info-img { box-shadow: 0 16px 44px rgba(15,23,42,.14); }
-  @keyframes lpInfoImgIn { to { opacity: 1; transform: translateY(0) scale(1); } }
-  .lp-wiz-info-img img { display: block; width: 100%; height: auto; }
-  .lp-wiz-info-copy { font-size: .95rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.4rem; }
-  .lp-wiz-info-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .lp-wiz-info-stat {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px 12px;
-    opacity: 0; animation: lpInfoStatIn .5s cubic-bezier(.22,1,.36,1) forwards;
-  }
-  .lp-wiz-info-stat:nth-child(1) { animation-delay: .3s; }
-  .lp-wiz-info-stat:nth-child(2) { animation-delay: .42s; }
-  @keyframes lpInfoStatIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .lp-wiz-info-stat-num {
-    font-family: 'Archivo Black', 'Bricolage Grotesque', 'Inter', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1; margin-bottom: .35rem;
-    background: linear-gradient(135deg, var(--violet), var(--rose));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .lp-wiz-info-stat-lbl { font-size: .74rem; color: var(--muted); line-height: 1.4; }
 
   .lp-wiz-continue {
     display: inline-flex; align-items: center; gap: 8px; justify-content: center;
@@ -3054,6 +3023,68 @@
   .lp-wiz-option:hover { border-color: var(--violet-b); background: var(--violet-d); }
   .lp-wiz-option.selected { border-color: var(--violet); background: var(--violet-d); color: var(--violet); transform: scale(.98); }
   .lp-wiz-input-err { border-color: var(--red) !important; }
+
+  .lp-wiz-fade-in { animation: lpStepIn .35s ease both; }
+
+  /* Multi-select feature options (Step 5) */
+  .lp-wiz-option--multi { display: flex; align-items: flex-start; gap: 12px; }
+  .lp-wiz-option--multi .lp-wiz-check {
+    width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border);
+    flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .lp-wiz-option--multi.selected .lp-wiz-check { background: linear-gradient(135deg, var(--violet), var(--rose)); border-color: transparent; }
+  .lp-wiz-option--multi .lp-wiz-check svg { opacity: 0; color: #fff; transition: opacity .15s ease; }
+  .lp-wiz-option--multi.selected .lp-wiz-check svg { opacity: 1; }
+  .lp-wiz-option--multi-body { display: flex; flex-direction: column; gap: 2px; }
+  .lp-wiz-option--multi-title { font-weight: 700; font-size: .92rem; }
+  .lp-wiz-option--multi-desc { font-size: .78rem; color: var(--muted); font-weight: 500; line-height: 1.4; }
+
+  /* Step 6 — building checklist */
+  .lp-wiz-checklist {
+    list-style: none; margin: 0 auto 1.6rem; padding: 0; display: flex; flex-direction: column;
+    gap: 12px; text-align: left; max-width: 340px;
+  }
+  .lp-wiz-checklist li {
+    display: flex; align-items: center; gap: 10px; font-size: .92rem; color: var(--muted); font-weight: 600;
+    opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease, color .2s ease;
+  }
+  .lp-wiz-checklist li.show { opacity: 1; transform: translateY(0); }
+  .lp-wiz-checklist li.done { color: var(--text); }
+  [data-theme="light"] .lp-wiz-checklist li.done { color: #0f172a; }
+  .lp-wiz-checklist-dot { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; position: relative; }
+  .lp-wiz-checklist li.done .lp-wiz-checklist-dot { background: linear-gradient(135deg, var(--violet), var(--rose)); border-color: transparent; }
+  .lp-wiz-checklist li.done .lp-wiz-checklist-dot::after {
+    content: ''; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px;
+    border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+  }
+  .lp-wiz-checklist-almost .lp-wiz-checklist-dot { border-style: dashed; animation: lpWizSpin 1s linear infinite; }
+  @keyframes lpWizSpin { to { transform: rotate(360deg); } }
+
+  /* Step 6 — reveal */
+  .lp-wiz-reveal-sub { font-size: .95rem; color: var(--muted); margin-bottom: 1.1rem; }
+  .lp-wiz-reveal-list { list-style: none; margin: 0 auto 1.6rem; padding: 0; display: flex; flex-direction: column; gap: 9px; text-align: left; max-width: 380px; }
+  .lp-wiz-reveal-list li { display: flex; align-items: flex-start; gap: 9px; font-size: .92rem; color: var(--text); font-weight: 600; }
+  [data-theme="light"] .lp-wiz-reveal-list li { color: #0f172a; }
+  .lp-wiz-reveal-list li svg { color: var(--green); flex-shrink: 0; margin-top: 2px; }
+  .lp-wiz-reveal-positioning {
+    font-size: .88rem; color: var(--muted); line-height: 1.6; max-width: 440px;
+    margin: 0 auto 1.8rem; padding: 14px 18px; border-radius: 14px;
+    background: var(--bg2); border: 1px solid var(--border);
+  }
+
+  /* Success — what happens next */
+  .lp-wiz-next-steps { list-style: none; margin: 0 0 1.8rem; padding: 0; display: flex; flex-direction: column; gap: 14px; text-align: left; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .lp-wiz-next-steps li { display: flex; align-items: flex-start; gap: 12px; }
+  .lp-wiz-next-num {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: var(--violet-d); color: var(--violet); font-weight: 700; font-size: .82rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lp-wiz-next-steps li div { display: flex; flex-direction: column; gap: 2px; }
+  .lp-wiz-next-steps li strong { font-size: .92rem; color: var(--text); }
+  [data-theme="light"] .lp-wiz-next-steps li strong { color: #0f172a; }
+  .lp-wiz-next-steps li span { font-size: .82rem; color: var(--muted); line-height: 1.5; }
 
   /* Minimal compliance footer */
   .lp-min-foot {
@@ -3105,17 +3136,17 @@
 
   @media (max-width: 720px) {
     .lp-wiz-options { grid-template-columns: 1fr; }
-    .lp-wiz-sec { padding: 24px 0 48px; }
+    .lp-wiz-sec { padding: 88px 0 48px; }
   }
 </style>
 
 <!-- ── NAV ── -->
 <nav id="main-nav">
   <div class="nav-in">
-    <span class="nav-logo lp-nav-logo" aria-label="Ellie AI Receptionist">
-      <img src="assets/ellie/logo.png" class="logo-dark" alt="Ellie AI Receptionist by anupama.dev">
-      <img src="assets/ellie/dark-logo.png" class="logo-light" alt="Ellie AI Receptionist by anupama.dev">
-    </span>
+    <a href="index.html" class="nav-logo lp-nav-logo" aria-label="Ellie — AI front desk for Australian businesses — home">
+      <img src="assets/ellie/logo.png" class="logo-dark" alt="Ellie — AI front desk for Australian businesses">
+      <img src="assets/ellie/dark-logo.png" class="logo-light" alt="Ellie — AI front desk for Australian businesses">
+    </a>
     <div class="nav-right">
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
         <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -3131,14 +3162,20 @@
 <section id="home" class="hero">
   <div class="grid-bg"></div>
   <div class="hero-in lp-hero-in">
-    <div class="lp-wave" aria-hidden="true">👋</div>
-    <div class="sec-tag lp-eyebrow" style="justify-content:center;margin:0 auto 1.2rem;">Helping Australian businesses 🇦🇺</div>
-    <h1 class="lp-h1">Get Ellie answering your phones <span class="h2-grad">100% free for 7 days.</span></h1>
-    <p class="lp-sub">Claim your 100% free 7-day Ellie trial (no credit card needed). This is strictly for Australian business owners sick of losing jobs to a ringing phone. If that's you, let's get her live in the next 24 hours. 🚀</p>
-    <button type="button" class="lp-cta" id="lp-start-btn" data-track="lp_get_started_clicked">
-      Get Started
+    <div class="sec-tag lp-eyebrow" style="justify-content:center;margin:0 auto 1.2rem;">🇦🇺 Built for Australian businesses</div>
+    <h1 class="lp-h1">Your business deserves more than an answering service.</h1>
+    <p class="lp-key-line">Meet Ellie — <span class="h2-grad">your AI front desk.</span></p>
+    <p class="lp-sub">Built around your staff, services, hours and the way you actually work. Ellie answers calls, handles enquiries, books customers and gets the right information to the right person — 24/7.</p>
+    <div class="lp-offer-checks">
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Free for 7 days</span>
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No credit card</span>
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> We set it up for you</span>
+    </div>
+    <button type="button" class="lp-cta" id="lp-start-btn" data-track="lp_get_started_clicked" style="margin-top:1.8rem;">
+      Build My Ellie
       <svg class="lp-cta-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </button>
+    <p class="lp-trust-line">Ready within 24 hours</p>
   </div>
 </section>
 
@@ -3157,139 +3194,124 @@
       <span class="lp-wiz-dot" data-dot="3"></span>
       <span class="lp-wiz-dot" data-dot="4"></span>
       <span class="lp-wiz-dot" data-dot="5"></span>
-      <span class="lp-wiz-dot" data-dot="6"></span>
-      <span class="lp-wiz-dot" data-dot="7"></span>
-      <span class="lp-wiz-dot" data-dot="8"></span>
-      <span class="lp-wiz-dot" data-dot="9"></span>
-      <span class="lp-wiz-dot" data-dot="10"></span>
     </div>
 
     <form class="lp-wiz-form" id="wiz-form" name="get-started-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="get-started-trial">
       <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+      <input type="hidden" name="features" id="wiz-features">
 
+      <!-- Step 1 — Start personal -->
       <div class="lp-wiz-step" data-step="1">
-        <h2 class="lp-wiz-q">Okay, we'll make this quick and painless (pinky promise). What should we call you? 👋</h2>
+        <h2 class="lp-wiz-q">Let's build an Ellie for your business 👋<br>What should we call you?</h2>
         <input type="text" class="trial-input lp-wiz-input" id="wiz-name" name="name" placeholder="Your first name" autocomplete="given-name" minlength="2" maxlength="80" required>
         <button type="button" class="lp-wiz-continue" data-next disabled>Continue
           <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </button>
       </div>
 
+      <!-- Step 2 — Choose the business type -->
       <div class="lp-wiz-step" data-step="2">
-        <h2 class="lp-wiz-q" id="wiz-q2">Nice one! What kind of business are you running?</h2>
-        <div class="lp-wiz-options" data-field="business_type">
-          <button type="button" class="lp-wiz-option">Hair &amp; Beauty</button>
-          <button type="button" class="lp-wiz-option">Medical &amp; Health</button>
-          <button type="button" class="lp-wiz-option">Trades &amp; Home Services</button>
-          <button type="button" class="lp-wiz-option">Automotive</button>
-          <button type="button" class="lp-wiz-option">Real Estate</button>
-          <button type="button" class="lp-wiz-option">Legal &amp; Professional</button>
-          <button type="button" class="lp-wiz-option">Hospitality &amp; Food</button>
-          <button type="button" class="lp-wiz-option">Fitness &amp; Wellness</button>
-          <button type="button" class="lp-wiz-option">Other</button>
+        <div class="lp-wiz-step2-main">
+          <h2 class="lp-wiz-q" id="wiz-q2">What kind of business are we helping?</h2>
+          <div class="lp-wiz-options" data-field="business_type">
+            <button type="button" class="lp-wiz-option" data-value="Hair &amp; Beauty">💇 Hair &amp; Beauty</button>
+            <button type="button" class="lp-wiz-option" data-value="Medical &amp; Health">🩺 Medical &amp; Health</button>
+            <button type="button" class="lp-wiz-option" data-value="Trades &amp; Home Services">🔨 Trades &amp; Home Services</button>
+            <button type="button" class="lp-wiz-option" data-value="Automotive">🚗 Automotive</button>
+            <button type="button" class="lp-wiz-option" data-value="Real Estate">🏠 Real Estate</button>
+            <button type="button" class="lp-wiz-option" data-value="Legal &amp; Professional">⚖️ Legal &amp; Professional</button>
+            <button type="button" class="lp-wiz-option" data-value="Hospitality &amp; Food">🍽️ Hospitality &amp; Food</button>
+            <button type="button" class="lp-wiz-option" data-value="Fitness &amp; Wellness">💪 Fitness &amp; Wellness</button>
+            <button type="button" class="lp-wiz-option" data-value="Other">✨ Other</button>
+          </div>
+          <input type="hidden" name="business_type" id="wiz-business_type" required>
         </div>
-        <input type="hidden" name="business_type" id="wiz-business_type" required>
+        <div class="lp-wiz-step2-transition" id="wiz-step2-transition" style="display:none">
+          <h2 class="lp-wiz-q" id="wiz-step2-transition-text"></h2>
+        </div>
       </div>
 
+      <!-- Step 3 — Give Ellie the business -->
       <div class="lp-wiz-step" data-step="3">
-        <h2 class="lp-wiz-q">And what's the business called?</h2>
-        <input type="text" class="trial-input lp-wiz-input" id="wiz-business_name" name="business_name" placeholder="Business name" maxlength="100" required>
-        <button type="button" class="lp-wiz-continue" data-next disabled>Continue
-          <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </button>
+        <div class="lp-wiz-step3-main">
+          <h2 class="lp-wiz-q" id="wiz-q3">What's your business called?</h2>
+          <input type="text" class="trial-input lp-wiz-input" id="wiz-business_name" name="business_name" placeholder="Business name" maxlength="100" required>
+          <button type="button" class="lp-wiz-continue" data-next disabled>Continue
+            <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="lp-wiz-step3-transition" id="wiz-step3-transition" style="display:none">
+          <h2 class="lp-wiz-q" id="wiz-step3-transition-text"></h2>
+        </div>
       </div>
 
+      <!-- Step 4 — Capture the lead -->
       <div class="lp-wiz-step" data-step="4">
-        <h2 class="lp-wiz-q">Who are we talking to here? 😄</h2>
-        <div class="lp-wiz-options lp-wiz-options--single" data-field="job_title">
-          <button type="button" class="lp-wiz-option">Owner / Founder</button>
-          <button type="button" class="lp-wiz-option">Manager</button>
-          <button type="button" class="lp-wiz-option">Front Desk / Receptionist</button>
-          <button type="button" class="lp-wiz-option">Other</button>
-        </div>
-        <input type="hidden" name="job_title" id="wiz-job_title">
+        <h2 class="lp-wiz-q">Where should we send your Ellie setup?</h2>
+        <input type="email" class="trial-input lp-wiz-input" id="wiz-email" name="email" placeholder="Work email" autocomplete="email" maxlength="254">
+        <input type="tel" class="trial-input lp-wiz-input" id="wiz-phone" name="phone" placeholder="Mobile number" inputmode="tel" autocomplete="tel" maxlength="16" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678" required>
+        <p style="font-size:.8rem;color:var(--muted);margin:-.6rem 0 1.3rem;">We'll only use these to get your Ellie set up — no spam.</p>
+        <button type="button" class="lp-wiz-continue" data-next disabled id="wiz-step4-continue">Continue
+          <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
       </div>
 
+      <!-- Step 5 — Configure "their Ellie" -->
       <div class="lp-wiz-step" data-step="5">
-        <h2 class="lp-wiz-q">Roughly how many calls do you reckon slip through the cracks each week?</h2>
-        <div class="lp-wiz-options lp-wiz-options--single" data-field="missed_calls_volume">
-          <button type="button" class="lp-wiz-option">Just a few (1–5)</button>
-          <button type="button" class="lp-wiz-option">Quite a few (6–15)</button>
-          <button type="button" class="lp-wiz-option">Heaps (15+)</button>
-          <button type="button" class="lp-wiz-option">Honestly? No idea</button>
-        </div>
-        <input type="hidden" name="missed_calls_volume" id="wiz-missed_calls_volume">
+        <h2 class="lp-wiz-q" id="wiz-q5">What should Ellie take off your plate?</h2>
+        <p style="font-size:.85rem;color:var(--muted);margin:-1.3rem 0 1.3rem;">Choose everything you'd like her to handle.</p>
+        <div class="lp-wiz-options lp-wiz-options--single" id="wiz-features-options"></div>
+        <button type="button" class="lp-wiz-continue" disabled id="wiz-step5-continue">Continue
+          <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
       </div>
 
+      <!-- Step 6 — Building animation, then the reveal -->
       <div class="lp-wiz-step" data-step="6">
-        <h2 class="lp-wiz-q">Did you know that?</h2>
-        <div class="lp-wiz-stat">
-          <div class="lp-wiz-stat-num"><span id="wiz-stat-num">0</span>%</div>
-          <p class="lp-wiz-stat-label">of calls to businesses go unanswered</p>
-          <p class="lp-wiz-stat-sub">And of those, fewer than 3% of callers leave a voicemail — they just move on.</p>
-          <a class="lp-wiz-stat-source" href="https://www.invoca.com/blog/how-much-missed-sales-calls-cost-home-services-businesses" target="_blank" rel="noopener">Source: Invoca platform data</a>
+        <div class="lp-wiz-building" id="wiz-building">
+          <h2 class="lp-wiz-q" id="wiz-building-h">Personalising Ellie...</h2>
+          <ul class="lp-wiz-checklist" id="wiz-checklist">
+            <li data-item="1"><span class="lp-wiz-checklist-dot"></span> Learning your business type</li>
+            <li data-item="2"><span class="lp-wiz-checklist-dot"></span> Preparing your booking setup</li>
+            <li data-item="3"><span class="lp-wiz-checklist-dot"></span> Configuring call handling</li>
+            <li data-item="4" class="lp-wiz-checklist-almost"><span class="lp-wiz-checklist-dot"></span> Almost there…</li>
+          </ul>
         </div>
-        <div class="lp-wiz-options lp-wiz-options--single" data-field="knew_missed_call_stat">
-          <button type="button" class="lp-wiz-option">Yes, I knew that!</button>
-          <button type="button" class="lp-wiz-option">No idea!</button>
+        <div class="lp-wiz-reveal" id="wiz-reveal" style="display:none">
+          <h2 class="lp-wiz-q">Meet your Ellie 👋<br><span class="h2-grad" id="wiz-reveal-biz"></span></h2>
+          <p class="lp-wiz-reveal-sub">Based on what you've told us, we'll configure Ellie to:</p>
+          <ul class="lp-wiz-reveal-list" id="wiz-reveal-list"></ul>
+          <p class="lp-wiz-reveal-positioning" id="wiz-reveal-positioning"></p>
+          <button type="submit" class="lp-wiz-continue" id="wiz-submit">Build My Ellie — Free for 7 Days</button>
+          <p class="lp-trust-line">No credit card required · Free setup · Cancel anytime</p>
         </div>
-        <input type="hidden" name="knew_missed_call_stat" id="wiz-knew_missed_call_stat">
-      </div>
-
-      <div class="lp-wiz-step" data-step="7">
-        <h2 class="lp-wiz-q">Okay, confession time — who's actually answering your phone right now? 🙈</h2>
-        <div class="lp-wiz-options lp-wiz-options--single" data-field="current_call_handling">
-          <button type="button" class="lp-wiz-option">Me, whenever I can</button>
-          <button type="button" class="lp-wiz-option">A receptionist or staff member</button>
-          <button type="button" class="lp-wiz-option">Honestly, it mostly just rings out</button>
-        </div>
-        <input type="hidden" name="current_call_handling" id="wiz-current_call_handling">
-      </div>
-
-      <div class="lp-wiz-step" data-step="8">
-        <h2 class="lp-wiz-q">Oh, and one more thing... 👀</h2>
-        <div class="lp-wiz-info">
-          <div class="lp-wiz-info-img reveal">
-            <img src="assets/dashboard/1.png" alt="Ellie dashboard — recent calls, bookings made, and revenue booked today" loading="lazy">
-          </div>
-          <p class="lp-wiz-info-copy">You also get a ridiculously good dashboard — track every call, see every booking, manage every job, all in one place.</p>
-          <div class="lp-wiz-info-stats">
-            <div class="lp-wiz-info-stat">
-              <div class="lp-wiz-info-stat-num"><span id="wiz-info-cost">0</span>x</div>
-              <div class="lp-wiz-info-stat-lbl">cheaper than a human receptionist</div>
-            </div>
-            <div class="lp-wiz-info-stat">
-              <div class="lp-wiz-info-stat-num"><span id="wiz-info-acc">0</span>%</div>
-              <div class="lp-wiz-info-stat-lbl">call handling accuracy</div>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="lp-wiz-continue" data-info-next>Let's keep going
-          <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-
-      <div class="lp-wiz-step" data-step="9">
-        <h2 class="lp-wiz-q">What's the best number to grab you on? We'll call you back within 24 hours — no annoying spam calls, promise. 📞</h2>
-        <input type="tel" class="trial-input lp-wiz-input" id="wiz-phone" name="phone" placeholder="04XX XXX XXX" inputmode="tel" autocomplete="tel" maxlength="16" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678" required>
-        <button type="button" class="lp-wiz-continue" data-next disabled>Continue
-          <svg class="lp-cta-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-
-      <div class="lp-wiz-step" data-step="10">
-        <h2 class="lp-wiz-q">Last one, promise! 🎉 Where should we send your Ellie setup details?</h2>
-        <input type="email" class="trial-input lp-wiz-input" id="wiz-email" name="email" placeholder="Email address" autocomplete="email" maxlength="254">
-        <button type="submit" class="lp-wiz-continue" id="wiz-submit">Start My Free 7-Day Trial 🚀</button>
       </div>
 
       <div class="lp-wiz-step" data-step="success">
         <div class="trial-success-icon">
           <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h2 class="lp-wiz-q" id="wiz-success-h">You're all set! <span class="h2-grad">🎉</span></h2>
-        <p class="book-sub">We'll build your Ellie and give you a quick call within 24 hours to get you live — free for your first 7 days.</p>
+        <h2 class="lp-wiz-q" id="wiz-success-h">We're building your Ellie 🎉</h2>
+        <p class="book-sub" id="wiz-success-sub">We'll use your answers to start preparing Ellie.</p>
+        <ol class="lp-wiz-next-steps">
+          <li><span class="lp-wiz-next-num">1</span><div><strong>Quick setup chat</strong><span>We learn about your services, staff, hours and call preferences.</span></div></li>
+          <li><span class="lp-wiz-next-num">2</span><div><strong>We customise Ellie</strong><span id="wiz-next-2-sub">We configure her specifically around your business.</span></div></li>
+          <li><span class="lp-wiz-next-num">3</span><div><strong>Test your Ellie</strong><span>You can call her yourself before anything goes live.</span></div></li>
+          <li><span class="lp-wiz-next-num">4</span><div><strong>Go live</strong><span>Ellie starts answering your business calls 24/7.</span></div></li>
+        </ol>
+        <p class="lp-wiz-reveal-sub" style="margin-top:.4rem;">What's included:</p>
+        <ul class="lp-wiz-reveal-list" style="margin-bottom:1.4rem;">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Custom-built around your business</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 24/7 AI call answering</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Natural Australian voice</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Learns your services &amp; FAQs</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Appointment &amp; job booking</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> SMS confirmations</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Dashboard, recordings &amp; call history</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Supported integrations</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Free setup, no lock-in</li>
+        </ul>
         <a href="index.html" class="lp-wiz-home-link">← Back to the main site</a>
       </div>
     </form>
