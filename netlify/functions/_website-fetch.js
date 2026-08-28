@@ -272,44 +272,43 @@ async function fetchBusinessInfoWithClaude(normalizedUrl, options = {}) {
 // there is no code-side way to exceed it; a request that runs past 10s gets killed by the
 // platform regardless of our own AbortSignal values.
 //
-// This makes the Claude fallback structurally limited: it measured ~13-14s to actually
-// complete on sites Firecrawl struggled with, which cannot fit under a 10s hard cap no
-// matter how the budget is split. It still gets whatever time Firecrawl doesn't use — most
-// useful when Firecrawl fails FAST (a quick 4xx/5xx) rather than by using its whole
-// attempt window — but treat it as a partial second chance, not a reliable one.
+// fetchBusinessInfoWithClaude is NOT used as a fallback here, despite existing for exactly
+// that purpose below — it was measured directly (against a real, reachable, working site)
+// at 10.9s end to end, and 13-14s on sites Firecrawl struggled with. Both exceed the 10s
+// hard cap on their own, before Firecrawl has used any of the budget at all. There is no
+// split of the budget that makes it a usable fallback under this constraint — attempting it
+// anyway just burns the rest of the request's time before Netlify kills the invocation, so a
+// failed Firecrawl attempt would silently turn into a ~10s hang instead of a fast, clear
+// failure the frontend can react to (retry, or the "enter manually" option). If Netlify's
+// timeout is ever raised (Business+ plan) or this moves to a background function, it's worth
+// wiring back in — until then Firecrawl getting the full budget is strictly better.
 const DEFAULT_OVERALL_TIMEOUT_MS = 9300;
-// Firecrawl's json-extraction typically lands in the 5-8s range for a normal business
-// site, so it gets most of the budget — it's the only path that can realistically finish
-// inside 10s at all.
-const DEFAULT_FIRECRAWL_ATTEMPT_MS = 8000;
-const MIN_CLAUDE_FALLBACK_MS = 1200;
+
+// Firecrawl can return HTTP 200 with an all-blank JSON payload when the page is
+// mostly client-rendered, gated behind an interstitial, or the crawler otherwise
+// gets nothing worth extracting. That's not a thrown error, so left unchecked it
+// silently "succeeds" with nothing useful for the caller to work with.
+function isMeaningfullyEmpty(info) {
+  return !info || !(info.name || info.description || info.phone || info.email || info.services || info.location);
+}
 
 /**
- * Firecrawl first (fast on most sites), falling back to Claude's own web_fetch if Firecrawl
- * errors or times out. Firecrawl gets a short leash so a slow/stalled site fails into the
- * fallback quickly rather than eating the whole budget — see fetchBusinessInfoWithClaude
- * for why a second, differently-infrastructured attempt is worth making at all.
+ * Firecrawl is the only path that can realistically finish inside Netlify's 10s function
+ * timeout (see the comment on DEFAULT_OVERALL_TIMEOUT_MS above for why Claude's web_fetch
+ * isn't attempted as a fallback here) — so it gets the full available budget rather than a
+ * short leash, and a failure returns fast instead of stalling out.
  */
 async function fetchBusinessInfo(normalizedUrl, options = {}) {
   const overallBudgetMs = options.timeoutMs || DEFAULT_OVERALL_TIMEOUT_MS;
-  const deadline = Date.now() + overallBudgetMs;
 
   try {
-    return await fetchBusinessInfoWithFirecrawl(normalizedUrl, {
+    const result = await fetchBusinessInfoWithFirecrawl(normalizedUrl, {
       apiKey: options.firecrawlApiKey,
-      timeoutMs: Math.min(options.firecrawlTimeoutMs || DEFAULT_FIRECRAWL_ATTEMPT_MS, overallBudgetMs - MIN_CLAUDE_FALLBACK_MS),
+      timeoutMs: options.firecrawlTimeoutMs || overallBudgetMs,
     });
+    return isMeaningfullyEmpty(result) ? { ...EMPTY_BUSINESS_INFO } : result;
   } catch {
-    const remainingMs = deadline - Date.now();
-    if (remainingMs < MIN_CLAUDE_FALLBACK_MS) return { ...EMPTY_BUSINESS_INFO };
-    try {
-      return await fetchBusinessInfoWithClaude(normalizedUrl, {
-        apiKey: options.anthropicApiKey,
-        timeoutMs: remainingMs,
-      });
-    } catch {
-      return { ...EMPTY_BUSINESS_INFO };
-    }
+    return { ...EMPTY_BUSINESS_INFO };
   }
 }
 
