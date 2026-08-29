@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Ellie is a managed AI front desk for Australian businesses — built around your staff, services and hours, not a generic AI receptionist. She answers calls, qualifies enquiries, books appointments and takes the next step. Try a free personalised demo.">
-  <title>Ellie — AI Front Desk for Australian Businesses</title>
+  <title>Ellie | AI Front Desk for Australian Businesses</title>
   <link rel="canonical" href="https://callellie.com/">
 
   <!-- Open Graph / link preview -->
@@ -616,7 +616,7 @@
       50%      { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
     }
     .hero-h1 {
-      font-size: clamp(2.6rem, 5.4vw, 4.8rem); font-weight: 800; letter-spacing: -.03em;
+      font-size: clamp(2.9rem, 6vw, 5.4rem); font-weight: 800; letter-spacing: -.03em;
       color: #fff; margin-bottom: 1.3rem; text-align: center; max-width: 1020px;
       animation: heroFadeUp .7s .08s ease both;
     }
@@ -721,39 +721,59 @@
     .hero-av-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
     .hero-av-video-overlay {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 14px;
-      padding: 20px 20px 18px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+      padding: 16px 16px 14px;
       background: linear-gradient(to top, rgba(5,5,12,.92) 0%, rgba(5,5,12,.45) 55%, transparent 100%);
     }
-    .hero-av-info { flex: 1; min-width: 0; }
+    .hero-av-info { min-width: 0; }
     .hero-av-live {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: .62rem; font-weight: 700; color: #10b981;
-      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px;
+      font-size: .6rem; font-weight: 700; color: #10b981;
+      letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; white-space: nowrap;
     }
-    .hero-av-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: blink 1.4s ease-in-out infinite; }
-    .hero-av-name { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
-    .hero-av-tagline { font-size: .76rem; color: rgba(255,255,255,.75); line-height: 1.4; }
-    .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .hero-av-play-btn {
-      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--violet), #6d28d9);
-      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 14px rgba(167,139,250,.45);
-      transition: transform .18s, box-shadow .18s;
+    .hero-av-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: blink 1.4s ease-in-out infinite; flex-shrink: 0; }
+    .hero-av-name { font-size: .92rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .hero-av-tagline { font-size: .7rem; color: rgba(255,255,255,.75); line-height: 1.35; }
+    .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; width: 100%; }
+    .hero-av-live-btn {
+      position: relative;
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; box-sizing: border-box; text-align: left;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,.32); border-radius: 15px; cursor: pointer;
+      padding: 9px 14px;
+      box-shadow: 0 4px 18px rgba(167,139,250,.3);
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      animation: heroLiveBtnGlow 2.2s ease-in-out infinite;
     }
-    .hero-av-play-btn:hover { transform: scale(1.1); box-shadow: 0 0 22px rgba(167,139,250,.65); }
-    .hero-av-play-btn:active { transform: scale(.95); }
-    .hero-av-play-btn svg { color: #fff; display: block; }
-    .hero-av-play-btn .icon-pause { display: none; }
-    .hero-av-play-btn.playing .icon-play  { display: none; }
-    .hero-av-play-btn.playing .icon-pause { display: block; }
-    .hero-av-sound { display: flex; align-items: center; gap: 3px; height: 26px; flex-shrink: 0; }
-    .hero-av-bar {
-      width: 3px; border-radius: 3px; transform-origin: bottom;
-      background: linear-gradient(to top, var(--violet), var(--rose));
-      animation: soundWave 1.4s ease-in-out infinite;
-      animation-delay: var(--d, 0s);
+    .hero-av-live-btn:hover { transform: scale(1.03); background: rgba(255,255,255,.18); box-shadow: 0 6px 26px rgba(167,139,250,.5); }
+    .hero-av-live-btn:active { transform: scale(.98); }
+    .hero-av-live-btn-ring {
+      position: absolute; inset: -6px; border-radius: 19px; pointer-events: none;
+      border: 2px solid rgba(167,139,250,.55);
+      animation: heroLiveBtnRing 2.2s ease-out infinite;
+    }
+    .hero-av-live-btn-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+    .hero-av-live-btn-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .hero-av-live-btn-label {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .62rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+      color: rgba(255,255,255,.92);
+    }
+    .hero-av-live-btn-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; flex-shrink: 0; animation: blink 1.2s ease-in-out infinite; }
+    .hero-av-live-btn-main { font-size: .88rem; font-weight: 700; color: #fff; white-space: nowrap; }
+    @keyframes heroLiveBtnGlow {
+      0%, 100% { box-shadow: 0 4px 18px rgba(167,139,250,.4); }
+      50%      { box-shadow: 0 6px 30px rgba(167,139,250,.8), 0 0 0 5px rgba(167,139,250,.18); }
+    }
+    @keyframes heroLiveBtnRing {
+      0%   { opacity: .8; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.1); }
     }
 
     @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:.45} 50%{transform:scale(1.35);opacity:1} }
@@ -2263,7 +2283,7 @@
       .hero-offer-tag__limited { font-size: .52rem; padding: 2px 6px; }
       .hero-h1 {
         text-align: center;
-        font-size: 2.7rem; line-height: 1.08;
+        font-size: 3.1rem; line-height: 1.06;
         margin-bottom: .7rem;
       }
       .hero-sub { text-align: center; font-size: 1.15rem; line-height: 1.5; max-width: 340px; margin: 0 auto 1rem; }
@@ -2741,6 +2761,60 @@
     .handoff-list li svg { color: var(--green); flex-shrink: 0; margin-top: 2px; }
     .handoff-soon { align-items: center !important; gap: 10px !important; }
 
+    /* ── STAFF-AWARE BOOKING ── */
+    .staffbook-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+    .staffbook-copy .sec-p { margin-bottom: 1.8rem; }
+    .staffbook-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+    .staffbook-list li { display: flex; align-items: center; gap: 12px; font-size: .93rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+    [data-theme="light"] .staffbook-list li { color: #0f172a; }
+    .staffbook-list-icon {
+      width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--violet-d); color: var(--violet);
+    }
+
+    .staffbook-visual {
+      position: relative; border-radius: 20px; overflow: hidden;
+      aspect-ratio: 4 / 5; box-shadow: 0 24px 60px rgba(0,0,0,.35);
+    }
+    .staffbook-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .staffbook-visual-overlay {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+      padding: 20px 20px 18px;
+      background: linear-gradient(to top, rgba(5,5,12,.94) 0%, rgba(5,5,12,.78) 45%, transparent 100%);
+    }
+    .staffbook-chat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.14); }
+    .staffbook-chat-avatar {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--violet), var(--rose));
+      color: #fff; font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .staffbook-chat-avatar--sm { width: 22px; height: 22px; font-size: .68rem; background: rgba(255,255,255,.14); }
+    .staffbook-chat-name { font-weight: 700; font-size: .88rem; color: #fff; }
+    .staffbook-chat-sub { font-size: .72rem; color: rgba(255,255,255,.65); }
+    .staffbook-chat-live {
+      margin-left: auto; flex-shrink: 0; font-size: .64rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.8);
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 100px;
+      padding: 4px 9px;
+    }
+    .staffbook-bubble { max-width: 88%; padding: 10px 14px; border-radius: 16px; font-size: .84rem; line-height: 1.5; margin-bottom: 9px; }
+    .staffbook-bubble--customer { background: rgba(255,255,255,.14); color: #fff; border-bottom-left-radius: 4px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .staffbook-bubble--ellie { background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
+    .staffbook-chat-foot {
+      display: flex; align-items: center; gap: 8px; margin-top: 2px; padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.14); font-size: .74rem; color: rgba(255,255,255,.65); font-style: italic;
+    }
+    .staffbook-caption { margin-top: 14px; text-align: center; font-size: .8rem; color: var(--muted); }
+
+    @media (max-width: 860px) {
+      .staffbook-grid { grid-template-columns: 1fr; gap: 36px; }
+      .staffbook-copy { text-align: center; }
+      .staffbook-copy .sec-tag { justify-content: center; }
+      .staffbook-list { max-width: 420px; margin: 0 auto; text-align: left; }
+    }
+
     /* ── AUSTRALIAN TRUST ── */
     .au-trust-sec { background: var(--bg3); padding: 80px 0; }
     .au-trust-hd { text-align: center; margin-bottom: 2rem; }
@@ -2948,8 +3022,6 @@
     [data-theme="light"] .hero-av-video-frame {
       border-color: rgba(15,23,42,.08); box-shadow: 0 8px 32px rgba(15,23,42,.14), 0 0 0 1px rgba(15,23,42,.04) inset;
     }
-    [data-theme="light"] .hero-av-play-btn { background: var(--violet); box-shadow: 0 4px 14px rgba(15,23,42,.2); }
-    [data-theme="light"] .hero-av-play-btn:hover { box-shadow: 0 6px 20px rgba(15,23,42,.26); }
     [data-theme="light"] .phone-avatar { border-color: rgba(15,23,42,.1); box-shadow: 0 4px 16px rgba(15,23,42,.1); }
     [data-theme="light"] .trial-cta {
       background: var(--violet) !important; background-image: none !important; animation: none !important;
@@ -3002,6 +3074,81 @@
       .call-bubble { max-width: 150px; font-size: .78rem; }
     }
 
+    /* ── Floating chat widget ── */
+    .chat-fab-icon-close { display: none; }
+    .call-fab-wrap.open .chat-fab-icon-chat { display: none; }
+    .call-fab-wrap.open .chat-fab-icon-close { display: block; }
+    .call-fab-wrap.open .call-fab::before { animation: none; }
+
+    .chat-panel {
+      position: absolute; right: 0; bottom: 74px; width: 348px; max-width: calc(100vw - 28px);
+      height: 480px; max-height: min(560px, calc(100vh - 120px));
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.4);
+      display: flex; flex-direction: column; overflow: hidden;
+      opacity: 0; transform: translateY(16px) scale(.96); pointer-events: none;
+      transform-origin: bottom right;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    [data-theme="light"] .chat-panel { box-shadow: 0 20px 56px rgba(15,23,42,.18); }
+    .chat-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+    .chat-panel-head {
+      display: flex; align-items: center; gap: 10px; padding: 13px 13px 13px 16px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .chat-panel-avatar {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--violet), var(--rose));
+      color: #fff; font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chat-panel-title { flex: 1; min-width: 0; }
+    .chat-panel-name { font-weight: 700; font-size: .88rem; color: var(--text); }
+    [data-theme="light"] .chat-panel-name { color: #0f172a; }
+    .chat-panel-status { font-size: .7rem; color: #4ade80; display: flex; align-items: center; gap: 5px; }
+    .chat-panel-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+    .chat-panel-iconbtn {
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text); flex-shrink: 0; padding: 0;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+    .chat-panel-iconbtn:hover { border-color: var(--violet-b); color: var(--violet); }
+
+    .chat-panel-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .chat-msg { max-width: 85%; padding: 10px 13px; border-radius: 15px; font-size: .85rem; line-height: 1.5; }
+    .chat-msg--ellie { background: var(--bg3); color: var(--text); border-bottom-left-radius: 4px; align-self: flex-start; }
+    [data-theme="light"] .chat-msg--ellie { color: #0f172a; }
+    .chat-msg--user { background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
+    .chat-msg--error { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.3); align-self: flex-start; }
+    .chat-msg--typing { display: flex; gap: 4px; align-items: center; padding: 13px 15px; }
+    .chat-msg--typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: chatTypingDot 1.2s ease-in-out infinite; }
+    .chat-msg--typing span:nth-child(2) { animation-delay: .15s; }
+    .chat-msg--typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes chatTypingDot { 0%,60%,100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(-3px); opacity: 1; } }
+
+    .chat-panel-form { display: flex; gap: 8px; padding: 12px 13px; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .chat-panel-input {
+      flex: 1; min-width: 0; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px;
+      padding: 10px 14px; font-size: .85rem; color: var(--text); font-family: inherit;
+    }
+    [data-theme="light"] .chat-panel-input { color: #0f172a; }
+    .chat-panel-input:focus { outline: none; border-color: var(--violet); }
+    .chat-panel-input::placeholder { color: var(--muted); }
+    .chat-panel-send {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    .chat-panel-send:hover:not(:disabled) { transform: scale(1.06); }
+    .chat-panel-send:disabled { opacity: .4; cursor: not-allowed; }
+
+    @media (max-width: 480px) {
+      .chat-panel { width: calc(100vw - 28px); height: min(70vh, 520px); bottom: 68px; }
+    }
+
   /* ══════ HOMEPAGE HERO (ported from beauty.html's hero layout) ══════ */
     .hero {
       min-height: 100vh; display: flex; align-items: center; padding-top: 60px;
@@ -3037,7 +3184,7 @@
     }
     .hero-in {
       max-width: 1120px; margin: 0 auto; padding: 0 24px;
-      display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px;
+      display: grid; grid-template-columns: 1.7fr 1fr; gap: 48px;
       align-items: center; width: 100%; position: relative; z-index: 1;
     }
     /* Old single-column hero centered everything via flex — this hero is a
@@ -3089,7 +3236,7 @@
       94% { transform: translate(0,0) rotate(0deg); }
     }
     .hero-actions { display: none; }
-    .hero-h1 { font-size: clamp(2.1rem, 3.6vw, 3.3rem); color: #fff; margin-bottom: 1.2rem; line-height: 1.18; text-wrap: balance; }
+    .hero-h1 { font-size: clamp(2.7rem, 4.8vw, 4.4rem); color: #fff; margin-bottom: 1.2rem; line-height: 1.14; text-wrap: balance; }
     .hero-h1-line1 { display: block; }
     @keyframes gradShimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
     @keyframes heroFadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
@@ -3188,39 +3335,55 @@
     .hero-av-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
     .hero-av-video-overlay {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 14px;
-      padding: 20px 20px 18px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+      padding: 16px 16px 14px;
       background: linear-gradient(to top, rgba(5,5,12,.92) 0%, rgba(5,5,12,.45) 55%, transparent 100%);
     }
-    .hero-av-info { flex: 1; min-width: 0; }
+    .hero-av-info { min-width: 0; }
     .hero-av-live {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: .62rem; font-weight: 700; color: #10b981;
-      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px;
+      font-size: .6rem; font-weight: 700; color: #10b981;
+      letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; white-space: nowrap;
     }
-    .hero-av-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: blink 1.4s ease-in-out infinite; }
-    .hero-av-name { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
-    .hero-av-tagline { font-size: .76rem; color: rgba(255,255,255,.75); line-height: 1.4; }
-    .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .hero-av-play-btn {
-      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--violet), #6d28d9);
-      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 14px rgba(244,114,182,.45);
-      transition: transform .18s, box-shadow .18s;
+    .hero-av-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: blink 1.4s ease-in-out infinite; flex-shrink: 0; }
+    .hero-av-name { font-size: .92rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .hero-av-tagline { font-size: .7rem; color: rgba(255,255,255,.75); line-height: 1.35; }
+    .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; width: 100%; }
+    .hero-av-live-btn {
+      position: relative;
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; box-sizing: border-box; text-align: left;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,.32); border-radius: 15px; cursor: pointer;
+      padding: 9px 14px;
+      box-shadow: 0 4px 18px rgba(244,114,182,.3);
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      animation: heroLiveBtnGlow2 2.2s ease-in-out infinite;
     }
-    .hero-av-play-btn:hover { transform: scale(1.1); box-shadow: 0 0 22px rgba(244,114,182,.65); }
-    .hero-av-play-btn:active { transform: scale(.95); }
-    .hero-av-play-btn svg { color: #fff; display: block; }
-    .hero-av-play-btn .icon-pause { display: none; }
-    .hero-av-play-btn.playing .icon-play  { display: none; }
-    .hero-av-play-btn.playing .icon-pause { display: block; }
-    .hero-av-sound { display: flex; align-items: center; gap: 3px; height: 26px; flex-shrink: 0; }
-    .hero-av-bar {
-      width: 3px; border-radius: 3px; transform-origin: bottom;
-      background: linear-gradient(to top, var(--violet), var(--rose));
-      animation: soundWave 1.4s ease-in-out infinite;
-      animation-delay: var(--d, 0s);
+    .hero-av-live-btn:hover { transform: scale(1.03); background: rgba(255,255,255,.18); box-shadow: 0 6px 26px rgba(244,114,182,.5); }
+    .hero-av-live-btn:active { transform: scale(.98); }
+    .hero-av-live-btn-ring {
+      position: absolute; inset: -6px; border-radius: 19px; pointer-events: none;
+      border: 2px solid rgba(244,114,182,.55);
+      animation: heroLiveBtnRing 2.2s ease-out infinite;
+    }
+    .hero-av-live-btn-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+    .hero-av-live-btn-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .hero-av-live-btn-label {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .62rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+      color: rgba(255,255,255,.92);
+    }
+    .hero-av-live-btn-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; flex-shrink: 0; animation: blink 1.2s ease-in-out infinite; }
+    .hero-av-live-btn-main { font-size: .88rem; font-weight: 700; color: #fff; white-space: nowrap; }
+    @keyframes heroLiveBtnGlow2 {
+      0%, 100% { box-shadow: 0 4px 18px rgba(244,114,182,.4); }
+      50%      { box-shadow: 0 6px 30px rgba(244,114,182,.8), 0 0 0 5px rgba(244,114,182,.18); }
     }
 
     @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:.45} 50%{transform:scale(1.35);opacity:1} }
@@ -3264,8 +3427,8 @@
       .hero-callback-pill { display: none; }
       .hero-h1    {
         order: 2; text-align: center; white-space: normal;
-        font-size: 1.85rem; line-height: 1.1;
-        min-height: 4.4rem;
+        font-size: 2.15rem; line-height: 1.08;
+        min-height: 5.2rem;
         margin-bottom: .55rem;
       }
       .hero-sub   { order: 3; text-align: center; font-size: .86rem; line-height: 1.68; max-width: 300px; margin: 0 auto .9rem; }
@@ -3322,8 +3485,8 @@
       .hero-callback-pill { display: none; }
       .hero-h1    {
         order: 2; text-align: center; white-space: normal;
-        font-size: 1.85rem; line-height: 1.1;
-        min-height: 4.4rem;
+        font-size: 2.15rem; line-height: 1.08;
+        min-height: 5.2rem;
         margin-bottom: .55rem;
       }
       .hero-sub   { order: 3; text-align: center; font-size: .86rem; line-height: 1.68; max-width: clamp(300px, 60vw, 560px); margin: 0 auto .9rem; }
@@ -3474,7 +3637,7 @@
           <svg class="hero-arrow-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <h1 class="hero-h1" id="heroH1">Ellie doesn't just answer your phone. <span class="hero-h1-grad">She runs your front desk.</span></h1>
+      <h1 class="hero-h1" id="heroH1">Ellie turns every call into <span class="hero-h1-grad">a booked customer.</span></h1>
       <p class="hero-sub">
         <strong>Ellie</strong> answers calls, qualifies enquiries, books appointments and knows when to bring in your team - configured around your staff, services and hours. We set her up. You just answer the door.
       </p>
@@ -3507,7 +3670,7 @@
           Request a Free Callback
         </a>
       </div>
-
+<!-- 
       <div class="hero-checks">
         <div class="hero-check">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -3521,7 +3684,7 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           We set it up for you
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- ── HERO RIGHT COLUMN ── -->
@@ -3539,18 +3702,15 @@
               <div class="hero-av-tagline">Your AI front desk</div>
             </div>
             <div class="hero-av-controls">
-              <div class="hero-av-sound">
-                <div class="hero-av-bar" style="--d:0s;height:8px"></div>
-                <div class="hero-av-bar" style="--d:.2s;height:16px"></div>
-                <div class="hero-av-bar" style="--d:.4s;height:22px"></div>
-                <div class="hero-av-bar" style="--d:.6s;height:16px"></div>
-                <div class="hero-av-bar" style="--d:.4s;height:22px"></div>
-                <div class="hero-av-bar" style="--d:.2s;height:16px"></div>
-                <div class="hero-av-bar" style="--d:0s;height:8px"></div>
-              </div>
-              <button class="hero-av-play-btn" id="hero-av-play" aria-label="Play Ellie intro">
-                <svg class="icon-play"  width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                <svg class="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <button class="hero-av-live-btn" id="hero-av-live-btn" aria-label="Speak to Ellie now — live call" data-track="hero_speak_to_ellie_clicked">
+                <span class="hero-av-live-btn-ring"></span>
+                <span class="hero-av-live-btn-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </span>
+                <span class="hero-av-live-btn-text">
+                  <span class="hero-av-live-btn-label"><span class="hero-av-live-btn-dot"></span>Live call</span>
+                  <span class="hero-av-live-btn-main">Speak to Ellie now</span>
+                </span>
               </button>
             </div>
           </div>
@@ -4675,74 +4835,52 @@
 <!-- ── STAFF-AWARE BOOKING ── -->
 <section class="handoff-sec" id="staff-booking">
   <div class="container">
-    <div class="handoff-in reveal">
-      <div class="handoff-copy">
+    <div class="staffbook-grid reveal">
+      <div class="staffbook-copy">
         <div class="sec-tag">Built Around Your Team</div>
-        <h2 class="sec-h2">One receptionist.<br><span class="h2-grad">Your whole team.</span></h2>
+        <h2 class="sec-h2">Connect with<br><span class="h2-grad">Your whole team.</span></h2>
         <p class="sec-p">For businesses with more than one person on the roster, we configure Ellie around your actual staff, their services and their working hours during onboarding — so bookings land with the right person, not just the first opening.</p>
-        <ul class="handoff-list">
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Configured around each staff member's services and hours</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Checks calendar availability before booking</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Books, reschedules and cancels appointments</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Sends an SMS confirmation the moment it's booked</li>
+        <ul class="staffbook-list">
+          <li>
+            <span class="staffbook-list-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            Configured around each staff member's services and hours
+          </li>
+          <li>
+            <span class="staffbook-list-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            Checks calendar availability before booking
+          </li>
+          <li>
+            <span class="staffbook-list-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></span>
+            Books, reschedules and cancels appointments
+          </li>
+          <li>
+            <span class="staffbook-list-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            Sends an SMS confirmation the moment it's booked
+          </li>
         </ul>
-
-        <div style="max-width:460px;margin:2rem auto 0;padding:20px 22px;border-radius:16px;border:1px solid var(--border);background:var(--bg2);text-align:left;">
-          <p style="margin:0 0 12px;font-size:.88rem;line-height:1.6;color:var(--muted);"><strong style="color:var(--text);">Customer:</strong> "Can I get a haircut tomorrow afternoon? Anyone is fine."</p>
-          <p style="margin:0;font-size:.88rem;line-height:1.6;color:var(--muted);"><strong style="color:var(--violet);">Ellie:</strong> "Absolutely — Emma has 2:30 or 3:30, and Sarah has 3:15. Which works best?"</p>
-        </div>
-        <p class="wf-tl-note" style="margin-top:12px;text-align:center;">An illustrative example of how staff-aware booking is configured — not a live call.</p>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- ── SMART ESCALATION / HUMAN HANDOFF ── -->
-<section class="handoff-sec" id="escalation">
-  <div class="container">
-    <div class="handoff-in reveal">
-      <div class="handoff-copy">
-        <div class="sec-tag">Smart Escalation</div>
-        <h2 class="sec-h2">Ellie knows when to handle it —<br><span class="h2-grad">and when a human should.</span></h2>
-        <p class="sec-p">Ellie doesn't guess, and she isn't trying to replace your team's judgement. If she doesn't genuinely know the answer, she says so, takes a message, and makes sure it reaches the right person instead of inventing pricing, hours or details she was never given.</p>
-
-        <div style="max-width:560px;margin:1.6rem auto 0;border-radius:16px;border:1px solid var(--border);background:var(--bg2);overflow:hidden;text-align:left;">
-          <table style="width:100%;border-collapse:collapse;font-size:.86rem;">
-            <tbody>
-              <tr style="border-bottom:1px solid var(--border);">
-                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Normal booking</td>
-                <td style="padding:12px 16px;color:var(--muted);">Ellie handles it</td>
-              </tr>
-              <tr style="border-bottom:1px solid var(--border);">
-                <td style="padding:12px 16px;color:var(--text);font-weight:600;">New enquiry</td>
-                <td style="padding:12px 16px;color:var(--muted);">Ellie qualifies it</td>
-              </tr>
-              <tr style="border-bottom:1px solid var(--border);">
-                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Asks for a specific person</td>
-                <td style="padding:12px 16px;color:var(--muted);">Warm transfer where set up, or a message to that person</td>
-              </tr>
-              <tr style="border-bottom:1px solid var(--border);">
-                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Urgent enquiry</td>
-                <td style="padding:12px 16px;color:var(--muted);">Flagged and your team notified</td>
-              </tr>
-              <tr style="border-bottom:1px solid var(--border);">
-                <td style="padding:12px 16px;color:var(--text);font-weight:600;">Complaint</td>
-                <td style="padding:12px 16px;color:var(--muted);">Message taken and escalated to your team</td>
-              </tr>
-              <tr>
-                <td style="padding:12px 16px;color:var(--text);font-weight:600;">After-hours enquiry</td>
-                <td style="padding:12px 16px;color:var(--muted);">Captured and ready for you the next business day</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="staffbook-demo">
+        <div class="staffbook-visual">
+          <img src="https://images.pexels.com/photos/7755518/pexels-photo-7755518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=760&w=650" alt="Hairstylist blow-drying a client's hair in a salon" loading="lazy">
+          <div class="staffbook-visual-overlay">
+            <div class="staffbook-chat-head">
+              <span class="staffbook-chat-avatar">E</span>
+              <div>
+                <div class="staffbook-chat-name">Ellie</div>
+                <div class="staffbook-chat-sub">Booking a client now</div>
+              </div>
+              <span class="staffbook-chat-live">Example</span>
+            </div>
+            <div class="staffbook-bubble staffbook-bubble--customer">Can I get a haircut tomorrow afternoon? Anyone is fine.</div>
+            <div class="staffbook-bubble staffbook-bubble--ellie">Absolutely — Emma has 2:30 or 3:30, and Sarah has 3:15. Which works best?</div>
+            <div class="staffbook-chat-foot">
+              <span class="staffbook-chat-avatar staffbook-chat-avatar--sm">👤</span>
+              Checking Emma &amp; Sarah's calendars…
+            </div>
+          </div>
         </div>
-
-        <ul class="handoff-list" style="margin-top:1.6rem;">
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Takes a detailed message when she can't help</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Flags urgent or unusual enquiries for your attention</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Never invents pricing, hours or details she wasn't given</li>
-        </ul>
-        <p class="sec-p" style="margin-top:1.4rem;font-weight:600;color:var(--text);">Automation where it helps. Humans where they matter.</p>
+        <p class="staffbook-caption">An illustrative example of how staff-aware booking is configured — not a live call.</p>
       </div>
     </div>
   </div>
@@ -5255,12 +5393,40 @@
   </div>
 </footer>
 
-<!-- ── FLOATING CALL BUTTON ── -->
-<div class="call-fab-wrap">
+<!-- ── FLOATING CHAT WIDGET ── -->
+<div class="call-fab-wrap" id="chat-fab-wrap">
   <div class="call-bubble" id="call-bubble"></div>
-  <a href="tel:+61485057840" class="call-fab" aria-label="Call us on 0485 057 840" data-track="call_fab_clicked">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-  </a>
+
+  <div class="chat-panel" id="chat-panel" role="dialog" aria-label="Chat with Ellie">
+    <div class="chat-panel-head">
+      <span class="chat-panel-avatar">E</span>
+      <div class="chat-panel-title">
+        <div class="chat-panel-name">Ellie</div>
+        <div class="chat-panel-status">Online now</div>
+      </div>
+      <a href="tel:+61485057840" class="chat-panel-iconbtn" id="chat-call-toggle" aria-label="Call Ellie on 0485 057 840" data-track="chat_widget_call_clicked">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </a>
+      <button type="button" class="chat-panel-iconbtn" id="chat-panel-close" aria-label="Close chat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="chat-panel-body" id="chat-panel-body">
+      <div class="chat-msg chat-msg--ellie">Hey, I'm Ellie 👋 Ask me anything about how I work for your business or tap the phone icon above to hear me live.</div>
+    </div>
+    <form class="chat-panel-form" id="chat-panel-form">
+      <input type="text" class="chat-panel-input" id="chat-panel-input" placeholder="Type a message…" autocomplete="off" maxlength="500" aria-label="Message">
+      <button type="submit" class="chat-panel-send" id="chat-panel-send" aria-label="Send message" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <button type="button" class="call-fab" id="chat-fab-toggle" aria-label="Chat with Ellie" data-track="chat_fab_clicked" aria-expanded="false">
+    <svg class="chat-fab-icon-chat" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    <svg class="chat-fab-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>

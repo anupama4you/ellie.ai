@@ -89,42 +89,19 @@
       .catch(() => {}); // homepage stays fine without the teaser if this fails
   }
 
-  // ── Hero avatar video: tap to play talking clip, then back to loop ──
-  const heroPlayBtn  = document.getElementById('hero-av-play');
-  const heroVideo    = document.getElementById('hero-av-video');
-  const heroAvSound  = document.querySelector('.hero-av-sound');
-
-  const HERO_LOOP_SRC = 'assets/ellie/ellie-loop.mp4';
-  const HERO_PLAY_SRC = 'assets/ellie/ellie-loop-play.mp4';
-
-  function playHeroTalkClip() {
-    if (!heroVideo) return;
-    heroVideo.loop   = false;
-    heroVideo.muted  = false;
-    heroVideo.src    = HERO_PLAY_SRC;
-    heroVideo.currentTime = 0;
-    heroVideo.play().catch(() => {});
-    if (heroPlayBtn) heroPlayBtn.classList.add('playing');
-    if (heroAvSound) heroAvSound.classList.add('active');
-  }
-
-  function backToHeroLoop() {
-    if (!heroVideo) return;
-    heroVideo.loop  = true;
-    heroVideo.muted = true;
-    heroVideo.src   = HERO_LOOP_SRC;
-    heroVideo.play().catch(() => {});
-    if (heroPlayBtn) heroPlayBtn.classList.remove('playing');
-    if (heroAvSound) heroAvSound.classList.remove('active');
-  }
-
-  if (heroVideo) {
-    if (heroPlayBtn) heroPlayBtn.addEventListener('click', () => {
-      if (heroVideo.src.includes('ellie-loop-play')) backToHeroLoop();
-      else playHeroTalkClip();
-    });
-    heroVideo.addEventListener('ended', () => {
-      if (heroVideo.src.includes('ellie-loop-play')) backToHeroLoop();
+  // ── Hero avatar video: "Speak to Ellie" jumps to the live demo and
+  // starts a real call there, instead of playing a canned clip ────────
+  const heroLiveBtn = document.getElementById('hero-av-live-btn');
+  if (heroLiveBtn) {
+    heroLiveBtn.addEventListener('click', () => {
+      const target = document.querySelector('.phone-wrap') || document.getElementById('demo');
+      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // startDemo/demoActive are declared further down this same scope
+      // (function declarations hoist; by the time this fires on a real
+      // click, the whole script has already finished its initial run).
+      // 'chatbot' mode: Ellie speaks as callellie.com's own assistant,
+      // not the generic "you haven't entered a business yet" phone persona.
+      setTimeout(() => { if (!demoActive) startDemo({ mode: 'chatbot' }); }, 500);
     });
   }
 
@@ -649,7 +626,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     return vapiSdkPromise;
   }
 
-  async function startDemo() {
+  async function startDemo(options = {}) {
     if (demoActive) return;
     track('demo_call_initiated', {});
     demoActive = true;
@@ -672,13 +649,15 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       const cfgRes = await fetch('/.netlify/functions/demo-vapi-config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify(options.mode ? { mode: options.mode } : {}),
       });
       if (!cfgRes.ok) throw new Error('Could not prepare company context');
       const { publicKey, assistantId, assistantOverrides } = await cfgRes.json();
 
       // If user clicked Generate, override the system prompt + firstMessage with their edited fields
-      if (briefedConfig?._generated) {
+      // — skip this for a dedicated mode (e.g. the hero's "Speak to Ellie", which wants its own
+      // site-assistant persona regardless of any business the visitor briefed earlier).
+      if (!options.mode && briefedConfig?._generated) {
         const { _systemPrompt, _firstMessage } = briefedConfig;
         if (_systemPrompt && assistantOverrides?.model?.messages?.[0]) {
           assistantOverrides.model.messages[0].content = _systemPrompt;
@@ -1663,18 +1642,35 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     scheduleTalk();
   }
 
-  // ── Floating call button: random speech-bubble nudges ─────
-  const callBubble = document.getElementById('call-bubble');
-  if (callBubble) {
+  // ── Floating chat widget: nudge bubble + text chat ─────────
+  // The panel's call icon is a plain tel: link (see markup) — it dials the
+  // real number, which is answered by the same Vapi assistant on the phone
+  // network, so there's no separate in-browser call path to wire up here.
+  (function initChatWidget() {
+    const wrap      = document.getElementById('chat-fab-wrap');
+    const fabToggle  = document.getElementById('chat-fab-toggle');
+    const panel       = document.getElementById('chat-panel');
+    const closeBtn      = document.getElementById('chat-panel-close');
+    const body           = document.getElementById('chat-panel-body');
+    const form             = document.getElementById('chat-panel-form');
+    const input              = document.getElementById('chat-panel-input');
+    const sendBtn              = document.getElementById('chat-panel-send');
+    const callBubble             = document.getElementById('call-bubble');
+
+    if (!wrap || !fabToggle || !panel) return;
+
+    // ── Nudge bubble ──────────────────────────────────────────
     const callBubbleMsgs = [
-      'Got questions? Call us! 📞',
-      "We're just a call away 👋",
+      'Got questions? Chat with me! 💬',
+      "We're just a message away 👋",
       'Talk to Ellie now!',
-      'Free trial? Give us a ring! 🚀',
+      'Free trial? Just ask! 🚀',
     ];
     let lastCallBubbleMsg = -1;
+    let chatOpen = false;
 
     function showCallBubble() {
+      if (!callBubble || chatOpen) return;
       let i = Math.floor(Math.random() * callBubbleMsgs.length);
       if (i === lastCallBubbleMsg) i = (i + 1) % callBubbleMsgs.length;
       lastCallBubbleMsg = i;
@@ -1682,14 +1678,103 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       callBubble.classList.add('visible');
       setTimeout(() => callBubble.classList.remove('visible'), 4500);
     }
-
     function scheduleCallBubble() {
       const delay = 12000 + Math.random() * 13000;
       setTimeout(() => { showCallBubble(); scheduleCallBubble(); }, delay);
     }
-    setTimeout(showCallBubble, 4000);
-    scheduleCallBubble();
-  }
+    if (callBubble) {
+      setTimeout(showCallBubble, 4000);
+      scheduleCallBubble();
+      callBubble.style.cursor = 'pointer';
+      callBubble.addEventListener('click', openPanel);
+    }
+
+    // ── Open / close ──────────────────────────────────────────
+    function openPanel() {
+      chatOpen = true;
+      wrap.classList.add('open');
+      panel.classList.add('open');
+      fabToggle.setAttribute('aria-expanded', 'true');
+      if (callBubble) callBubble.classList.remove('visible');
+      setTimeout(() => input?.focus(), 200);
+      track('chat_widget_opened', {});
+    }
+    function closePanel() {
+      chatOpen = false;
+      wrap.classList.remove('open');
+      panel.classList.remove('open');
+      fabToggle.setAttribute('aria-expanded', 'false');
+    }
+    fabToggle.addEventListener('click', () => { chatOpen ? closePanel() : openPanel(); });
+    if (closeBtn) closeBtn.addEventListener('click', closePanel);
+
+    // ── Text chat ─────────────────────────────────────────────
+    let chatHistory = [];
+    let sending = false;
+
+    function scrollBodyToBottom() { if (body) body.scrollTop = body.scrollHeight; }
+
+    function addMessage(role, text) {
+      if (!body) return;
+      const el = document.createElement('div');
+      el.className = 'chat-msg ' + (role === 'user' ? 'chat-msg--user' : role === 'error' ? 'chat-msg--error' : 'chat-msg--ellie');
+      el.textContent = text;
+      body.appendChild(el);
+      scrollBodyToBottom();
+    }
+    function showTyping() {
+      if (!body) return;
+      const el = document.createElement('div');
+      el.className = 'chat-msg chat-msg--ellie chat-msg--typing';
+      el.id = 'chat-typing-indicator';
+      el.innerHTML = '<span></span><span></span><span></span>';
+      body.appendChild(el);
+      scrollBodyToBottom();
+    }
+    function hideTyping() { document.getElementById('chat-typing-indicator')?.remove(); }
+
+    if (input && sendBtn) {
+      input.addEventListener('input', () => { sendBtn.disabled = !input.value.trim() || sending; });
+    }
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = input ? input.value.trim() : '';
+        if (!text || sending) return;
+
+        addMessage('user', text);
+        chatHistory.push({ role: 'user', content: text });
+        input.value = '';
+        sendBtn.disabled = true;
+        sending = true;
+        showTyping();
+        track('chat_widget_message_sent', {});
+
+        try {
+          const res = await fetch('/.netlify/functions/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: chatHistory }),
+            signal: AbortSignal.timeout(20000),
+          });
+          hideTyping();
+          if (!res.ok) throw new Error('bad status');
+          const data = await res.json();
+          if (!data.reply) throw new Error('empty reply');
+          addMessage('ellie', data.reply);
+          chatHistory.push({ role: 'assistant', content: data.reply });
+        } catch (err) {
+          hideTyping();
+          addMessage('error', "Sorry, I couldn't reply just then — you can also tap the phone icon above to talk to me live, or try again.");
+        } finally {
+          sending = false;
+          sendBtn.disabled = !input.value.trim();
+        }
+      });
+    }
+
+  })();
 
   // ── "Why Ellie sounds human" section: 9:16 video play button ──
   const techVideo = document.getElementById('tech-video');
