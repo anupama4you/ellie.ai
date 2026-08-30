@@ -45,6 +45,12 @@ exports.handler = async (event) => {
     notes: args.notes || '',
   });
 
+  // Bounded, not fire-and-forget: Netlify's function runtime can kill work left
+  // running after the response is sent, so a detached fetch risks silently
+  // dropping the lead. The assistant's prompt already says its "I'll pass this
+  // on" line BEFORE calling this tool, so the caller isn't sitting in dead air
+  // waiting on this request — this timeout just stops it hanging indefinitely
+  // if Netlify Forms is ever slow to respond.
   const siteUrl = process.env.URL || 'https://callellie.com';
   let submitted = false;
   try {
@@ -52,6 +58,7 @@ exports.handler = async (event) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: formData.toString(),
+      signal: AbortSignal.timeout(5000),
     });
     submitted = res.ok;
   } catch {

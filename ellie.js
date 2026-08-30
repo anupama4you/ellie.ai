@@ -89,20 +89,69 @@
       .catch(() => {}); // homepage stays fine without the teaser if this fails
   }
 
-  // ── Hero avatar video: "Speak to Ellie" jumps to the live demo and
-  // starts a real call there, instead of playing a canned clip ────────
-  const heroLiveBtn = document.getElementById('hero-av-live-btn');
-  if (heroLiveBtn) {
-    heroLiveBtn.addEventListener('click', () => {
-      const target = document.querySelector('.phone-wrap') || document.getElementById('demo');
-      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // startDemo/demoActive are declared further down this same scope
-      // (function declarations hoist; by the time this fires on a real
-      // click, the whole script has already finished its initial run).
-      // 'chatbot' mode: Ellie speaks as callellie.com's own assistant,
-      // not the generic "you haven't entered a business yet" phone persona.
-      setTimeout(() => { if (!demoActive) startDemo({ mode: 'chatbot' }); }, 500);
+  // ── Hero avatar video: "Speak to Ellie now" starts a real call right there
+  // in the card — no scrolling away — using the dedicated general-enquiries
+  // assistant (configured directly on Vapi, not built client-side like the
+  // business demo config) instead of the live-demo phone mockup. ─────────
+  const HERO_ENQUIRIES_ASSISTANT_ID = '09d402a1-a62e-4f36-aebe-0bcb2f31376c';
+  const heroLiveBtn        = document.getElementById('hero-av-live-btn');
+  const heroCallControls   = document.getElementById('hero-av-controls');
+  const heroCallStatus     = document.getElementById('hero-av-call-status');
+  const heroCallStatusText = document.getElementById('hero-av-call-status-text');
+  const heroCallEndBtn     = document.getElementById('hero-av-call-end');
+
+  if (heroLiveBtn && heroCallStatus) {
+    let heroVapi = null;
+
+    function heroCallReset() {
+      if (heroVapi) { try { heroVapi.stop(); } catch (_) {} heroVapi = null; }
+      heroCallStatus.style.display = 'none';
+      if (heroCallControls) heroCallControls.style.display = '';
+    }
+
+    heroLiveBtn.addEventListener('click', async () => {
+      if (heroVapi) return; // already on a call
+      if (heroCallControls) heroCallControls.style.display = 'none';
+      heroCallStatus.style.display = 'flex';
+      heroCallStatusText.textContent = 'Calling Ellie…';
+      track('hero_speak_to_ellie_clicked', {});
+
+      try {
+        // loadVapiSdk is declared further down this same scope (function
+        // declarations hoist; by the time this fires on a real click, the
+        // whole script has already finished its initial run).
+        const vapiSdkReady = loadVapiSdk();
+
+        // Only fetched for a valid publicKey/session — the assistant itself
+        // (persona, tools, first message) is fully configured on Vapi under
+        // HERO_ENQUIRIES_ASSISTANT_ID, so no overrides are sent here.
+        const cfgRes = await fetch('/.netlify/functions/demo-vapi-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
+        });
+        if (!cfgRes.ok) throw new Error('Could not prepare call');
+        const { publicKey } = await cfgRes.json();
+
+        await vapiSdkReady;
+        const VapiClass = (typeof Vapi === 'function') ? Vapi : Vapi.default;
+        const vapi = new VapiClass(publicKey);
+        heroVapi = vapi;
+
+        vapi.on('call-start',   () => { heroCallStatusText.textContent = 'Connected'; });
+        vapi.on('call-end',     () => { track('hero_speak_to_ellie_completed', {}); heroCallReset(); });
+        vapi.on('speech-start', () => { heroCallStatusText.textContent = 'Ellie is speaking…'; });
+        vapi.on('speech-end',   () => { heroCallStatusText.textContent = 'Listening…'; });
+        vapi.on('error', (err) => { console.error('Hero call error', err); heroCallReset(); });
+
+        vapi.start(HERO_ENQUIRIES_ASSISTANT_ID);
+      } catch (err) {
+        console.error('Hero call start error', err);
+        heroCallReset();
+      }
     });
+
+    if (heroCallEndBtn) heroCallEndBtn.addEventListener('click', heroCallReset);
   }
 
   // ── Clock in phone status bar ─────────────────────────────
@@ -1711,21 +1760,38 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     // ── Text chat ─────────────────────────────────────────────
     let chatHistory = [];
     let sending = false;
+    let lastMsgRole = null; // drives iMessage-style bubble grouping
 
     function scrollBodyToBottom() { if (body) body.scrollTop = body.scrollHeight; }
 
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    // Reply text is expected to be plain prose (the system prompt forbids
+    // markdown), but this stays safe either way: HTML is escaped first, then
+    // only a couple of literal markdown patterns are turned into real
+    // formatting in case a reply ever slips into using them. Line breaks are
+    // handled by the bubble's own `white-space: pre-wrap`, not here.
+    function formatChatText(text) {
+      return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    }
+
     function addMessage(role, text) {
       if (!body) return;
+      const cls = role === 'user' ? 'chat-msg--user' : role === 'error' ? 'chat-msg--error' : 'chat-msg--ellie';
+      const grouped = role === lastMsgRole && role !== 'error';
       const el = document.createElement('div');
-      el.className = 'chat-msg ' + (role === 'user' ? 'chat-msg--user' : role === 'error' ? 'chat-msg--error' : 'chat-msg--ellie');
-      el.textContent = text;
+      el.className = 'chat-msg ' + cls + (grouped ? ' chat-msg--grouped' : '');
+      el.innerHTML = formatChatText(text);
       body.appendChild(el);
+      lastMsgRole = role;
       scrollBodyToBottom();
     }
     function showTyping() {
       if (!body) return;
+      const grouped = lastMsgRole === 'ellie';
       const el = document.createElement('div');
-      el.className = 'chat-msg chat-msg--ellie chat-msg--typing';
+      el.className = 'chat-msg chat-msg--ellie chat-msg--typing' + (grouped ? ' chat-msg--grouped' : '');
       el.id = 'chat-typing-indicator';
       el.innerHTML = '<span></span><span></span><span></span>';
       body.appendChild(el);

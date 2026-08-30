@@ -735,6 +735,22 @@
     .hero-av-name { font-size: .92rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
     .hero-av-tagline { font-size: .7rem; color: rgba(255,255,255,.75); line-height: 1.35; }
     .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; width: 100%; }
+    .hero-av-call-status {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,.32); border-radius: 15px;
+      padding: 9px 9px 9px 14px;
+    }
+    .hero-av-call-status-text { font-size: .84rem; font-weight: 700; color: #fff; }
+    .hero-av-call-end {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; border: none; cursor: pointer;
+      background: #ef4444; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .15s ease;
+    }
+    .hero-av-call-end:hover { transform: scale(1.08); }
     .hero-av-live-btn {
       position: relative;
       display: flex; align-items: center; gap: 10px;
@@ -1972,6 +1988,12 @@
     .dashboard-hd { text-align:center;max-width:560px;margin:0 auto 2.5rem; }
     .dashboard-hd h2 { font-size:clamp(1.75rem,3vw,2.4rem);color:#fff;margin-bottom:.8rem; }
     .dashboard-hd p  { font-size:.95rem;color:var(--muted);line-height:1.7; }
+    /* ── Supademo interactive walkthrough ── */
+    .dash-supademo {
+      max-width: 1080px; margin: 0 auto 2.6rem; border-radius: 18px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--bg2);
+      box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(167,139,250,.06);
+    }
     /* ── Dashboard mockup — real UI recreated in HTML/CSS, not a screenshot ── */
     .dash-mock {
       --dm-paper: #F6F4EE; --dm-card:#FFFFFF; --dm-ink:#211A31; --dm-ink2:#5C5570; --dm-ink3:#8B85A0;
@@ -3099,10 +3121,11 @@
     }
     .chat-panel-avatar {
       width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--violet), var(--rose));
-      color: #fff; font-weight: 700; font-size: .85rem;
+      background: #fff; padding: 6px; box-sizing: border-box; overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border);
       display: flex; align-items: center; justify-content: center;
     }
+    .chat-panel-avatar img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .chat-panel-title { flex: 1; min-width: 0; }
     .chat-panel-name { font-weight: 700; font-size: .88rem; color: var(--text); }
     [data-theme="light"] .chat-panel-name { color: #0f172a; }
@@ -3116,17 +3139,30 @@
     }
     .chat-panel-iconbtn:hover { border-color: var(--violet-b); color: var(--violet); }
 
-    .chat-panel-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .chat-msg { max-width: 85%; padding: 10px 13px; border-radius: 15px; font-size: .85rem; line-height: 1.5; }
-    .chat-msg--ellie { background: var(--bg3); color: var(--text); border-bottom-left-radius: 4px; align-self: flex-start; }
+    /* Message bubbles — iMessage-style: tight grouping between consecutive
+       messages from the same sender, a "tail" corner on the last bubble in
+       a group, and pre-wrap so multi-line replies actually show line breaks
+       instead of running together as one block of text. */
+    .chat-panel-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; }
+    .chat-msg {
+      max-width: 82%; padding: 9px 14px; border-radius: 18px; font-size: .87rem; line-height: 1.45;
+      white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;
+      margin-top: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.14);
+    }
+    .chat-msg:first-child { margin-top: 0; }
+    .chat-msg.chat-msg--grouped { margin-top: 2px; }
+    .chat-msg strong { font-weight: 700; }
+    .chat-msg--ellie { background: var(--bg3); color: var(--text); border-bottom-left-radius: 5px; align-self: flex-start; }
+    .chat-msg--ellie.chat-msg--grouped { border-top-left-radius: 5px; }
     [data-theme="light"] .chat-msg--ellie { color: #0f172a; }
-    .chat-msg--user { background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
-    .chat-msg--error { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.3); align-self: flex-start; }
-    .chat-msg--typing { display: flex; gap: 4px; align-items: center; padding: 13px 15px; }
-    .chat-msg--typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: chatTypingDot 1.2s ease-in-out infinite; }
+    .chat-msg--user { background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff; border-bottom-right-radius: 5px; align-self: flex-end; box-shadow: 0 2px 8px rgba(167,139,250,.35); }
+    .chat-msg--user.chat-msg--grouped { border-top-right-radius: 5px; }
+    .chat-msg--error { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.3); align-self: flex-start; white-space: normal; }
+    .chat-msg--typing { display: flex; gap: 5px; align-items: center; padding: 13px 16px; }
+    .chat-msg--typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: chatTypingDot 1.2s ease-in-out infinite; }
     .chat-msg--typing span:nth-child(2) { animation-delay: .15s; }
     .chat-msg--typing span:nth-child(3) { animation-delay: .3s; }
-    @keyframes chatTypingDot { 0%,60%,100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(-3px); opacity: 1; } }
+    @keyframes chatTypingDot { 0%,60%,100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
 
     .chat-panel-form { display: flex; gap: 8px; padding: 12px 13px; border-top: 1px solid var(--border); flex-shrink: 0; }
     .chat-panel-input {
@@ -3349,6 +3385,22 @@
     .hero-av-name { font-size: .92rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
     .hero-av-tagline { font-size: .7rem; color: rgba(255,255,255,.75); line-height: 1.35; }
     .hero-av-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; width: 100%; }
+    .hero-av-call-status {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,.32); border-radius: 15px;
+      padding: 9px 9px 9px 14px;
+    }
+    .hero-av-call-status-text { font-size: .84rem; font-weight: 700; color: #fff; }
+    .hero-av-call-end {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; border: none; cursor: pointer;
+      background: #ef4444; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .15s ease;
+    }
+    .hero-av-call-end:hover { transform: scale(1.08); }
     .hero-av-live-btn {
       position: relative;
       display: flex; align-items: center; gap: 10px;
@@ -3585,9 +3637,9 @@
     </ul>
     <div class="nav-right">
       <div class="nav-ctas">
-        <a href="#demo" class="nav-book">Try Ellie Free</a>
-        <a href="get-started.html" class="nav-cta">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px;margin-top:-1px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Build my Ellie
+        <a href="get-started.html" class="nav-book">Get Started</a>
+        <a href="tel:+61485057840" class="nav-cta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px;margin-top:-1px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call Ellie
         </a>
       </div>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
@@ -3607,8 +3659,8 @@
     <a href="#faq">FAQ</a>
     <a href="/blog/">Blog</a>
     <div class="nav-mobile-divider"></div>
-    <a href="#demo">Try Ellie Free</a>
-    <a href="get-started.html" style="color:var(--violet);font-weight:600;">Build my Ellie →</a>
+    <a href="get-started.html">Get Started</a>
+    <a href="tel:+61485057840" style="color:var(--violet);font-weight:600;">Call Ellie →</a>
   </div>
 </nav>
 
@@ -3701,7 +3753,7 @@
               <div class="hero-av-name">Ellie</div>
               <div class="hero-av-tagline">Your AI front desk</div>
             </div>
-            <div class="hero-av-controls">
+            <div class="hero-av-controls" id="hero-av-controls">
               <button class="hero-av-live-btn" id="hero-av-live-btn" aria-label="Speak to Ellie now — live call" data-track="hero_speak_to_ellie_clicked">
                 <span class="hero-av-live-btn-ring"></span>
                 <span class="hero-av-live-btn-icon">
@@ -3711,6 +3763,12 @@
                   <span class="hero-av-live-btn-label"><span class="hero-av-live-btn-dot"></span>Live call</span>
                   <span class="hero-av-live-btn-main">Speak to Ellie now</span>
                 </span>
+              </button>
+            </div>
+            <div class="hero-av-call-status" id="hero-av-call-status" style="display:none">
+              <span class="hero-av-call-status-text" id="hero-av-call-status-text">Calling Ellie…</span>
+              <button type="button" class="hero-av-call-end" id="hero-av-call-end" aria-label="End call">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.09 6.09l.97-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </button>
             </div>
           </div>
@@ -4371,9 +4429,18 @@
       <p>Not just call counts. Enquiries qualified, appointments booked and calls escalated — the outcomes, not just the noise.</p>
     </div>
 
-    <!-- Real dashboard UI, recreated in HTML/CSS (not a screenshot) — sample
-         data shown is illustrative, matching the actual product's layout,
-         colours and typography. -->
+    <!-- Real, interactive product walkthrough (Supademo) — click through the
+         actual dashboard rather than a static recreation. -->
+    <div class="dash-supademo reveal">
+      <div style="position: relative; box-sizing: content-box; max-height: 80vh; max-height: 80svh; width: 100%; aspect-ratio: 2.13; padding: 40px 0 40px 0;">
+        <iframe src="https://app.supademo.com/embed/cmtfxeaaz1jupqmiasdgia695?embed_v=2&utm_source=embed" loading="lazy" title="Manage Calls, Appointments, and Settings in Ellie" allow="clipboard-write" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+      </div>
+    </div>
+
+    <!-- Real dashboard UI, recreated in HTML/CSS (not a screenshot). Commented
+         out for now in favour of the Supademo walkthrough above — sample data
+         shown below was illustrative, matching the actual product's layout,
+         colours and typography, if this gets re-enabled later.
     <div class="dash-mock reveal" aria-label="Ellie dashboard preview">
       <div class="dash-mock-chrome">
         <span class="dash-mock-dot dash-mock-dot--r"></span>
@@ -4549,6 +4616,7 @@
       </div>
     </div>
     <p class="dash-mock-caption">Sample data shown for illustration — this is the actual Ellie dashboard.</p>
+    -->
 
     <!-- Feature bullets -->
     <div class="dash-bullets">
@@ -5399,7 +5467,7 @@
 
   <div class="chat-panel" id="chat-panel" role="dialog" aria-label="Chat with Ellie">
     <div class="chat-panel-head">
-      <span class="chat-panel-avatar">E</span>
+      <span class="chat-panel-avatar"><img src="assets/ellie/favicon.png" alt="Ellie" loading="lazy"></span>
       <div class="chat-panel-title">
         <div class="chat-panel-name">Ellie</div>
         <div class="chat-panel-status">Online now</div>
