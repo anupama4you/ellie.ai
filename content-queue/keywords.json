@@ -236,7 +236,9 @@
       "keyword": "reduce no shows with appointment reminders",
       "intent": "informational - no-show reduction",
       "audience": "clinics and salons with no-show problems",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-08-30",
+      "slug": "reduce-no-shows-with-appointment-reminders"
     },
     {
       "keyword": "answering service for electricians",
