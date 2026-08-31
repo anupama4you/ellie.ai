@@ -92,12 +92,13 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
   trigger that workflow, and only for rows you've explicitly approved.
 - `SMS_MAX_PER_RUN` (default 50, set via the workflow's input) caps how
   many messages a single send run can fire off.
-- The draft message is deliberately plain GSM text (no emoji) and kept
-  under 306 characters, so it sends as 2 SMS parts. Adding an emoji or
-  going over that length flips the whole message to Unicode encoding,
-  which drops the per-part limit from 153 to 70 chars and multiplies
-  cost — check message length before changing the template in
-  scripts/sms-leads-find.js.
+- The draft message is deliberately plain GSM text (no emoji, no smart
+  quotes) and kept under 308 characters, so it sends as 2 credits.
+  Adding an emoji or any non-GSM character flips the whole message to
+  Unicode encoding — Texto then charges 2 credits per part instead of 1,
+  *and* shrinks the per-part limit from 154 to 67 chars, so one emoji
+  in this template jumps it from 2 credits to 8. Check message length
+  and encoding before changing the template in scripts/sms-leads-find.js.
 - AU mobile matching accepts `+614XXXXXXXX`, `0061 4XX XXX XXX`, and
   `04XX XXX XXX` in any spacing Places returns; anything else (landlines,
   no listed number) is skipped automatically.
