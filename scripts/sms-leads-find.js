@@ -60,12 +60,35 @@ function humaniseCategory(types) {
   return pick.replace(/_/g, " ");
 }
 
+// What a missed call actually costs each kind of business — used to make
+// the opening line land instead of reading as one generic template.
+const JOB_TYPES = new Set([
+  "plumber", "electrician", "roofing_contractor", "general_contractor",
+  "locksmith", "painter", "moving_company", "car_repair", "hvac_contractor",
+  "contractor", "handyman",
+]);
+const BOOKING_TYPES = new Set([
+  "beauty_salon", "hair_care", "hair_salon", "spa", "gym", "nail_salon",
+  "restaurant", "cafe", "meal_takeaway",
+]);
+const APPOINTMENT_TYPES = new Set([
+  "doctor", "dentist", "physiotherapist", "veterinary_care", "lawyer",
+  "accounting", "hospital", "health",
+]);
+function missedNoun(types) {
+  const set = new Set(types || []);
+  if ([...JOB_TYPES].some((t) => set.has(t))) return "jobs";
+  if ([...BOOKING_TYPES].some((t) => set.has(t))) return "bookings";
+  if ([...APPOINTMENT_TYPES].some((t) => set.has(t))) return "appointments";
+  return "customers";
+}
+
 // Kept plain GSM (no emoji/unicode) and under 306 chars on purpose — one
-// emoji or going past that flips the message to Unicode encoding, which
-// drops the per-part limit from 153 to 70 chars and multiplies SMS cost.
-function draftMessage(name, rating, category) {
-  const ratingBit = rating ? `your ${rating} rating for ${category}` : `${category}`;
-  return `Hi ${name}, saw ${ratingBit} on Google. Ellie answers calls & books jobs 24/7 for AU businesses. Free demo: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
+// emoji or a smart/curly apostrophe flips the message to Unicode encoding,
+// which drops the per-part limit from 153 to 70 chars and multiplies cost.
+function draftMessage(name, types) {
+  const noun = missedNoun(types);
+  return `Hi ${name}, missed calls can mean missed ${noun}. Ellie answers your calls 24/7, speaks naturally and books jobs while you're busy. Try it free: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
 }
 
 async function textSearch(query) {
@@ -144,7 +167,7 @@ async function main() {
     seenPhones.add(phone);
 
     const category = humaniseCategory(details.types);
-    const message = draftMessage(details.name, details.rating, category);
+    const message = draftMessage(details.name, details.types);
 
     newRows.push([
       new Date().toISOString(),
