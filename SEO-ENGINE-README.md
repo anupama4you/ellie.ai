@@ -1,13 +1,13 @@
 # ELLIE SEO Engine
 
-Automated weekly SEO article publishing for callellie.com. A GitHub Action runs every Monday morning, asks Claude to write one genuinely useful article from the keyword queue, saves it as a static HTML page with full schema markup, updates the blog index and sitemap, and commits it. Netlify picks up the commit and deploys automatically.
+Automated SEO article publishing for callellie.com, one post every 2 days. A GitHub Action runs on that schedule, asks Claude to write one genuinely useful article from the keyword queue, saves it as a static HTML page with full schema markup, updates the blog index and sitemap, and commits it. Netlify picks up the commit and deploys automatically.
 
 Cost: roughly $0.05 to $0.15 per article in API usage. No other fees.
 
 ## How it works
 
 ```
-GitHub Action (weekly, Monday 7am Adelaide)
+GitHub Action (every 2 days, ~7am Adelaide)
    -> scripts/generate-article.js
    -> picks next unpublished keyword from content-queue/keywords.json
    -> calls Claude API with ELLIE facts + past article list (for internal links)
@@ -46,9 +46,10 @@ GitHub Action (weekly, Monday 7am Adelaide)
 
 ## Managing the queue
 
-- 40 keywords are pre-loaded. At one post a week that's most of a year of
-  runway; check content-queue/keywords.json for how many are still
-  unpublished and top it up well before it runs dry.
+- 40 keywords are pre-loaded, but at one post every 2 days that's only
+  ~2.5 months of runway per full queue — much shorter than the old
+  once-a-week pace. As of this schedule change only 10 are unpublished
+  (~3 weeks left), so top up content-queue/keywords.json soon.
 - Add more anytime by appending to content-queue/keywords.json:
   { "keyword": "...", "intent": "...", "audience": "...", "published": false }
 - Reorder freely. The script always takes the first unpublished entry.
@@ -64,10 +65,10 @@ merge each week's article with one click from your phone.
 
 Edit the cron in .github/workflows/daily-article.yml (the file kept its
 original name, but the schedule now controls the actual cadence):
-  weekly (current): "30 21 * * 0"
-  daily:             "30 21 * * *"
-  every 2 days:       "30 21 */2 * *"
-  Mon/Wed/Fri:        "30 21 * * 1,3,5"
+  every 2 days (current): "30 21 */2 * *"
+  weekly:                  "30 21 * * 0"
+  daily:                   "30 21 * * *"
+  Mon/Wed/Fri:             "30 21 * * 1,3,5"
 
 Cron has no native "every 2 weeks" — for a slower-than-weekly cadence,
 leave the schedule off and trigger each run manually from the Actions tab

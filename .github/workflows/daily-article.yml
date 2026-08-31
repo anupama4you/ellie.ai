@@ -1,9 +1,13 @@
-name: Weekly SEO Article
+name: SEO Article (every 2 days)
 
 on:
   schedule:
-    # 21:30 UTC Sun = 7:00am ACST Adelaide Monday (8:00am ACDT in summer)
-    - cron: "30 21 * * 0"
+    # 21:30 UTC = ~7:00am ACST Adelaide (8:00am ACDT in summer), every 2 days.
+    # Cron's day-of-month "*/2" resets at 1 each month rather than counting a
+    # true rolling 48h, so months ending on day 31 (odd) butt up against the
+    # next month's day 1 (also odd) with only a 1-day gap — 7 times a year.
+    # Not worth extra infra to fix; worst case is one article a day early.
+    - cron: "30 21 */2 * *"
   workflow_dispatch: {} # lets you trigger it manually from the Actions tab
 
 permissions:
@@ -34,5 +38,5 @@ jobs:
           git config user.email "bot@callellie.com"
           git add blog/ content-queue/ sitemap-blog.xml
           git diff --cached --quiet && echo "Nothing to commit" && exit 0
-          git commit -m "chore: weekly SEO article $(date +%F)"
+          git commit -m "chore: SEO article $(date +%F)"
           git push
