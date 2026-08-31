@@ -73,7 +73,8 @@ function draftMessage(name, rating, category) {
     "",
     `Thought it might be useful for ${name}.`,
     "",
-    "Quick 30-sec demo:",
+    "Give us a call anytime on 0485 057 840, or check out a",
+    "quick 30-sec demo:",
     "callellie.com",
   ].join("\n");
 }
