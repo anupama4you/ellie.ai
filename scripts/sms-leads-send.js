@@ -24,9 +24,6 @@ const CLICKSEND_API_KEY = requireEnv("CLICKSEND_API_KEY");
 
 const MAX_PER_RUN = parseInt(process.env.SMS_MAX_PER_RUN || "50", 10);
 const DELAY_MS = parseInt(process.env.SMS_DELAY_MS || "1200", 10);
-// Carriers filter unsolicited-looking messages more aggressively when there's
-// no opt-out line — appended by default for deliverability, not just optics.
-const INCLUDE_OPT_OUT = process.env.SMS_INCLUDE_OPT_OUT !== "false";
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -71,9 +68,8 @@ async function main() {
   let sent = 0;
   let failed = 0;
   for (const row of batch) {
-    const body = INCLUDE_OPT_OUT ? `${row.draftMessage}\n\nReply STOP to opt out.` : row.draftMessage;
     try {
-      await sendOne(row.phone, body);
+      await sendOne(row.phone, row.draftMessage);
       await markRowSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SENT", new Date().toISOString());
       sent++;
       console.log(`Sent to ${row.businessName} (${row.phone}).`);

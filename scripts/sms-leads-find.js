@@ -60,23 +60,12 @@ function humaniseCategory(types) {
   return pick.replace(/_/g, " ");
 }
 
+// Kept plain GSM (no emoji/unicode) and under 306 chars on purpose — one
+// emoji or going past that flips the message to Unicode encoding, which
+// drops the per-part limit from 153 to 70 chars and multiplies SMS cost.
 function draftMessage(name, rating, category) {
-  const ratingLine = rating
-    ? `${name}'s a solid spot for ${category} based on that ${rating} rating.`
-    : `${name} came up while I was looking at local ${category} businesses.`;
-  return [
-    `Hi ${name} \u{1F44B}`,
-    "",
-    ratingLine,
-    "",
-    "Ellie handles customer calls, enquiries and bookings 24/7, customised around how your business works.",
-    "",
-    `Thought it might be useful for ${name}.`,
-    "",
-    "Give us a call anytime on 0485 057 840, or check out a",
-    "quick 30-sec demo:",
-    "callellie.com",
-  ].join("\n");
+  const ratingBit = rating ? `your ${rating} rating for ${category}` : `${category}`;
+  return `Hi ${name}, saw ${ratingBit} on Google. Ellie answers calls & books jobs 24/7 for AU businesses. Free demo: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
 }
 
 async function textSearch(query) {

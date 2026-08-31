@@ -88,9 +88,12 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
   trigger that workflow, and only for rows you've explicitly approved.
 - `SMS_MAX_PER_RUN` (default 50, set via the workflow's input) caps how
   many messages a single send run can fire off.
-- Each sent message gets a `Reply STOP to opt out.` line appended by
-  default (`SMS_INCLUDE_OPT_OUT=false` to disable) — carriers filter
-  messages harder without one, so it helps deliverability too.
+- The draft message is deliberately plain GSM text (no emoji) and kept
+  under 306 characters, so it sends as 2 SMS parts. Adding an emoji or
+  going over that length flips the whole message to Unicode encoding,
+  which drops the per-part limit from 153 to 70 chars and multiplies
+  cost — see ClickSend's character-limit docs before changing the
+  template in scripts/sms-leads-find.js.
 - AU mobile matching accepts `+614XXXXXXXX`, `0061 4XX XXX XXX`, and
   `04XX XXX XXX` in any spacing Places returns; anything else (landlines,
   no listed number) is skipped automatically.
