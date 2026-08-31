@@ -1,0 +1,36 @@
+name: SMS Leads — Send Approved
+
+# Manual only. Sends ClickSend SMS for every sheet row where you've set
+# Approved=YES and Status is still empty, then marks each row SENT/FAILED.
+on:
+  workflow_dispatch:
+    inputs:
+      max_per_run:
+        description: "Safety cap on how many messages this run can send"
+        required: false
+        default: "50"
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --no-save googleapis
+
+      - name: Run lead sender
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          GOOGLE_SHEETS_SPREADSHEET_ID: ${{ secrets.GOOGLE_SHEETS_SPREADSHEET_ID }}
+          CLICKSEND_USERNAME: ${{ secrets.CLICKSEND_USERNAME }}
+          CLICKSEND_API_KEY: ${{ secrets.CLICKSEND_API_KEY }}
+          SMS_MAX_PER_RUN: ${{ inputs.max_per_run }}
+        run: node scripts/sms-leads-send.js
