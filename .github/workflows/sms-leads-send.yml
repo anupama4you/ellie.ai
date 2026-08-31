@@ -1,6 +1,6 @@
 name: SMS Leads — Send Approved
 
-# Manual only. Sends ClickSend SMS for every sheet row where you've set
+# Manual only. Sends a Texto SMS for every sheet row where you've set
 # Approved=YES and Status is still empty, then marks each row SENT/FAILED.
 on:
   workflow_dispatch:
@@ -30,7 +30,6 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
           GOOGLE_SHEETS_SPREADSHEET_ID: ${{ secrets.GOOGLE_SHEETS_SPREADSHEET_ID }}
-          CLICKSEND_USERNAME: ${{ secrets.CLICKSEND_USERNAME }}
-          CLICKSEND_API_KEY: ${{ secrets.CLICKSEND_API_KEY }}
+          TEXTO_API_KEY: ${{ secrets.TEXTO_API_KEY }}
           SMS_MAX_PER_RUN: ${{ inputs.max_per_run }}
         run: node scripts/sms-leads-send.js

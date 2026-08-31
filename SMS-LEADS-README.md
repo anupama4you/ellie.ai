@@ -17,7 +17,7 @@ SMS Leads — Find (workflow_dispatch, you provide a search query)
 
 SMS Leads — Send Approved (workflow_dispatch)
    -> scripts/sms-leads-send.js
-   -> sends every Approved=YES / Status=blank row via ClickSend
+   -> sends every Approved=YES / Status=blank row via Texto
    -> marks each row SENT or FAILED with a timestamp
 ```
 
@@ -48,10 +48,15 @@ Address, Draft Message, Approved, Status, Sent At`.
 Enable the **Places API** (the original one, not "Places API (New)") on
 the same or another Google Cloud project, and create an API key for it.
 
-### 4. ClickSend
+### 4. Texto
 
-Grab your username and API key from the ClickSend dashboard
-(Settings -> API Credentials). Docs: https://developers.clicksend.com/docs
+Sign up at texto.com.au and grab your API key (`txt_...`) from the
+dashboard. Pay-as-you-go, no monthly fee — 3c AUD per SMS part, API
+access included. Docs: https://texto.com.au/api
+
+Optional: if you want messages to come from a registered Sender ID or
+dedicated number instead of Texto's default shared number, set
+`TEXTO_SENDER` as a repo secret too and add it to the workflow's `env:`.
 
 ### 5. Add GitHub repo secrets
 
@@ -63,8 +68,7 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | `client_email` from step 2 |
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | `private_key` from step 2, pasted as-is (including `\n`s) |
 | `GOOGLE_SHEETS_SPREADSHEET_ID` | Spreadsheet ID from step 1 |
-| `CLICKSEND_USERNAME` | ClickSend username |
-| `CLICKSEND_API_KEY` | ClickSend API key |
+| `TEXTO_API_KEY` | Texto API key from step 4 |
 
 ## Running it
 
@@ -92,8 +96,8 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
   under 306 characters, so it sends as 2 SMS parts. Adding an emoji or
   going over that length flips the whole message to Unicode encoding,
   which drops the per-part limit from 153 to 70 chars and multiplies
-  cost — see ClickSend's character-limit docs before changing the
-  template in scripts/sms-leads-find.js.
+  cost — check message length before changing the template in
+  scripts/sms-leads-find.js.
 - AU mobile matching accepts `+614XXXXXXXX`, `0061 4XX XXX XXX`, and
   `04XX XXX XXX` in any spacing Places returns; anything else (landlines,
   no listed number) is skipped automatically.

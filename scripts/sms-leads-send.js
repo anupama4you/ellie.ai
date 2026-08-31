@@ -2,14 +2,14 @@
  * ELLIE SMS Lead Sender
  * =====================
  * Reads the tracking Google Sheet and sends the drafted SMS via
- * ClickSend for every row marked Approved=YES that hasn't been sent
+ * Texto for every row marked Approved=YES that hasn't been sent
  * yet. This is deliberately its own script, triggered by hand — the
  * finder never calls this automatically, so nothing goes out without
  * someone reviewing the row first.
  *
  * Run locally:
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL=... GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=... \
- *   GOOGLE_SHEETS_SPREADSHEET_ID=... CLICKSEND_USERNAME=... CLICKSEND_API_KEY=... \
+ *   GOOGLE_SHEETS_SPREADSHEET_ID=... TEXTO_API_KEY=... \
  *   node scripts/sms-leads-send.js
  *
  * In CI: .github/workflows/sms-leads-send.yml (workflow_dispatch only).
@@ -19,8 +19,10 @@ const { getSheetsClient, readRows, markRowSent, requireEnv } = require("./lib/go
 
 const SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
 const TAB_NAME = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
-const CLICKSEND_USERNAME = requireEnv("CLICKSEND_USERNAME");
-const CLICKSEND_API_KEY = requireEnv("CLICKSEND_API_KEY");
+const TEXTO_API_KEY = requireEnv("TEXTO_API_KEY");
+// Optional — a registered alphanumeric Sender ID or dedicated number.
+// Leave unset to send from Texto's default shared number.
+const TEXTO_SENDER = process.env.TEXTO_SENDER;
 
 const MAX_PER_RUN = parseInt(process.env.SMS_MAX_PER_RUN || "50", 10);
 const DELAY_MS = parseInt(process.env.SMS_DELAY_MS || "1200", 10);
@@ -29,22 +31,23 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-async function sendOne(phone, body) {
-  const auth = Buffer.from(`${CLICKSEND_USERNAME}:${CLICKSEND_API_KEY}`).toString("base64");
-  const res = await fetch("https://rest.clicksend.com/v3/sms/send", {
+async function sendOne(phone, message) {
+  const res = await fetch("https://api.texto.com.au/send", {
     method: "POST",
     headers: {
-      Authorization: `Basic ${auth}`,
+      Authorization: `Bearer ${TEXTO_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      messages: [{ source: "sdk", to: phone, body }],
+      to: phone,
+      message,
+      ...(TEXTO_SENDER ? { sender: TEXTO_SENDER } : {}),
+      campaign: "sms-leads",
     }),
   });
   const data = await res.json();
-  const messageStatus = data?.data?.messages?.[0]?.status;
-  if (!res.ok || messageStatus === "FAILED") {
-    throw new Error(`ClickSend rejected ${phone}: ${JSON.stringify(data)}`);
+  if (!res.ok || !data?.message_id) {
+    throw new Error(`Texto rejected ${phone}: ${JSON.stringify(data)}`);
   }
   return data;
 }
