@@ -87,13 +87,12 @@ function missedNoun(types) {
 // apostrophe flips the whole message to Unicode encoding, which both
 // shrinks the per-part limit (154 -> 67 chars) and doubles Texto's
 // credit cost per part, so a single emoji here would roughly 4x the cost.
-// No URL in the copy — Texto's default account tier rejects any message
-// containing one until you contact their support to get URL sending
-// enabled (an anti-spam control on new accounts, not a bug). Once that's
-// enabled, put "callellie.com" back in and drop the phone-only framing.
+// Includes callellie.com — Texto's default account tier rejects any
+// message with a URL until support enables it for the account. Sends
+// will fail with that error until that's sorted on the Texto side.
 function draftMessage(name, types) {
   const noun = missedNoun(types);
-  return `Hi ${name}, missed calls can mean missed ${noun}. Ellie answers your calls 24/7, speaks naturally and books jobs while you're busy. Give us a call anytime, no obligation: 0485 057 840. Reply STOP to opt out.`;
+  return `Hi ${name}, missed calls can mean missed ${noun}. Ellie answers your calls 24/7, speaks naturally and books jobs while you're busy. Try it free: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
 }
 
 async function textSearch(query) {
