@@ -98,6 +98,23 @@ function missedNoun(types) {
   return "customers";
 }
 
+// A concrete, category-specific scenario reads as a real text instead of a
+// mail-merged ad blast — same reason the email's opening line is tailored
+// per business type rather than reusing one generic sentence everywhere.
+function smsHook(types) {
+  const set = new Set(types || []);
+  if ([...JOB_TYPES].some((t) => set.has(t))) {
+    return "how many calls slip through when you're mid-job? Ellie answers 24/7, sounds natural, and books the job in while your hands are full";
+  }
+  if ([...BOOKING_TYPES].some((t) => set.has(t))) {
+    return "ever miss a booking because you were with a client? Ellie answers 24/7 and fills the diary while you're busy, so a full day never means a lost booking";
+  }
+  if ([...APPOINTMENT_TYPES].some((t) => set.has(t))) {
+    return "a missed call can mean a patient books elsewhere. Ellie answers 24/7, takes their details and books them in instead";
+  }
+  return "missed calls can quietly cost you customers. Ellie answers 24/7, sounds natural, and handles it while you're busy";
+}
+
 // Kept plain GSM (no emoji/unicode) on purpose — one emoji or a smart/curly
 // apostrophe flips the whole message to Unicode encoding, which both
 // shrinks the per-part limit (154 -> 67 chars) and doubles Texto's
@@ -106,8 +123,9 @@ function missedNoun(types) {
 // message with a URL until support enables it for the account. Sends
 // will fail with that error until that's sorted on the Texto side.
 function draftSms(name, types) {
-  const noun = missedNoun(types);
-  return `Hi ${name}, missed calls can mean missed ${noun}. Ellie answers your calls 24/7, speaks naturally and books jobs while you're busy. Try it free: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
+  const hook = smsHook(types);
+  const capitalisedHook = hook.charAt(0).toUpperCase() + hook.slice(1);
+  return `G'day ${name}! ${capitalisedHook}. Try it free: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
 }
 
 // Modelled on the cold email that's actually gone out from hello@callellie.com —
