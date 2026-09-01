@@ -252,7 +252,9 @@
       "keyword": "answering service for plumbers Australia",
       "intent": "commercial - trade specific",
       "audience": "plumbing businesses",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-01",
+      "slug": "answering-service-for-plumbers-australia"
     },
     {
       "keyword": "AI receptionist for physiotherapy clinics",
