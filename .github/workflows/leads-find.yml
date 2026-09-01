@@ -1,7 +1,7 @@
-name: SMS Leads — Find
+name: Leads — Find
 
 # Manual only, on purpose — this appends candidate leads + drafted
-# messages to the tracking sheet. It never sends anything itself.
+# SMS/email messages to the tracking sheet. It never sends anything itself.
 on:
   workflow_dispatch:
     inputs:
@@ -36,4 +36,4 @@ jobs:
           GOOGLE_SHEETS_SPREADSHEET_ID: ${{ secrets.GOOGLE_SHEETS_SPREADSHEET_ID }}
           SEARCH_QUERY: ${{ inputs.search_query }}
           MAX_RESULTS: ${{ inputs.max_results }}
-        run: node scripts/sms-leads-find.js
+        run: node scripts/leads-find.js

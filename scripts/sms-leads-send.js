@@ -2,10 +2,14 @@
  * ELLIE SMS Lead Sender
  * =====================
  * Reads the tracking Google Sheet and sends the drafted SMS via
- * Texto for every row marked Approved=YES that hasn't been sent
+ * Texto for every row marked SMS Approved=YES that hasn't been sent
  * yet. This is deliberately its own script, triggered by hand — the
  * finder never calls this automatically, so nothing goes out without
  * someone reviewing the row first.
+ *
+ * Landlines can't take an SMS — leads-find.js now keeps any phone number,
+ * so this filters to Phone Type=Mobile and marks anything else SKIPPED
+ * rather than trying to text it.
  *
  * Run locally:
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL=... GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=... \
@@ -15,7 +19,7 @@
  * In CI: .github/workflows/sms-leads-send.yml (workflow_dispatch only).
  */
 
-const { getSheetsClient, readRows, markRowSent, requireEnv } = require("./lib/google-sheets");
+const { getSheetsClient, readRows, markSmsSent, requireEnv } = require("./lib/google-sheets");
 
 const SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
 const TAB_NAME = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
@@ -56,12 +60,22 @@ async function main() {
   const sheets = await getSheetsClient();
   const rows = await readRows(sheets, SPREADSHEET_ID, TAB_NAME);
 
-  const toSend = rows.filter(
-    (r) => r.approved.trim().toUpperCase() === "YES" && !r.status.trim()
+  const approvedUnsent = rows.filter(
+    (r) => r.smsApproved.trim().toUpperCase() === "YES" && !r.smsStatus.trim()
   );
 
+  const toSend = approvedUnsent.filter((r) => r.phoneType === "Mobile");
+  const skippedNonMobile = approvedUnsent.length - toSend.length;
+
+  if (skippedNonMobile > 0) {
+    console.log(`Skipping ${skippedNonMobile} approved row(s) with a non-mobile number (can't SMS a landline).`);
+    for (const row of approvedUnsent.filter((r) => r.phoneType !== "Mobile")) {
+      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SKIPPED (not mobile)", new Date().toISOString());
+    }
+  }
+
   if (toSend.length === 0) {
-    console.log('No rows are Approved=YES with an empty Status. Nothing to send.');
+    console.log('No rows are SMS Approved=YES, unsent, and a mobile number. Nothing to send.');
     return;
   }
 
@@ -72,12 +86,12 @@ async function main() {
   let failed = 0;
   for (const row of batch) {
     try {
-      await sendOne(row.phone, row.draftMessage);
-      await markRowSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SENT", new Date().toISOString());
+      await sendOne(row.phone, row.smsDraft);
+      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SENT", new Date().toISOString());
       sent++;
       console.log(`Sent to ${row.businessName} (${row.phone}).`);
     } catch (err) {
-      await markRowSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "FAILED", new Date().toISOString());
+      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "FAILED", new Date().toISOString());
       failed++;
       console.error(`Failed for ${row.businessName} (${row.phone}): ${err.message}`);
     }
