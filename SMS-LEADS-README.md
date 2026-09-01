@@ -12,8 +12,10 @@ the matching send workflow yourself.
 Leads — Find (workflow_dispatch, you provide a search query)
    -> scripts/leads-find.js
    -> Google Places Text Search -> Place Details (phone, website, rating)
-   -> keeps any business with a phone number, skips duplicates already in the sheet
+   -> skips duplicates already in the sheet, and closed businesses
    -> scrapes the business's website for a contact email
+   -> keeps the business if it has a phone number OR a scraped email —
+      drops it only if it has neither
    -> drafts an SMS + an email per business, appends rows with both
       Approved/Status pairs blank
 
@@ -136,10 +138,11 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
   trigger that workflow, and only for rows you've explicitly approved.
 - `SMS_MAX_PER_RUN` / `EMAIL_MAX_PER_RUN` (set via each workflow's input)
   cap how many messages a single send run can fire off.
-- The finder now keeps **any** business with a phone number, not just
-  mobiles — landline-only businesses can still be reached by email, but
-  the SMS sender skips them automatically (`Phone Type` column shows
-  `Mobile`, `Landline`, or `Other`).
+- The finder keeps a business as long as it has **either** a phone
+  number (mobile or landline) **or** a scraped website email — it's only
+  dropped when it has neither. Landline-only businesses stay in the
+  sheet for email outreach, but the SMS sender skips them automatically
+  (`Phone Type` column shows `Mobile`, `Landline`, or `Other`).
 - The draft SMS is deliberately plain GSM text (no emoji, no smart
   quotes) and kept under 308 characters, so it sends as 2 credits.
   Adding an emoji or any non-GSM character flips the whole message to

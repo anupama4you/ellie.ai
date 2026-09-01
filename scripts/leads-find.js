@@ -1,10 +1,11 @@
 /**
  * ELLIE Lead Finder
  * =================
- * Searches Google Places for businesses matching a query, keeps every
- * one with a phone number (mobile or landline — the SMS sender filters
- * to mobiles later, but landline-only businesses can still be emailed),
- * drafts a personalised SMS and a personalised email for each, and
+ * Searches Google Places for businesses matching a query, keeps any one
+ * that has a phone number (mobile or landline — the SMS sender filters
+ * to mobiles later) OR a scrapeable website email — a business with
+ * neither is dropped, since there'd be no channel to reach it on.
+ * Drafts a personalised SMS and a personalised email for each, and
  * appends them to the tracking Google Sheet with empty "Approved"
  * columns for both channels. Nothing gets sent here — that's two
  * separate, human-triggered steps (sms-leads-send.js / email-leads-send.js)
@@ -249,7 +250,7 @@ async function main() {
 
   const newRows = [];
   let skippedDuplicate = 0;
-  let skippedNoPhone = 0;
+  let skippedNoContact = 0;
   let skippedClosed = 0;
   let foundEmail = 0;
 
@@ -264,25 +265,32 @@ async function main() {
       skippedClosed++;
       continue;
     }
+
     const rawPhone = details.international_phone_number || details.formatted_phone_number;
-    if (!rawPhone) {
-      skippedNoPhone++;
-      continue;
-    }
-    const phoneType = classifyPhone(rawPhone);
-    const phone = toE164(rawPhone);
-    if (seenPhones.has(phone)) {
+    const phoneType = rawPhone ? classifyPhone(rawPhone) : "";
+    const phone = rawPhone ? toE164(rawPhone) : "";
+    if (phone && seenPhones.has(phone)) {
       skippedDuplicate++;
       continue;
     }
-    seenPhones.add(phone);
+
+    const website = details.website || "";
+    if (!phone && !website) {
+      // No phone and no way to find an email either — nothing to contact them with.
+      skippedNoContact++;
+      continue;
+    }
+    const contactEmail = await findEmailOnWebsite(website);
+    if (!phone && !contactEmail) {
+      skippedNoContact++;
+      continue;
+    }
+    if (phone) seenPhones.add(phone);
+    if (contactEmail) foundEmail++;
 
     const category = humaniseCategory(details.types);
-    const sms = draftSms(details.name, details.types);
+    const sms = phone ? draftSms(details.name, details.types) : "";
     const email = draftEmail(details.name, details.types);
-    const website = details.website || "";
-    const contactEmail = await findEmailOnWebsite(website);
-    if (contactEmail) foundEmail++;
 
     newRows.push([
       new Date().toISOString(), // Added
@@ -311,7 +319,7 @@ async function main() {
 
   console.log(`Added ${newRows.length} new leads to the "${TAB_NAME}" sheet (${foundEmail} with an email found).`);
   console.log(
-    `Skipped: ${skippedDuplicate} duplicate, ${skippedNoPhone} with no phone number, ${skippedClosed} closed.`
+    `Skipped: ${skippedDuplicate} duplicate, ${skippedNoContact} with neither a phone nor an email, ${skippedClosed} closed.`
   );
   console.log(
     'Review the sheet and set "SMS Approved" / "Email Approved" to YES on the rows you want sent, ' +
