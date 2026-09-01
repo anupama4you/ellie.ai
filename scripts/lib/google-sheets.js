@@ -118,12 +118,41 @@ async function markEmailSent(sheets, spreadsheetId, tabName, rowNumber, status, 
   });
 }
 
+// Sheets' write-request quota is per-call, not per-cell-range, so marking N
+// rows with N separate values.update calls burns N quota units — fine for a
+// slow send loop with a delay between rows, but a tight loop (e.g. marking
+// every skipped landline at once) can blow through the per-minute quota in
+// seconds. batchUpdate bundles any number of range updates into one call.
+async function batchMarkSent(sheets, spreadsheetId, tabName, statusCol, sentAtCol, updates) {
+  if (updates.length === 0) return;
+  await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      valueInputOption: "RAW",
+      data: updates.map((u) => ({
+        range: `${tabName}!${statusCol}${u.rowNumber}:${sentAtCol}${u.rowNumber}`,
+        values: [[u.status, u.sentAt]],
+      })),
+    },
+  });
+}
+
+async function markManySmsSent(sheets, spreadsheetId, tabName, updates) {
+  await batchMarkSent(sheets, spreadsheetId, tabName, "M", "N", updates);
+}
+
+async function markManyEmailSent(sheets, spreadsheetId, tabName, updates) {
+  await batchMarkSent(sheets, spreadsheetId, tabName, "R", "S", updates);
+}
+
 module.exports = {
   getSheetsClient,
   readRows,
   appendRows,
   markSmsSent,
   markEmailSent,
+  markManySmsSent,
+  markManyEmailSent,
   HEADER,
   requireEnv,
 };

@@ -19,7 +19,7 @@
  * In CI: .github/workflows/sms-leads-send.yml (workflow_dispatch only).
  */
 
-const { getSheetsClient, readRows, markSmsSent, requireEnv } = require("./lib/google-sheets");
+const { getSheetsClient, readRows, markSmsSent, markManySmsSent, requireEnv } = require("./lib/google-sheets");
 
 const SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
 const TAB_NAME = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
@@ -65,12 +65,23 @@ async function main() {
   );
 
   const toSend = approvedUnsent.filter((r) => r.phoneType === "Mobile");
-  const skippedNonMobile = approvedUnsent.length - toSend.length;
+  const nonMobile = approvedUnsent.filter((r) => r.phoneType !== "Mobile");
 
-  if (skippedNonMobile > 0) {
-    console.log(`Skipping ${skippedNonMobile} approved row(s) with a non-mobile number (can't SMS a landline).`);
-    for (const row of approvedUnsent.filter((r) => r.phoneType !== "Mobile")) {
-      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SKIPPED (not mobile)", new Date().toISOString());
+  if (nonMobile.length > 0) {
+    console.log(`Skipping ${nonMobile.length} approved row(s) with a non-mobile number (can't SMS a landline).`);
+    // One batched call instead of one write per row — marking a large batch
+    // of skips individually can burn through Sheets' per-minute write quota
+    // before the actual send loop below even starts.
+    try {
+      const now = new Date().toISOString();
+      await markManySmsSent(
+        sheets,
+        SPREADSHEET_ID,
+        TAB_NAME,
+        nonMobile.map((row) => ({ rowNumber: row.rowNumber, status: "SKIPPED (not mobile)", sentAt: now }))
+      );
+    } catch (err) {
+      console.error(`Could not mark non-mobile rows as skipped in the sheet (they'll be retried next run): ${err.message}`);
     }
   }
 
@@ -84,21 +95,41 @@ async function main() {
 
   let sent = 0;
   let failed = 0;
+  const writeFailures = [];
   for (const row of batch) {
+    let status;
     try {
       await sendOne(row.phone, row.smsDraft);
-      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SENT", new Date().toISOString());
+      status = "SENT";
       sent++;
       console.log(`Sent to ${row.businessName} (${row.phone}).`);
     } catch (err) {
-      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "FAILED", new Date().toISOString());
+      status = "FAILED";
       failed++;
       console.error(`Failed for ${row.businessName} (${row.phone}): ${err.message}`);
+    }
+    // The send attempt already happened either way — if recording it in the
+    // sheet fails (e.g. a transient quota error), don't let that crash the
+    // rest of the run and abandon the remaining approved leads.
+    try {
+      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, status, new Date().toISOString());
+    } catch (err) {
+      writeFailures.push({ rowNumber: row.rowNumber, businessName: row.businessName, status });
+      console.error(`Could not record ${status} for ${row.businessName} (row ${row.rowNumber}): ${err.message}`);
     }
     await sleep(DELAY_MS);
   }
 
   console.log(`Done. Sent: ${sent}, Failed: ${failed}.`);
+  if (writeFailures.length > 0) {
+    console.log(
+      `WARNING: the sheet wasn't updated for ${writeFailures.length} row(s) — the SMS attempt still happened, ` +
+        "but you'll need to set SMS Status manually so it isn't retried next run:"
+    );
+    for (const f of writeFailures) {
+      console.log(`  Row ${f.rowNumber} (${f.businessName}): should be ${f.status}`);
+    }
+  }
 }
 
 main().catch((err) => {

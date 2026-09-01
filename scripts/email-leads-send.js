@@ -62,7 +62,9 @@ async function main() {
 
   let sent = 0;
   let failed = 0;
+  const writeFailures = [];
   for (const row of batch) {
+    let status;
     try {
       await transporter.sendMail({
         from: `"${FROM_NAME}" <${GMAIL_USER}>`,
@@ -70,18 +72,36 @@ async function main() {
         subject: row.emailSubject || `I have an idea for ${row.businessName}`,
         html: row.emailBody,
       });
-      await markEmailSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SENT", new Date().toISOString());
+      status = "SENT";
       sent++;
       console.log(`Emailed ${row.businessName} (${row.email}).`);
     } catch (err) {
-      await markEmailSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "FAILED", new Date().toISOString());
+      status = "FAILED";
       failed++;
       console.error(`Failed for ${row.businessName} (${row.email}): ${err.message}`);
+    }
+    // The send attempt already happened either way — if recording it in the
+    // sheet fails (e.g. a transient quota error), don't let that crash the
+    // rest of the run and abandon the remaining approved leads.
+    try {
+      await markEmailSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, status, new Date().toISOString());
+    } catch (err) {
+      writeFailures.push({ rowNumber: row.rowNumber, businessName: row.businessName, status });
+      console.error(`Could not record ${status} for ${row.businessName} (row ${row.rowNumber}): ${err.message}`);
     }
     await sleep(DELAY_MS);
   }
 
   console.log(`Done. Sent: ${sent}, Failed: ${failed}.`);
+  if (writeFailures.length > 0) {
+    console.log(
+      `WARNING: the sheet wasn't updated for ${writeFailures.length} row(s) — the email attempt still happened, ` +
+        "but you'll need to set Email Status manually so it isn't retried next run:"
+    );
+    for (const f of writeFailures) {
+      console.log(`  Row ${f.rowNumber} (${f.businessName}): should be ${f.status}`);
+    }
+  }
 }
 
 main().catch((err) => {
