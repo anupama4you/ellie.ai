@@ -111,10 +111,23 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
 ## Running it
 
 - **Actions tab -> "Leads — Find" -> Run workflow.** Enter a search query
-  (`"plumber in Perth"`, `"day spa in Brisbane"`, etc.) and an optional
-  max results (default 20, capped at 60 — Places text search only
-  paginates 3 pages of 20). New rows land in the sheet with both
-  `Approved`/`Status` pairs blank.
+  (`"plumber in Perth"`, `"day spa in Brisbane"`, etc.), an optional
+  `target_new_leads` (default 100), and an optional max results per query
+  (default/capped at 60 — Places text search only paginates 3 pages of
+  20). New rows land in the sheet with both `Approved`/`Status` pairs
+  blank.
+  - **Google caps a single query at 60 results**, and vague/broad queries
+    (e.g. `"plumber in South Australia"`) often return far fewer than
+    that since Places ranks by relevance rather than listing every
+    matching business. To reliably hit a target like 100+ in one run,
+    give it several narrower queries — one per suburb/area — separated
+    by `|`: `"plumber in Adelaide|plumber in Mount Gambier|plumber in
+    Whyalla|plumber in Port Augusta"`. It works through them in order
+    and stops as soon as `target_new_leads` is reached (or it runs out
+    of queries — check the run's log for a note if it fell short).
+  - Re-running the same query later will mostly (or entirely) skip as
+    duplicates once you've already captured that area's businesses —
+    that's the dedupe working, not a bug.
 - **Review the sheet.** Tweak any draft SMS or email you're not happy
   with, set `SMS Approved` and/or `Email Approved` to `YES` on the rows
   you want to go out on that channel. Leave a column blank (or anything

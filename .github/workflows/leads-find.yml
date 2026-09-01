@@ -6,12 +6,16 @@ on:
   workflow_dispatch:
     inputs:
       search_query:
-        description: 'Google Places text search, e.g. "hair salon in Adelaide"'
+        description: 'One query, or several separated by "|" (Google only returns up to 60 results per query, so use one per suburb to go beyond that), e.g. "plumber in Adelaide|plumber in Mount Gambier|plumber in Whyalla"'
         required: true
-      max_results:
-        description: "Max businesses to scan this run (capped at 60)"
+      target_new_leads:
+        description: "Stop once this many NEW leads have been added — works through the query list above until met or exhausted"
         required: false
-        default: "20"
+        default: "100"
+      max_results:
+        description: "Max candidates to pull per individual query (hard-capped at 60 by Google's Places API)"
+        required: false
+        default: "60"
 
 jobs:
   find:
@@ -36,4 +40,5 @@ jobs:
           GOOGLE_SHEETS_SPREADSHEET_ID: ${{ secrets.GOOGLE_SHEETS_SPREADSHEET_ID }}
           SEARCH_QUERY: ${{ inputs.search_query }}
           MAX_RESULTS: ${{ inputs.max_results }}
+          TARGET_NEW_LEADS: ${{ inputs.target_new_leads }}
         run: node scripts/leads-find.js

@@ -26,12 +26,19 @@ const PLACES_API_KEY = requireEnv("GOOGLE_PLACES_API_KEY");
 const SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
 const TAB_NAME = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
 
+// Google Places Text Search hard-caps at 60 results per query (3 pages of
+// 20), and a broad query ("plumber in South Australia") often returns well
+// under that since it ranks by relevance rather than listing exhaustively.
+// To reach a real target count in one run, accept several queries separated
+// by "|" (e.g. one per suburb) and work through them in order.
 const SEARCH_QUERY = process.env.SEARCH_QUERY;
 if (!SEARCH_QUERY) {
-  console.error('Missing SEARCH_QUERY env var, e.g. "plumber in Perth".');
+  console.error('Missing SEARCH_QUERY env var, e.g. "plumber in Perth" or "plumber in Adelaide|plumber in Mount Gambier".');
   process.exit(1);
 }
-const MAX_RESULTS = Math.min(parseInt(process.env.MAX_RESULTS || "20", 10), 60);
+const QUERIES = SEARCH_QUERY.split("|").map((q) => q.trim()).filter(Boolean);
+const MAX_RESULTS = Math.min(parseInt(process.env.MAX_RESULTS || "60", 10), 60);
+const TARGET_NEW_LEADS = parseInt(process.env.TARGET_NEW_LEADS || "100", 10);
 
 // AU mobiles and landlines in any of the formats Places returns them:
 // "+61 4XX XXX XXX", "0061 4XX XXX XXX", "04XX XXX XXX", with or without spaces/dashes.
@@ -257,9 +264,10 @@ async function findEmailOnWebsite(website) {
 }
 
 async function main() {
-  console.log(`Searching Places for: "${SEARCH_QUERY}" (up to ${MAX_RESULTS} results)`);
-  const candidates = await textSearch(SEARCH_QUERY);
-  console.log(`Found ${candidates.length} candidate businesses. Fetching details...`);
+  console.log(
+    `Running ${QUERIES.length} quer${QUERIES.length === 1 ? "y" : "ies"}, aiming for ${TARGET_NEW_LEADS} new leads ` +
+      `(each query capped at ${MAX_RESULTS} candidates by Google).`
+  );
 
   const sheets = await getSheetsClient();
   const existingRows = await readRows(sheets, SPREADSHEET_ID, TAB_NAME);
@@ -271,74 +279,100 @@ async function main() {
   let skippedNoContact = 0;
   let skippedClosed = 0;
   let foundEmail = 0;
+  let queriesUsed = 0;
 
-  for (const candidate of candidates) {
-    if (seenPlaceIds.has(candidate.place_id)) {
-      skippedDuplicate++;
-      continue;
+  for (const query of QUERIES) {
+    if (newRows.length >= TARGET_NEW_LEADS) {
+      console.log(`\nAlready have ${newRows.length} new leads (target ${TARGET_NEW_LEADS}) — skipping remaining queries.`);
+      break;
     }
-    const details = await getPlaceDetails(candidate.place_id);
-    if (!details) continue;
-    if (details.business_status && details.business_status !== "OPERATIONAL") {
-      skippedClosed++;
-      continue;
-    }
+    queriesUsed++;
 
-    const rawPhone = details.international_phone_number || details.formatted_phone_number;
-    const phoneType = rawPhone ? classifyPhone(rawPhone) : "";
-    const phone = rawPhone ? toE164(rawPhone) : "";
-    if (phone && seenPhones.has(phone)) {
-      skippedDuplicate++;
-      continue;
-    }
+    console.log(`\nSearching Places for: "${query}" (up to ${MAX_RESULTS} results)`);
+    const candidates = await textSearch(query);
+    console.log(`Found ${candidates.length} candidate businesses for "${query}". Fetching details...`);
 
-    const website = details.website || "";
-    if (!phone && !website) {
-      // No phone and no way to find an email either — nothing to contact them with.
-      skippedNoContact++;
-      continue;
-    }
-    const contactEmail = await findEmailOnWebsite(website);
-    if (!phone && !contactEmail) {
-      skippedNoContact++;
-      continue;
-    }
-    if (phone) seenPhones.add(phone);
-    if (contactEmail) foundEmail++;
+    for (const candidate of candidates) {
+      if (newRows.length >= TARGET_NEW_LEADS) break;
 
-    const category = humaniseCategory(details.types);
-    const sms = phone ? draftSms(details.name, details.types) : "";
-    const email = draftEmail(details.name, details.types);
+      // Dedupe against the sheet AND against candidates already picked up by
+      // an earlier query in this same run (queries can overlap in results).
+      if (seenPlaceIds.has(candidate.place_id)) {
+        skippedDuplicate++;
+        continue;
+      }
+      seenPlaceIds.add(candidate.place_id);
 
-    newRows.push([
-      new Date().toISOString(), // Added
-      candidate.place_id, // Place ID
-      details.name, // Business Name
-      phone, // Phone
-      phoneType, // Phone Type
-      website, // Website
-      contactEmail, // Email
-      details.rating || "", // Rating
-      category, // Category
-      details.formatted_address || "", // Address
-      sms, // SMS Draft
-      "", // SMS Approved — fill in "YES" to allow sending
-      "", // SMS Status
-      "", // SMS Sent At
-      email.subject, // Email Subject
-      email.html, // Email Body
-      "", // Email Approved — fill in "YES" to allow sending
-      "", // Email Status
-      "", // Email Sent At
-    ]);
+      const details = await getPlaceDetails(candidate.place_id);
+      if (!details) continue;
+      if (details.business_status && details.business_status !== "OPERATIONAL") {
+        skippedClosed++;
+        continue;
+      }
+
+      const rawPhone = details.international_phone_number || details.formatted_phone_number;
+      const phoneType = rawPhone ? classifyPhone(rawPhone) : "";
+      const phone = rawPhone ? toE164(rawPhone) : "";
+      if (phone && seenPhones.has(phone)) {
+        skippedDuplicate++;
+        continue;
+      }
+
+      const website = details.website || "";
+      if (!phone && !website) {
+        // No phone and no way to find an email either — nothing to contact them with.
+        skippedNoContact++;
+        continue;
+      }
+      const contactEmail = await findEmailOnWebsite(website);
+      if (!phone && !contactEmail) {
+        skippedNoContact++;
+        continue;
+      }
+      if (phone) seenPhones.add(phone);
+      if (contactEmail) foundEmail++;
+
+      const category = humaniseCategory(details.types);
+      const sms = phone ? draftSms(details.name, details.types) : "";
+      const email = draftEmail(details.name, details.types);
+
+      newRows.push([
+        new Date().toISOString(), // Added
+        candidate.place_id, // Place ID
+        details.name, // Business Name
+        phone, // Phone
+        phoneType, // Phone Type
+        website, // Website
+        contactEmail, // Email
+        details.rating || "", // Rating
+        category, // Category
+        details.formatted_address || "", // Address
+        sms, // SMS Draft
+        "", // SMS Approved — fill in "YES" to allow sending
+        "", // SMS Status
+        "", // SMS Sent At
+        email.subject, // Email Subject
+        email.html, // Email Body
+        "", // Email Approved — fill in "YES" to allow sending
+        "", // Email Status
+        "", // Email Sent At
+      ]);
+    }
   }
 
   await appendRows(sheets, SPREADSHEET_ID, TAB_NAME, newRows);
 
+  console.log(`\nUsed ${queriesUsed} of ${QUERIES.length} provided quer${QUERIES.length === 1 ? "y" : "ies"}.`);
   console.log(`Added ${newRows.length} new leads to the "${TAB_NAME}" sheet (${foundEmail} with an email found).`);
   console.log(
     `Skipped: ${skippedDuplicate} duplicate, ${skippedNoContact} with neither a phone nor an email, ${skippedClosed} closed.`
   );
+  if (newRows.length < TARGET_NEW_LEADS && queriesUsed >= QUERIES.length) {
+    console.log(
+      `Note: fell short of the ${TARGET_NEW_LEADS} target — ran out of queries. Add more "|"-separated ` +
+        "queries (e.g. more suburbs) to get further next time."
+    );
+  }
   console.log(
     'Review the sheet and set "SMS Approved" / "Email Approved" to YES on the rows you want sent, ' +
       "then run sms-leads-send / email-leads-send."
