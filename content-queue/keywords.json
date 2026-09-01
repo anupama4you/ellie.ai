@@ -244,7 +244,9 @@
       "keyword": "answering service for electricians",
       "intent": "commercial - trade specific",
       "audience": "electrical contractors",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-01",
+      "slug": "answering-service-for-electricians"
     },
     {
       "keyword": "answering service for plumbers Australia",
