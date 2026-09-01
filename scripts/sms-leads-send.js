@@ -35,6 +35,12 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// Distinct from a per-message rejection (bad number, blocked content) — this
+// means the whole account is throttled for the day, so every remaining send
+// in the batch would fail the same way. Thrown as its own type so main()
+// can stop the run instead of marking the rest of the batch FAILED.
+class DailyLimitError extends Error {}
+
 async function sendOne(phone, message) {
   const res = await fetch("https://api.texto.com.au/send", {
     method: "POST",
@@ -51,7 +57,11 @@ async function sendOne(phone, message) {
   });
   const data = await res.json();
   if (!res.ok || !data?.message_id) {
-    throw new Error(`Texto rejected ${phone}: ${JSON.stringify(data)}`);
+    const msg = `Texto rejected ${phone}: ${JSON.stringify(data)}`;
+    if (typeof data?.error === "string" && /daily limit/i.test(data.error)) {
+      throw new DailyLimitError(msg);
+    }
+    throw new Error(msg);
   }
   return data;
 }
@@ -95,8 +105,9 @@ async function main() {
 
   let sent = 0;
   let failed = 0;
+  let stoppedForDailyLimit = false;
   const writeFailures = [];
-  for (const row of batch) {
+  for (const [i, row] of batch.entries()) {
     let status;
     try {
       await sendOne(row.phone, row.smsDraft);
@@ -104,6 +115,16 @@ async function main() {
       sent++;
       console.log(`Sent to ${row.businessName} (${row.phone}).`);
     } catch (err) {
+      if (err instanceof DailyLimitError) {
+        // Not this lead's fault — the whole account is throttled for today,
+        // so every remaining row would fail identically. Leave them with a
+        // blank Status (untouched) so they're picked up again on a future
+        // run instead of being marked FAILED and abandoned forever.
+        console.error(`Texto's daily sending limit was hit: ${err.message}`);
+        console.error(`Stopping — ${batch.length - i} approved lead(s) left unsent for a future run.`);
+        stoppedForDailyLimit = true;
+        break;
+      }
       status = "FAILED";
       failed++;
       console.error(`Failed for ${row.businessName} (${row.phone}): ${err.message}`);
@@ -120,7 +141,7 @@ async function main() {
     await sleep(DELAY_MS);
   }
 
-  console.log(`Done. Sent: ${sent}, Failed: ${failed}.`);
+  console.log(`Done. Sent: ${sent}, Failed: ${failed}.${stoppedForDailyLimit ? " Stopped early (daily limit)." : ""}`);
   if (writeFailures.length > 0) {
     console.log(
       `WARNING: the sheet wasn't updated for ${writeFailures.length} row(s) — the SMS attempt still happened, ` +
