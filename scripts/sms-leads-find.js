@@ -83,16 +83,17 @@ function missedNoun(types) {
   return "customers";
 }
 
-// Kept plain GSM (no emoji/unicode) on purpose — one emoji or a smart/curly
-// apostrophe flips the whole message to Unicode encoding, which both
-// shrinks the per-part limit (154 -> 67 chars) and doubles Texto's
-// credit cost per part, so a single emoji here would roughly 4x the cost.
+// Kept under 160 chars on purpose so it's 1 credit even for a long business
+// name (tested against a 36-char name and still fits with room to spare).
+// Also kept plain GSM (no emoji/smart quotes) — either one flips the whole
+// message to Unicode encoding, which shrinks the per-part limit and would
+// very likely push a message this length into a second part.
 // Includes callellie.com — Texto's default account tier rejects any
 // message with a URL until support enables it for the account. Sends
 // will fail with that error until that's sorted on the Texto side.
 function draftMessage(name, types) {
   const noun = missedNoun(types);
-  return `Hi ${name}, missed calls can mean missed ${noun}. Ellie answers your calls 24/7, speaks naturally and books jobs while you're busy. Try it free: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
+  return `Hi ${name}, missed calls = lost ${noun}. Ellie answers 24/7 & books for you. callellie.com or 0485 057 840. Reply STOP to opt out.`;
 }
 
 async function textSearch(query) {
