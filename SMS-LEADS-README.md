@@ -1,23 +1,36 @@
-# SMS Lead Finder
+# Lead Finder + SMS/Email Sender
 
-Two manual GitHub Actions that find local businesses via Google Places,
-keep only the ones with an Australian mobile number, draft a personalised
-SMS for each, and log everything to a Google Sheet. Sending is a separate
-step from finding — nothing goes out until you mark a row `Approved = YES`
-in the sheet and run the send workflow yourself.
+Three manual GitHub Actions that find local businesses via Google Places,
+keep any with a phone number (mobile or landline), scrape their website for
+a contact email, draft a personalised SMS and a personalised email for
+each, and log everything to one Google Sheet. Sending is a separate step
+from finding, and SMS/email are approved independently — nothing goes out
+until you mark the relevant `Approved` column `YES` in the sheet and run
+the matching send workflow yourself.
 
 ```
-SMS Leads — Find (workflow_dispatch, you provide a search query)
-   -> scripts/sms-leads-find.js
-   -> Google Places Text Search -> Place Details (for phone + rating)
-   -> keeps only AU mobiles, skips duplicates already in the sheet
-   -> drafts the SMS per business, appends rows with Approved/Status blank
+Leads — Find (workflow_dispatch, you provide a search query)
+   -> scripts/leads-find.js
+   -> Google Places Text Search -> Place Details (phone, website, rating)
+   -> skips duplicates already in the sheet, and closed businesses
+   -> scrapes the business's website for a contact email
+   -> keeps the business if it has a phone number OR a scraped email —
+      drops it only if it has neither
+   -> drafts an SMS + an email per business, appends rows with both
+      Approved/Status pairs blank
 
-   [ you review the sheet, set Approved = YES on rows you want sent ]
+   [ you review the sheet, set SMS Approved / Email Approved = YES per row ]
 
 SMS Leads — Send Approved (workflow_dispatch)
    -> scripts/sms-leads-send.js
-   -> sends every Approved=YES / Status=blank row via Texto
+   -> sends every SMS Approved=YES / SMS Status=blank row via Texto,
+      but only if Phone Type = Mobile (landlines are marked SKIPPED)
+   -> marks each row SENT / FAILED / SKIPPED with a timestamp
+
+Email Leads — Send Approved (workflow_dispatch)
+   -> scripts/email-leads-send.js
+   -> sends every Email Approved=YES / Email Status=blank row (with an
+      email address) via Gmail SMTP
    -> marks each row SENT or FAILED with a timestamp
 ```
 
@@ -31,8 +44,15 @@ spreadsheet ID out of its URL:
 `https://docs.google.com/spreadsheets/d/<THIS PART>/edit`
 
 The header row is created automatically on the first run if the tab is
-empty. Columns: `Added, Place ID, Business Name, Phone, Rating, Category,
-Address, Draft Message, Approved, Status, Sent At`.
+empty. Columns: `Added, Place ID, Business Name, Phone, Phone Type,
+Website, Email, Rating, Category, Address, SMS Draft, SMS Approved,
+SMS Status, SMS Sent At, Email Subject, Email Body, Email Approved,
+Email Status, Email Sent At`.
+
+> If you already have a sheet from before this tool grew email support,
+> its old 11/13-column layout won't line up with the new header. Rename
+> the existing tab (e.g. `Leads (old)`) and let the next Find run create a
+> fresh `Leads` tab, or manually re-insert the new columns yourself.
 
 ### 2. Google service account (for Sheets access)
 
@@ -48,7 +68,7 @@ Address, Draft Message, Approved, Status, Sent At`.
 Enable the **Places API** (the original one, not "Places API (New)") on
 the same or another Google Cloud project, and create an API key for it.
 
-### 4. Texto
+### 4. Texto (for SMS)
 
 Sign up at texto.com.au and grab your API key (`txt_...`) from the
 dashboard. Pay-as-you-go, no monthly fee — 3c AUD per SMS part, API
@@ -58,7 +78,23 @@ Optional: if you want messages to come from a registered Sender ID or
 dedicated number instead of Texto's default shared number, set
 `TEXTO_SENDER` as a repo secret too and add it to the workflow's `env:`.
 
-### 5. Add GitHub repo secrets
+### 5. Gmail App Password (for email)
+
+Uses Gmail SMTP directly, sending as the mailbox in `GMAIL_USER` (e.g.
+`hello@callellie.com`):
+
+1. That Google account needs 2-Step Verification turned on.
+2. Google Account -> Security -> 2-Step Verification -> App passwords ->
+   create one (any name, e.g. "Ellie lead sender").
+3. Use the generated 16-character password as `GMAIL_APP_PASSWORD` — not
+   the account's normal login password.
+
+Gmail enforces a daily sending cap (roughly 500/day on a personal
+account, 2,000/day on Workspace) and can flag an account that sends a lot
+of unsolicited mail in a burst, so keep `EMAIL_MAX_PER_RUN` conservative
+for cold outreach.
+
+### 6. Add GitHub repo secrets
 
 Settings -> Secrets and variables -> Actions -> New repository secret:
 
@@ -69,36 +105,73 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | `private_key` from step 2, pasted as-is (including `\n`s) |
 | `GOOGLE_SHEETS_SPREADSHEET_ID` | Spreadsheet ID from step 1 |
 | `TEXTO_API_KEY` | Texto API key from step 4 |
+| `GMAIL_USER` | Sending mailbox, e.g. `hello@callellie.com` |
+| `GMAIL_APP_PASSWORD` | App password from step 5 |
 
 ## Running it
 
-- **Actions tab -> "SMS Leads — Find" -> Run workflow.** Enter a search
-  query (`"plumber in Perth"`, `"day spa in Brisbane"`, etc.) and an
-  optional max results (default 20, capped at 60 — Places text search
-  only paginates 3 pages of 20). New rows land in the sheet with
-  `Approved` and `Status` blank.
-- **Review the sheet.** Tweak any draft message you're not happy with,
-  set `Approved` to `YES` on the rows you want to go out. Leave it blank
-  (or anything else) to skip a row.
+- **Actions tab -> "Leads — Find" -> Run workflow.** Enter a search query
+  (`"plumber in Perth"`, `"day spa in Brisbane"`, etc.), an optional
+  `target_new_leads` (default 100), and an optional max results per query
+  (default/capped at 60 — Places text search only paginates 3 pages of
+  20). New rows land in the sheet with both `Approved`/`Status` pairs
+  blank.
+  - **Google caps a single query at 60 results**, and vague/broad queries
+    (e.g. `"plumber in South Australia"`) often return far fewer than
+    that since Places ranks by relevance rather than listing every
+    matching business. To reliably hit a target like 100+ in one run,
+    give it several narrower queries — one per suburb/area — separated
+    by `|`: `"plumber in Adelaide|plumber in Mount Gambier|plumber in
+    Whyalla|plumber in Port Augusta"`. It works through them in order
+    and stops as soon as `target_new_leads` is reached (or it runs out
+    of queries — check the run's log for a note if it fell short).
+  - Re-running the same query later will mostly (or entirely) skip as
+    duplicates once you've already captured that area's businesses —
+    that's the dedupe working, not a bug.
+- **Review the sheet.** Tweak any draft SMS or email you're not happy
+  with, set `SMS Approved` and/or `Email Approved` to `YES` on the rows
+  you want to go out on that channel. Leave a column blank (or anything
+  else) to skip that channel for a row — you can approve just SMS, just
+  email, both, or neither, per row.
 - **Actions tab -> "SMS Leads — Send Approved" -> Run workflow.** Sends
-  every `Approved = YES` row with an empty `Status`, then fills in
-  `Status` (`SENT`/`FAILED`) and `Sent At`. Re-running only ever touches
-  rows that are still blank, so it's safe to run repeatedly as you
-  approve more rows over time.
+  every `SMS Approved = YES` row with an empty `SMS Status` and a mobile
+  number, then fills in `SMS Status` (`SENT`/`FAILED`/`SKIPPED (not
+  mobile)`) and `SMS Sent At`.
+- **Actions tab -> "Email Leads — Send Approved" -> Run workflow.** Sends
+  every `Email Approved = YES` row with an empty `Email Status` and an
+  email address, then fills in `Email Status` (`SENT`/`FAILED`) and
+  `Email Sent At`.
+- Re-running either send workflow only ever touches rows that are still
+  blank for that channel, so it's safe to run repeatedly as you approve
+  more rows over time.
 
 ## Notes
 
-- The finder never calls the sender — sending only happens when you
+- The finder never calls either sender — sending only happens when you
   trigger that workflow, and only for rows you've explicitly approved.
-- `SMS_MAX_PER_RUN` (default 50, set via the workflow's input) caps how
-  many messages a single send run can fire off.
-- The draft message is deliberately plain GSM text (no emoji, no smart
+- `SMS_MAX_PER_RUN` / `EMAIL_MAX_PER_RUN` (set via each workflow's input)
+  cap how many messages a single send run can fire off.
+- The finder keeps a business as long as it has **either** a phone
+  number (mobile or landline) **or** a scraped website email — it's only
+  dropped when it has neither. Landline-only businesses stay in the
+  sheet for email outreach, but the SMS sender skips them automatically
+  (`Phone Type` column shows `Mobile`, `Landline`, or `Other`).
+- The draft SMS is deliberately plain GSM text (no emoji, no smart
   quotes) and kept under 308 characters, so it sends as 2 credits.
   Adding an emoji or any non-GSM character flips the whole message to
   Unicode encoding — Texto then charges 2 credits per part instead of 1,
   *and* shrinks the per-part limit from 154 to 67 chars, so one emoji
   in this template jumps it from 2 credits to 8. Check message length
-  and encoding before changing the template in scripts/sms-leads-find.js.
-- AU mobile matching accepts `+614XXXXXXXX`, `0061 4XX XXX XXX`, and
-  `04XX XXX XXX` in any spacing Places returns; anything else (landlines,
-  no listed number) is skipped automatically.
+  and encoding before changing the template in scripts/leads-find.js.
+- The draft email is HTML and modelled on an email already sent from
+  hello@callellie.com — the opening line adapts per business category,
+  the rest of the copy is fixed. Edit the `Email Subject`/`Email Body`
+  cells per row before approving if a lead needs a different pitch.
+- Australia's Spam Act 2003 requires commercial electronic messages to
+  identify the sender and include a functional unsubscribe facility. The
+  email template has a footer with the sender's identity and a
+  `mailto:` link that replies "Unsubscribe" — but the Act also requires
+  opt-out requests to be honoured within 5 business days, and there's no
+  automated suppression list here. If someone unsubscribes, you need to
+  manually make sure `leads-find.js` never re-adds that email (e.g. keep
+  a block-list, or just don't re-run the same search query).

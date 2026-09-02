@@ -2,10 +2,14 @@
  * ELLIE SMS Lead Sender
  * =====================
  * Reads the tracking Google Sheet and sends the drafted SMS via
- * Texto for every row marked Approved=YES that hasn't been sent
+ * Texto for every row marked SMS Approved=YES that hasn't been sent
  * yet. This is deliberately its own script, triggered by hand — the
  * finder never calls this automatically, so nothing goes out without
  * someone reviewing the row first.
+ *
+ * Landlines can't take an SMS — leads-find.js now keeps any phone number,
+ * so this filters to Phone Type=Mobile and marks anything else SKIPPED
+ * rather than trying to text it.
  *
  * Run locally:
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL=... GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=... \
@@ -15,7 +19,7 @@
  * In CI: .github/workflows/sms-leads-send.yml (workflow_dispatch only).
  */
 
-const { getSheetsClient, readRows, markRowSent, requireEnv } = require("./lib/google-sheets");
+const { getSheetsClient, readRows, markSmsSent, markManySmsSent, requireEnv } = require("./lib/google-sheets");
 
 const SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
 const TAB_NAME = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
@@ -30,6 +34,12 @@ const DELAY_MS = parseInt(process.env.SMS_DELAY_MS || "1200", 10);
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
+
+// Distinct from a per-message rejection (bad number, blocked content) — this
+// means the whole account is throttled for the day, so every remaining send
+// in the batch would fail the same way. Thrown as its own type so main()
+// can stop the run instead of marking the rest of the batch FAILED.
+class DailyLimitError extends Error {}
 
 async function sendOne(phone, message) {
   const res = await fetch("https://api.texto.com.au/send", {
@@ -47,7 +57,11 @@ async function sendOne(phone, message) {
   });
   const data = await res.json();
   if (!res.ok || !data?.message_id) {
-    throw new Error(`Texto rejected ${phone}: ${JSON.stringify(data)}`);
+    const msg = `Texto rejected ${phone}: ${JSON.stringify(data)}`;
+    if (typeof data?.error === "string" && /daily limit/i.test(data.error)) {
+      throw new DailyLimitError(msg);
+    }
+    throw new Error(msg);
   }
   return data;
 }
@@ -56,12 +70,33 @@ async function main() {
   const sheets = await getSheetsClient();
   const rows = await readRows(sheets, SPREADSHEET_ID, TAB_NAME);
 
-  const toSend = rows.filter(
-    (r) => r.approved.trim().toUpperCase() === "YES" && !r.status.trim()
+  const approvedUnsent = rows.filter(
+    (r) => r.smsApproved.trim().toUpperCase() === "YES" && !r.smsStatus.trim()
   );
 
+  const toSend = approvedUnsent.filter((r) => r.phoneType === "Mobile");
+  const nonMobile = approvedUnsent.filter((r) => r.phoneType !== "Mobile");
+
+  if (nonMobile.length > 0) {
+    console.log(`Skipping ${nonMobile.length} approved row(s) with a non-mobile number (can't SMS a landline).`);
+    // One batched call instead of one write per row — marking a large batch
+    // of skips individually can burn through Sheets' per-minute write quota
+    // before the actual send loop below even starts.
+    try {
+      const now = new Date().toISOString();
+      await markManySmsSent(
+        sheets,
+        SPREADSHEET_ID,
+        TAB_NAME,
+        nonMobile.map((row) => ({ rowNumber: row.rowNumber, status: "SKIPPED (not mobile)", sentAt: now }))
+      );
+    } catch (err) {
+      console.error(`Could not mark non-mobile rows as skipped in the sheet (they'll be retried next run): ${err.message}`);
+    }
+  }
+
   if (toSend.length === 0) {
-    console.log('No rows are Approved=YES with an empty Status. Nothing to send.');
+    console.log('No rows are SMS Approved=YES, unsent, and a mobile number. Nothing to send.');
     return;
   }
 
@@ -70,21 +105,52 @@ async function main() {
 
   let sent = 0;
   let failed = 0;
-  for (const row of batch) {
+  let stoppedForDailyLimit = false;
+  const writeFailures = [];
+  for (const [i, row] of batch.entries()) {
+    let status;
     try {
-      await sendOne(row.phone, row.draftMessage);
-      await markRowSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "SENT", new Date().toISOString());
+      await sendOne(row.phone, row.smsDraft);
+      status = "SENT";
       sent++;
       console.log(`Sent to ${row.businessName} (${row.phone}).`);
     } catch (err) {
-      await markRowSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, "FAILED", new Date().toISOString());
+      if (err instanceof DailyLimitError) {
+        // Not this lead's fault — the whole account is throttled for today,
+        // so every remaining row would fail identically. Leave them with a
+        // blank Status (untouched) so they're picked up again on a future
+        // run instead of being marked FAILED and abandoned forever.
+        console.error(`Texto's daily sending limit was hit: ${err.message}`);
+        console.error(`Stopping — ${batch.length - i} approved lead(s) left unsent for a future run.`);
+        stoppedForDailyLimit = true;
+        break;
+      }
+      status = "FAILED";
       failed++;
       console.error(`Failed for ${row.businessName} (${row.phone}): ${err.message}`);
+    }
+    // The send attempt already happened either way — if recording it in the
+    // sheet fails (e.g. a transient quota error), don't let that crash the
+    // rest of the run and abandon the remaining approved leads.
+    try {
+      await markSmsSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, status, new Date().toISOString());
+    } catch (err) {
+      writeFailures.push({ rowNumber: row.rowNumber, businessName: row.businessName, status });
+      console.error(`Could not record ${status} for ${row.businessName} (row ${row.rowNumber}): ${err.message}`);
     }
     await sleep(DELAY_MS);
   }
 
-  console.log(`Done. Sent: ${sent}, Failed: ${failed}.`);
+  console.log(`Done. Sent: ${sent}, Failed: ${failed}.${stoppedForDailyLimit ? " Stopped early (daily limit)." : ""}`);
+  if (writeFailures.length > 0) {
+    console.log(
+      `WARNING: the sheet wasn't updated for ${writeFailures.length} row(s) — the SMS attempt still happened, ` +
+        "but you'll need to set SMS Status manually so it isn't retried next run:"
+    );
+    for (const f of writeFailures) {
+      console.log(`  Row ${f.rowNumber} (${f.businessName}): should be ${f.status}`);
+    }
+  }
 }
 
 main().catch((err) => {

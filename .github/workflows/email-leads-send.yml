@@ -1,13 +1,13 @@
-name: SMS Leads — Send Approved
+name: Email Leads — Send Approved
 
-# Manual only. Sends a Texto SMS for every sheet row where you've set
-# SMS Approved=YES and SMS Status is still empty, then marks each row
-# SENT/FAILED (or SKIPPED for a non-mobile number).
+# Manual only. Sends a cold email via Gmail SMTP for every sheet row where
+# you've set Email Approved=YES and Email Status is still empty, then marks
+# each row SENT/FAILED.
 on:
   workflow_dispatch:
     inputs:
       max_per_run:
-        description: "Safety cap on how many messages this run can send"
+        description: "Safety cap on how many emails this run can send"
         required: false
         default: "50"
 
@@ -24,13 +24,14 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies
-        run: npm install --no-save googleapis
+        run: npm install --no-save googleapis nodemailer
 
-      - name: Run lead sender
+      - name: Run email lead sender
         env:
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
           GOOGLE_SHEETS_SPREADSHEET_ID: ${{ secrets.GOOGLE_SHEETS_SPREADSHEET_ID }}
-          TEXTO_API_KEY: ${{ secrets.TEXTO_API_KEY }}
-          SMS_MAX_PER_RUN: ${{ inputs.max_per_run }}
-        run: node scripts/sms-leads-send.js
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_MAX_PER_RUN: ${{ inputs.max_per_run }}
+        run: node scripts/email-leads-send.js
