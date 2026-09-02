@@ -2589,6 +2589,7 @@
     .ct-icon--yes { background: rgba(52,211,153,.15); color: #34d399; }
     .ct-icon--no { background: rgba(239,68,68,.13); color: #ef4444; }
     .ct-icon--ellie { background: #22c55e; color: #fff; box-shadow: 0 2px 10px rgba(34,197,94,.45); }
+    .ct-note { display: block; font-size: .72rem; font-weight: 400; color: var(--muted); margin-top: 2px; }
     .ct-ellie-price { font-size:1.4rem;font-weight:800;color:var(--violet); }
     .ct-human-price { font-size:1.4rem;font-weight:800;color:#ef4444; }
     .ct-note { font-size:.7rem;color:var(--muted);display:block;margin-top:2px;font-weight:400; }
@@ -2997,6 +2998,9 @@
     .pricing-features { list-style: none; margin: 0 0 1.8rem; padding: 0; display: flex; flex-direction: column; gap: 10px; text-align: left; }
     .pricing-features li { display: flex; align-items: center; gap: 9px; font-size: .87rem; color: var(--text); }
     .pricing-features li svg { color: var(--green); flex-shrink: 0; }
+    .pricing-features li.has-note { align-items: flex-start; }
+    .pricing-features li.has-note svg { margin-top: 2px; }
+    .pricing-features-note { display: block; font-size: .74rem; font-weight: 400; color: var(--muted); margin-top: 2px; }
     .pricing-cta {
       display: flex; align-items: center; justify-content: center; width: 100%;
       background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff;
@@ -3828,7 +3832,7 @@
         </div>
         <p class="pricing-note">For solo operators and small teams getting started with AI call answering.</p>
         <ul class="pricing-features">
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 150 call minutes/month</li>
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>150 call minutes/month<span class="pricing-features-note">Around 50–75 typical calls</span></span></li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 24/7 AI call answering</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Dashboard &amp; call recordings</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Appointment booking &amp; SMS</li>
@@ -3848,7 +3852,7 @@
         <p class="pricing-note">For busier businesses with multiple staff, services or locations to route calls to.</p>
         <ul class="pricing-features">
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Starter, plus:</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 400 call minutes/month</li>
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>400 call minutes/month<span class="pricing-features-note">Around 130–200 typical calls</span></span></li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multiple calendar integrations</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-staff &amp; smart call routing</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Custom call flows</li>
@@ -3866,7 +3870,7 @@
         <p class="pricing-note">For multi-location or high-volume businesses that need Ellie built into their systems.</p>
         <ul class="pricing-features">
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Growth, plus:</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 1,000 call minutes/month</li>
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>1,000 call minutes/month<span class="pricing-features-note">Around 330–500 typical calls</span></span></li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-location support</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> CRM/PMS integrations</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Priority support &amp; dedicated onboarding</li>
@@ -3906,9 +3910,9 @@
             </tr>
             <tr>
               <td>Call minutes</td>
-              <td>150</td>
-              <td class="ct-ellie">400</td>
-              <td>1,000</td>
+              <td>150<span class="ct-note">~50–75 calls</span></td>
+              <td class="ct-ellie">400<span class="ct-note">~130–200 calls</span></td>
+              <td>1,000<span class="ct-note">~330–500 calls</span></td>
             </tr>
             <tr>
               <td>24/7 answering</td>
