@@ -157,12 +157,13 @@ Settings -> Secrets and variables -> Actions -> New repository secret:
   sheet for email outreach, but the SMS sender skips them automatically
   (`Phone Type` column shows `Mobile`, `Landline`, or `Other`).
 - The draft SMS is deliberately plain GSM text (no emoji, no smart
-  quotes) and kept under 308 characters, so it sends as 2 credits.
-  Adding an emoji or any non-GSM character flips the whole message to
-  Unicode encoding — Texto then charges 2 credits per part instead of 1,
-  *and* shrinks the per-part limit from 154 to 67 chars, so one emoji
-  in this template jumps it from 2 credits to 8. Check message length
-  and encoding before changing the template in scripts/leads-find.js.
+  quotes) and kept under 160 characters (tested against a 36-char
+  business name), so it sends as 1 credit. Adding an emoji or any
+  non-GSM character flips the whole message to Unicode encoding, which
+  shrinks the per-part limit from 154 to 67 chars — for this template's
+  length that alone would push it to 2+ parts/credits. Check message
+  length and encoding before changing the template in
+  scripts/leads-find.js.
 - The draft email is HTML and modelled on an email already sent from
   hello@callellie.com — the opening line adapts per business category,
   the rest of the copy is fixed. Edit the `Email Subject`/`Email Body`

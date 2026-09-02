@@ -105,34 +105,18 @@ function missedNoun(types) {
   return "customers";
 }
 
-// A concrete, category-specific scenario reads as a real text instead of a
-// mail-merged ad blast — same reason the email's opening line is tailored
-// per business type rather than reusing one generic sentence everywhere.
-function smsHook(types) {
-  const set = new Set(types || []);
-  if ([...JOB_TYPES].some((t) => set.has(t))) {
-    return "how many calls slip through when you're mid-job? Ellie answers 24/7, sounds natural, and books the job in while your hands are full";
-  }
-  if ([...BOOKING_TYPES].some((t) => set.has(t))) {
-    return "ever miss a booking because you were with a client? Ellie answers 24/7 and fills the diary while you're busy, so a full day never means a lost booking";
-  }
-  if ([...APPOINTMENT_TYPES].some((t) => set.has(t))) {
-    return "a missed call can mean a patient books elsewhere. Ellie answers 24/7, takes their details and books them in instead";
-  }
-  return "missed calls can quietly cost you customers. Ellie answers 24/7, sounds natural, and handles it while you're busy";
-}
-
-// Kept plain GSM (no emoji/unicode) on purpose — one emoji or a smart/curly
-// apostrophe flips the whole message to Unicode encoding, which both
-// shrinks the per-part limit (154 -> 67 chars) and doubles Texto's
-// credit cost per part, so a single emoji here would roughly 4x the cost.
-// Includes callellie.com — Texto's default account tier rejects any
-// message with a URL until support enables it for the account. Sends
-// will fail with that error until that's sorted on the Texto side.
+// Kept short and category-specific but generic enough to fit any business
+// name (tested against a 36-char name) while staying under the 160-char
+// single-credit threshold — the longer, story-style hook read better but
+// pushed every variant to 2 credits. Plain GSM on purpose too (no emoji/
+// smart quotes) — either flips the message to Unicode encoding, shrinking
+// the per-part limit and very likely pushing a message this length to a
+// second part. Includes callellie.com — Texto's default account tier
+// rejects any message with a URL until support enables it for the
+// account, so sends will fail with that error until that's sorted.
 function draftSms(name, types) {
-  const hook = smsHook(types);
-  const capitalisedHook = hook.charAt(0).toUpperCase() + hook.slice(1);
-  return `G'day ${name}! ${capitalisedHook}. Try it free: callellie.com or call 0485 057 840. Reply STOP to opt out.`;
+  const noun = missedNoun(types);
+  return `G'day ${name}! Missed calls cost you ${noun}. Ellie answers 24/7. callellie.com or 0485 057 840. Reply STOP to opt out.`;
 }
 
 // Modelled on the cold email that's actually gone out from hello@callellie.com —
