@@ -298,8 +298,7 @@
     /* Book / CTA section */
     [data-theme="light"] .book-h2 { color: #0f172a; }
     [data-theme="light"] .book-chip { color: #475569; background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.1); }
-    /* Reviews section */
-    [data-theme="light"] .grev-logo-text { color: #0f172a; }
+    /* Example scenarios section */
     [data-theme="light"] .grev-headline { color: #0f172a; }
     [data-theme="light"] .grev-name { color: #0f172a; }
     /* Comparison table */
@@ -1714,6 +1713,12 @@
     .grev-footer { display:flex; align-items:center; gap:6px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
     .grev-footer-icon { width:16px; height:16px; flex-shrink:0; }
     .grev-posted { font-size:.7rem; color:var(--muted); }
+    /* Same as .grev-text but no leading quote-mark glyph — these are
+       illustrative scenarios, not quoted customer testimonials. */
+    .grev-scenario {
+      font-size:.82rem; color:var(--muted); line-height:1.68;
+      display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;
+    }
 
     /* ── CTA ── */
     .cta-sec { background: var(--bg); position: relative; overflow: hidden; }
@@ -5203,6 +5208,146 @@
           <div class="dash-bullet-title">6. Improve</div>
           <div class="dash-bullet-desc">We refine call flows and workflows as your business evolves.</div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXAMPLE SCENARIOS ──
+     Illustrative examples, not customer reviews or ratings — Ellie doesn't
+     have verified customer reviews yet, so this deliberately avoids review
+     styling (no star ratings, no reviewer names/avatars, no "posted x ago"
+     timestamps, no third-party platform branding). Swap this section for
+     real testimonials once there are genuine ones to show. -->
+<section class="grev-sec">
+  <div class="container">
+    <div class="grev-hd reveal">
+      <h2 class="grev-headline">What a call with Ellie looks like</h2>
+      <p class="grev-sub">A few examples, across the kinds of businesses Ellie works with</p>
+    </div>
+  </div>
+  <div class="grev-marquee-wrap">
+    <div class="grev-track">
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Plumbing</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">A burst pipe call comes in at 9pm. Ellie answers, takes the details, and books it into tomorrow's first slot — no missed emergency job.</div>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Hair &amp; Beauty</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">Ellie answers while you're mid-appointment, checks availability, and confirms a new booking by SMS — the caller never knows you were busy.</div>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--d"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Dental &amp; Medical</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">A patient calls about a toothache after hours. Ellie takes their details and gets them booked in for first thing tomorrow, instead of them calling around elsewhere.</div>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--e"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Electrical</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">Three calls come in while you're on a job. Ellie handles all three, books two on the spot, and texts you a summary before you're back in the van.</div>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Real Estate</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">An after-hours enquiry comes in about an open home. Ellie answers, captures the lead's details, and has them in your inbox before your first coffee.</div>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--f"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Cafe &amp; Hospitality</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">A group calls to book a table for Friday night. Ellie checks the time, confirms the booking, and sends a reminder text on the day.</div>
+      </div>
+      <!-- Duplicate set for the seamless marquee loop (grevScroll animates to -50%) -->
+      <div class="grev-card" aria-hidden="true">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Plumbing</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">A burst pipe call comes in at 9pm. Ellie answers, takes the details, and books it into tomorrow's first slot — no missed emergency job.</div>
+      </div>
+      <div class="grev-card" aria-hidden="true">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Hair &amp; Beauty</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">Ellie answers while you're mid-appointment, checks availability, and confirms a new booking by SMS — the caller never knows you were busy.</div>
+      </div>
+      <div class="grev-card" aria-hidden="true">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--d"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Dental &amp; Medical</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">A patient calls about a toothache after hours. Ellie takes their details and gets them booked in for first thing tomorrow, instead of them calling around elsewhere.</div>
+      </div>
+      <div class="grev-card" aria-hidden="true">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--e"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Electrical</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">Three calls come in while you're on a job. Ellie handles all three, books two on the spot, and texts you a summary before you're back in the van.</div>
+      </div>
+      <div class="grev-card" aria-hidden="true">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Real Estate</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">An after-hours enquiry comes in about an open home. Ellie answers, captures the lead's details, and has them in your inbox before your first coffee.</div>
+      </div>
+      <div class="grev-card" aria-hidden="true">
+        <div class="grev-card-top">
+          <div class="grev-av grev-av--f"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+          <div class="grev-meta">
+            <div class="grev-name">Cafe &amp; Hospitality</div>
+            <div class="grev-biz">Example scenario</div>
+          </div>
+        </div>
+        <div class="grev-scenario">A group calls to book a table for Friday night. Ellie checks the time, confirms the booking, and sends a reminder text on the day.</div>
       </div>
     </div>
   </div>
