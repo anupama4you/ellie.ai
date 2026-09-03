@@ -260,7 +260,9 @@
       "keyword": "AI receptionist for physiotherapy clinics",
       "intent": "commercial - allied health",
       "audience": "physio and allied health clinic owners",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-03",
+      "slug": "ai-receptionist-physiotherapy-clinics-australia"
     },
     {
       "keyword": "should I hire a receptionist or use AI",
