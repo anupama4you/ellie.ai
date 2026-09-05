@@ -1,21 +1,22 @@
 name: Leads — Find
 
-# Manual only, on purpose — this appends candidate leads + drafted
-# SMS/email messages to the tracking sheet. It never sends anything itself.
 on:
   workflow_dispatch:
     inputs:
       search_query:
-        description: 'One query, or several separated by "|" (Google only returns up to 60 results per query, so use one per suburb to go beyond that), e.g. "plumber in Adelaide|plumber in Mount Gambier|plumber in Whyalla"'
-        required: true
+        description: 'Optional custom query list separated by "|"'
+        required: false
       target_new_leads:
-        description: "Stop once this many NEW leads have been added — works through the query list above until met or exhausted"
+        description: "Target number of NEW leads to add"
         required: false
         default: "100"
       max_results:
-        description: "Max candidates to pull per individual query (hard-capped at 60 by Google's Places API)"
+        description: "Max Places candidates per query (Google hard-caps at 60)"
         required: false
         default: "60"
+  schedule:
+    # Weekday mornings for Adelaide. 22:30 UTC Sun-Thu is 08:00 ACST / 09:00 ACDT the next day.
+    - cron: "30 22 * * 0-4"
 
 jobs:
   find:
@@ -32,13 +33,15 @@ jobs:
       - name: Install dependencies
         run: npm install --no-save googleapis
 
-      - name: Run lead finder
+      - name: Run Google Places lead finder
         env:
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
           GOOGLE_SHEETS_SPREADSHEET_ID: ${{ secrets.GOOGLE_SHEETS_SPREADSHEET_ID }}
-          SEARCH_QUERY: ${{ inputs.search_query }}
-          MAX_RESULTS: ${{ inputs.max_results }}
-          TARGET_NEW_LEADS: ${{ inputs.target_new_leads }}
+          OUTREACH_PIPELINE_SPREADSHEET_ID: "1oLv8_GvF4I1oEXkh0g0YjnukrQ5Y56UULriT1A4WwNE"
+          OUTREACH_PIPELINE_TAB: "Email Queue"
+          SEARCH_QUERY: ${{ inputs.search_query || '' }}
+          MAX_RESULTS: ${{ inputs.max_results || '60' }}
+          TARGET_NEW_LEADS: ${{ inputs.target_new_leads || '100' }}
         run: node scripts/leads-find.js
