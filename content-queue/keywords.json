@@ -268,7 +268,9 @@
       "keyword": "should I hire a receptionist or use AI",
       "intent": "commercial - decision content",
       "audience": "businesses at the hiring decision point",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-05",
+      "slug": "should-i-hire-a-receptionist-or-use-ai"
     },
     {
       "keyword": "how AI phone agents handle Australian accents",
