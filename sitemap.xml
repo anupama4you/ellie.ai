@@ -6,7 +6,22 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://callellie.com/medical</loc>
+    <loc>https://callellie.com/ai-receptionist</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://callellie.com/ai-call-answering-service-australia</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://callellie.com/pricing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://callellie.com/medical-dental-clinics</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
