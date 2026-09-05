@@ -70,7 +70,7 @@ function personalisation(category, address) {
 }
 function draftSms(name, types) {
   const category = humaniseCategory(types);
-  return `Hi ${name}, Ellie can answer your ${category} calls and enquiries 24/7 when your team can't get to the phone. callellie.com. Reply STOP to opt out.`;
+  return `Hi ${name}, Ellie can answer your ${category} calls and enquiries 24/7 when your team can't get to the phone. Try Ellie: 0485 057 840 or callellie.com. Reply STOP to opt out.`;
 }
 function draftEmail(name, category, address) {
   const p = personalisation(category, address);
@@ -98,7 +98,7 @@ Anu Dilshan
 Founder | Ellie
 Your AI front desk, built around your business.
 
-📞 +61 452 575 523
+📞 0485 057 840
 ✉️ hello@callellie.com
 🌐 callellie.com
 
