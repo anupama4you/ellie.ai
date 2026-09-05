@@ -1,42 +1,26 @@
 /**
  * ELLIE Email Lead Sender
- * =======================
- * Reads the tracking Google Sheet and sends the drafted email via
- * Gmail SMTP for every row marked Email Approved=YES that hasn't been
- * sent yet. Deliberately its own script, triggered by hand — the
- * finder never calls this automatically, so nothing goes out without
- * someone reviewing the row first. Mirrors sms-leads-send.js but for
- * the Email Subject/Body/Approved/Status/Sent At columns instead.
- *
- * Requires a Gmail App Password (Google Account > Security > 2-Step
- * Verification > App passwords) for the sending mailbox — not the
- * account's normal login password.
- *
- * Run locally:
- *   GOOGLE_SERVICE_ACCOUNT_EMAIL=... GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=... \
- *   GOOGLE_SHEETS_SPREADSHEET_ID=... GMAIL_USER=hello@callellie.com \
- *   GMAIL_APP_PASSWORD=... node scripts/email-leads-send.js
- *
- * In CI: .github/workflows/email-leads-send.yml (workflow_dispatch only).
+ * Reads the unified Ellie Lead Outreach Pipeline / Email Queue tab.
+ * Sends only rows explicitly approved for email and not already sent/opted out.
  */
-
 const nodemailer = require("nodemailer");
-const { getSheetsClient, readRows, markEmailSent, requireEnv } = require("./lib/google-sheets");
+const { getSheetsClient, readOutreachRows, markEmail } = require("./lib/outreach-pipeline");
 
-const SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
-const TAB_NAME = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
-const GMAIL_USER = requireEnv("GMAIL_USER");
-const GMAIL_APP_PASSWORD = requireEnv("GMAIL_APP_PASSWORD");
+const SPREADSHEET_ID = process.env.OUTREACH_PIPELINE_SPREADSHEET_ID || "1oLv8_GvF4I1oEXkh0g0YjnukrQ5Y56UULriT1A4WwNE";
+const TAB_NAME = process.env.OUTREACH_PIPELINE_TAB || "Email Queue";
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
+if (!GMAIL_USER || !GMAIL_APP_PASSWORD) throw new Error("Missing Gmail credentials");
 const FROM_NAME = process.env.EMAIL_FROM_NAME || "ELLIE (callellie.com)";
-
 const MAX_PER_RUN = parseInt(process.env.EMAIL_MAX_PER_RUN || "50", 10);
-// Gmail is stricter about burst sending than Texto — a longer gap between
-// sends than the SMS script uses is deliberate, to stay well under Gmail's
-// per-day sending caps and avoid tripping spam/rate-limit flags.
 const DELAY_MS = parseInt(process.env.EMAIL_DELAY_MS || "3000", 10);
 
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function blocked(row) {
+  return /stop|unsubscribe|opt.?out|do.?not.?contact|not interested/i.test(
+    `${row.replyStatus || ""} ${row.notes || ""}`
+  );
 }
 
 async function main() {
@@ -46,65 +30,40 @@ async function main() {
   });
 
   const sheets = await getSheetsClient();
-  const rows = await readRows(sheets, SPREADSHEET_ID, TAB_NAME);
+  const rows = await readOutreachRows(sheets, SPREADSHEET_ID, TAB_NAME);
+  const batch = rows.filter((r) =>
+    r.emailApproved &&
+    !r.emailSent &&
+    r.email.trim() &&
+    !blocked(r)
+  ).slice(0, MAX_PER_RUN);
 
-  const toSend = rows.filter(
-    (r) => r.emailApproved.trim().toUpperCase() === "YES" && !r.emailStatus.trim() && r.email.trim()
-  );
-
-  if (toSend.length === 0) {
-    console.log('No rows are Email Approved=YES, unsent, and have an email address. Nothing to send.');
+  if (!batch.length) {
+    console.log("No approved, unsent email rows.");
     return;
   }
 
-  const batch = toSend.slice(0, MAX_PER_RUN);
-  console.log(`Sending ${batch.length} of ${toSend.length} approved, unsent emails (cap ${MAX_PER_RUN} per run).`);
-
-  let sent = 0;
-  let failed = 0;
-  const writeFailures = [];
+  let sent = 0, failed = 0;
   for (const row of batch) {
-    let status;
     try {
       await transporter.sendMail({
         from: `"${FROM_NAME}" <${GMAIL_USER}>`,
         to: row.email,
-        subject: row.emailSubject || `I have an idea for ${row.businessName}`,
-        html: row.emailBody,
+        subject: row.subject,
+        text: row.draftBody,
       });
-      status = "SENT";
+      await markEmail(sheets, SPREADSHEET_ID, row.rowNumber, true, new Date().toISOString(), null, TAB_NAME);
       sent++;
-      console.log(`Emailed ${row.businessName} (${row.email}).`);
+      console.log(`Email sent: ${row.business} (${row.email})`);
     } catch (err) {
-      status = "FAILED";
+      const note = [row.notes, `Email send failed: ${err.message}`].filter(Boolean).join(" | ");
+      await markEmail(sheets, SPREADSHEET_ID, row.rowNumber, false, "", note, TAB_NAME);
       failed++;
-      console.error(`Failed for ${row.businessName} (${row.email}): ${err.message}`);
-    }
-    // The send attempt already happened either way — if recording it in the
-    // sheet fails (e.g. a transient quota error), don't let that crash the
-    // rest of the run and abandon the remaining approved leads.
-    try {
-      await markEmailSent(sheets, SPREADSHEET_ID, TAB_NAME, row.rowNumber, status, new Date().toISOString());
-    } catch (err) {
-      writeFailures.push({ rowNumber: row.rowNumber, businessName: row.businessName, status });
-      console.error(`Could not record ${status} for ${row.businessName} (row ${row.rowNumber}): ${err.message}`);
+      console.error(`Email failed: ${row.business}: ${err.message}`);
     }
     await sleep(DELAY_MS);
   }
-
-  console.log(`Done. Sent: ${sent}, Failed: ${failed}.`);
-  if (writeFailures.length > 0) {
-    console.log(
-      `WARNING: the sheet wasn't updated for ${writeFailures.length} row(s) — the email attempt still happened, ` +
-        "but you'll need to set Email Status manually so it isn't retried next run:"
-    );
-    for (const f of writeFailures) {
-      console.log(`  Row ${f.rowNumber} (${f.businessName}): should be ${f.status}`);
-    }
-  }
+  console.log(`Done. Sent: ${sent}, Failed: ${failed}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main().catch((err) => { console.error(err); process.exit(1); });
