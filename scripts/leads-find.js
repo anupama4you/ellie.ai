@@ -3,12 +3,10 @@
  * Google Places -> Place Details -> website email discovery -> master Leads sheet
  * -> unified Ellie Lead Outreach Pipeline (both SMS and email approvals).
  */
-const { getSheetsClient, readRows, appendRows, requireEnv } = require("./lib/google-sheets");
-const { appendOutreachRows } = require("./lib/outreach-pipeline");
+const { requireEnv } = require("./lib/google-sheets");
+const { getSheetsClient, readOutreachRows, appendOutreachRows } = require("./lib/outreach-pipeline");
 
 const PLACES_API_KEY = requireEnv("GOOGLE_PLACES_API_KEY");
-const MASTER_SPREADSHEET_ID = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
-const MASTER_TAB = process.env.GOOGLE_SHEETS_TAB_NAME || "Leads";
 const OUTREACH_SPREADSHEET_ID = process.env.OUTREACH_PIPELINE_SPREADSHEET_ID || "1oLv8_GvF4I1oEXkh0g0YjnukrQ5Y56UULriT1A4WwNE";
 const OUTREACH_TAB = process.env.OUTREACH_PIPELINE_TAB || "Email Queue";
 
@@ -212,24 +210,23 @@ async function findEmailOnWebsite(website) {
 async function main() {
   console.log(`Lead finder: ${QUERIES.length} queries, target ${TARGET_NEW_LEADS} new leads.`);
   const sheets = await getSheetsClient();
-  const existing = await readRows(sheets, MASTER_SPREADSHEET_ID, MASTER_TAB);
+  const existing = await readOutreachRows(sheets, OUTREACH_SPREADSHEET_ID, OUTREACH_TAB);
 
-  const seenPlaceIds = new Set(existing.map(r => r.placeId).filter(Boolean));
+  const seenPlaceIds = new Set();
   const seenPhones = new Set(existing.map(r => normalisePhone(r.phone)).filter(Boolean));
   const seenWebsites = new Set(existing.map(r => normaliseUrl(r.website)).filter(Boolean));
-  const seenNames = new Set(existing.map(r => r.businessName.toLowerCase().trim()).filter(Boolean));
+  const seenNames = new Set(existing.map(r => String(r.business || "").toLowerCase().trim()).filter(Boolean));
 
-  const masterRows = [];
   const outreachRows = [];
   let emailCount = 0, duplicateCount = 0;
 
   for (const query of QUERIES) {
-    if (masterRows.length >= TARGET_NEW_LEADS) break;
+    if (outreachRows.length >= TARGET_NEW_LEADS) break;
     console.log(`Searching: ${query}`);
     const candidates = await textSearch(query);
 
     for (const candidate of candidates) {
-      if (masterRows.length >= TARGET_NEW_LEADS) break;
+      if (outreachRows.length >= TARGET_NEW_LEADS) break;
       if (!candidate.place_id || seenPlaceIds.has(candidate.place_id)) { duplicateCount++; continue; }
 
       const details = await getPlaceDetails(candidate.place_id);
@@ -256,12 +253,6 @@ async function main() {
       const em = draftEmail(details.name, category, address);
       const added = new Date().toISOString();
 
-      masterRows.push([
-        added, candidate.place_id, details.name, phone, phoneType, website, email,
-        details.rating || "", category, address, sms, "", "", "",
-        email ? em.subject : "", email ? em.body : "", "", "", ""
-      ]);
-
       outreachRows.push([
         details.name, email, email ? em.subject : "", email ? em.body : "", em.personalisation,
         "", "", "", "", "", "Added by Google Places lead finder",
@@ -276,10 +267,9 @@ async function main() {
     }
   }
 
-  await appendRows(sheets, MASTER_SPREADSHEET_ID, MASTER_TAB, masterRows);
   await appendOutreachRows(sheets, OUTREACH_SPREADSHEET_ID, outreachRows, OUTREACH_TAB);
 
-  console.log(`Added ${masterRows.length} new leads; ${emailCount} with public email; skipped ${duplicateCount} duplicates.`);
+  console.log(`Added ${outreachRows.length} new leads directly to the unified outreach pipeline; ${emailCount} with public email; skipped ${duplicateCount} duplicates.`);
   console.log(`Unified outreach rows appended to ${OUTREACH_TAB}; both SMS and email approvals remain blank.`);
 }
 
