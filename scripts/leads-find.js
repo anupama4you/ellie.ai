@@ -92,16 +92,16 @@ function smsVariant(types) {
 }
 
 function draftSms(name, types) {
-  const firstNameToken = "{{FirstName}}";
+  const businessToken = name;
   const variant = smsVariant(types);
   const msg = variant.startsWith("missed")
-    ? `Hi ${firstNameToken}, ${variant}. Ellie answers 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`
-    : `Hi ${firstNameToken}, ${variant} 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
+    ? `Hi ${businessToken}, ${variant}. Ellie answers 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`
+    : `Hi ${businessToken}, ${variant} 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
 
   // Keep drafts within one GSM SMS part (160 chars) without emojis/smart punctuation.
   if (msg.length <= 160) return msg;
 
-  const fallback = `Hi ${firstNameToken}, Ellie answers calls 24/7 for your business. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
+  const fallback = `Hi ${businessToken}, Ellie answers calls 24/7 for your business. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
   return fallback.slice(0, 160);
 }
 function draftEmail(name, category, address) {
