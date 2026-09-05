@@ -68,9 +68,41 @@ function suburbFromAddress(address) {
 function personalisation(category, address) {
   return `your ${suburbFromAddress(address)} business is publicly listed for ${category} services`;
 }
+function smsVariant(types) {
+  const set = new Set(types || []);
+  if (set.has("plumber") || set.has("electrician") || set.has("roofing_contractor") || set.has("general_contractor") || set.has("locksmith") || set.has("hvac_contractor")) {
+    return "missed trade calls can mean lost jobs";
+  }
+  if (set.has("beauty_salon") || set.has("hair_care") || set.has("hair_salon") || set.has("spa") || set.has("nail_salon")) {
+    return "Ellie can handle salon calls and booking enquiries";
+  }
+  if (set.has("dentist") || set.has("doctor") || set.has("physiotherapist") || set.has("health") || set.has("veterinary_care")) {
+    return "Ellie can handle clinic calls and appointment enquiries";
+  }
+  if (set.has("car_repair") || set.has("car_dealer")) {
+    return "Ellie can handle workshop calls and booking enquiries";
+  }
+  if (set.has("real_estate_agency")) {
+    return "Ellie can handle property enquiries and calls";
+  }
+  if (set.has("lawyer") || set.has("accounting")) {
+    return "Ellie can handle client calls and enquiries";
+  }
+  return "Ellie can handle business calls and enquiries";
+}
+
 function draftSms(name, types) {
-  const category = humaniseCategory(types);
-  return `Hi ${name}, Ellie can answer your ${category} calls and enquiries 24/7 when your team can't get to the phone. Try Ellie: 0485 057 840 or callellie.com. Reply STOP to opt out.`;
+  const firstNameToken = "{{FirstName}}";
+  const variant = smsVariant(types);
+  const msg = variant.startsWith("missed")
+    ? `Hi ${firstNameToken}, ${variant}. Ellie answers 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`
+    : `Hi ${firstNameToken}, ${variant} 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
+
+  // Keep drafts within one GSM SMS part (160 chars) without emojis/smart punctuation.
+  if (msg.length <= 160) return msg;
+
+  const fallback = `Hi ${firstNameToken}, Ellie answers calls 24/7 for your business. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
+  return fallback.slice(0, 160);
 }
 function draftEmail(name, category, address) {
   const p = personalisation(category, address);
