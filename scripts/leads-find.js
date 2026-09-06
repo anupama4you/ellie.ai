@@ -68,39 +68,28 @@ function personalisation(category, address) {
 }
 function smsVariant(types) {
   const set = new Set(types || []);
-  if (set.has("plumber") || set.has("electrician") || set.has("roofing_contractor") || set.has("general_contractor") || set.has("locksmith") || set.has("hvac_contractor")) {
-    return "missed trade calls can mean lost jobs";
-  }
-  if (set.has("beauty_salon") || set.has("hair_care") || set.has("hair_salon") || set.has("spa") || set.has("nail_salon")) {
-    return "Ellie can handle salon calls and booking enquiries";
-  }
-  if (set.has("dentist") || set.has("doctor") || set.has("physiotherapist") || set.has("health") || set.has("veterinary_care")) {
-    return "Ellie can handle clinic calls and appointment enquiries";
-  }
-  if (set.has("car_repair") || set.has("car_dealer")) {
-    return "Ellie can handle workshop calls and booking enquiries";
-  }
-  if (set.has("real_estate_agency")) {
-    return "Ellie can handle property enquiries and calls";
-  }
-  if (set.has("lawyer") || set.has("accounting")) {
-    return "Ellie can handle client calls and enquiries";
-  }
-  return "Ellie can handle business calls and enquiries";
+  if (set.has("plumber") || set.has("electrician") || set.has("roofing_contractor") || set.has("general_contractor") || set.has("locksmith") || set.has("hvac_contractor")) return "jobs";
+  if (set.has("beauty_salon") || set.has("hair_care") || set.has("hair_salon") || set.has("spa") || set.has("nail_salon")) return "bookings";
+  if (set.has("dentist") || set.has("doctor") || set.has("physiotherapist") || set.has("health") || set.has("veterinary_care")) return "appointments";
+  if (set.has("car_repair") || set.has("car_dealer")) return "bookings";
+  if (set.has("real_estate_agency")) return "enquiries";
+  if (set.has("lawyer") || set.has("accounting")) return "clients";
+  return "calls";
 }
 
 function draftSms(name, types) {
-  const businessToken = name;
-  const variant = smsVariant(types);
-  const msg = variant.startsWith("missed")
-    ? `Hi ${businessToken}, ${variant}. Ellie answers 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`
-    : `Hi ${businessToken}, ${variant} 24/7. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
-
-  // Keep drafts within one GSM SMS part (160 chars) without emojis/smart punctuation.
-  if (msg.length <= 160) return msg;
-
-  const fallback = `Hi ${businessToken}, Ellie answers calls 24/7 for your business. Try 0485 057 840 or callellie.com. Reply STOP to opt out.`;
-  return fallback.slice(0, 160);
+  const focus = smsVariant(types);
+  const messages = {
+    jobs: "Hey, wanna be the only business in your area taking job calls after 5pm? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
+    bookings: "Hey, wanna be the only business in your area taking bookings after 5pm? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
+    appointments: "Hey, wanna take appointment calls after 5pm while others are closed? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
+    enquiries: "Hey, wanna take property enquiries after 5pm while others are closed? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
+    clients: "Hey, wanna take client calls after 5pm while others are closed? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
+    calls: "Hey, wanna be the only business in your area taking calls after 5pm? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP"
+  };
+  const msg = messages[focus] || messages.calls;
+  if (msg.length > 160) throw new Error(`SMS template exceeds one GSM part: ${msg.length} chars`);
+  return msg;
 }
 function draftEmail(name, category, address) {
   const p = personalisation(category, address);
