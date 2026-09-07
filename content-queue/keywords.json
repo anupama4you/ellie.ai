@@ -276,7 +276,9 @@
       "keyword": "how AI phone agents handle Australian accents",
       "intent": "informational - objection handling",
       "audience": "sceptical owners worried about voice AI accuracy",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-07",
+      "slug": "how-ai-phone-agents-handle-australian-accents"
     },
     {
       "keyword": "is an AI receptionist worth it for a small business",
