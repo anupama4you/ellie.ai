@@ -284,7 +284,9 @@
       "keyword": "is an AI receptionist worth it for a small business",
       "intent": "commercial - ROI question",
       "audience": "cost conscious owners",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-09",
+      "slug": "is-an-ai-receptionist-worth-it-small-business"
     },
     {
       "keyword": "how to grow a trade business without hiring staff",
