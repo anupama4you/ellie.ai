@@ -292,7 +292,9 @@
       "keyword": "how to grow a trade business without hiring staff",
       "intent": "informational - growth content",
       "audience": "solo trades scaling up",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-11",
+      "slug": "how-to-grow-a-trade-business-without-hiring-staff"
     },
     {
       "keyword": "customer service automation for small business Australia",
