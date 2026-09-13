@@ -1,0 +1,15 @@
+#website-avatar{scroll-margin-top:90px;background:radial-gradient(ellipse at 10% 35%,#8b5cf610,transparent 60%);border-top:1px solid var(--border,#ffffff14)}
+.avatar-service-grid{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:80px}
+.avatar-service-kicker{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:700;letter-spacing:1.7px;text-transform:uppercase;color:var(--violet,#a78bfa);margin-bottom:24px}
+.avatar-service-kicker span{font-size:10px;letter-spacing:.8px;padding:5px 9px;border:1px solid #a78bfa55;border-radius:20px}
+.avatar-service-copy h2{font-family:'Bricolage Grotesque',Inter,sans-serif;font-size:clamp(36px,4.3vw,60px);line-height:1.06;letter-spacing:-2px;margin:0 0 24px;font-weight:800}
+.avatar-service-copy h2 em{font-style:normal;color:var(--violet,#a78bfa)}
+.avatar-service-intro{font-size:16px;line-height:1.8;color:var(--muted,#a5a2b5);max-width:470px}
+.avatar-service-points{list-style:none;margin:27px 0 30px;padding:0;display:grid;gap:17px}
+.avatar-service-points li{display:flex;gap:13px;align-items:flex-start;font-size:14px;line-height:1.5}.avatar-service-points b{display:block;font-weight:600}.avatar-service-points small{font-size:12px;color:var(--muted,#a5a2b5)}
+.avatar-service-points .av-check{color:var(--violet,#a78bfa);font-size:16px;padding-top:2px}
+.avatar-service-cta{display:inline-flex;align-items:center;gap:22px;border-bottom:1px solid #a78bfa70;padding-bottom:8px;font-weight:600;font-size:14px;color:inherit;text-decoration:none}.avatar-service-cta:hover{color:var(--violet,#a78bfa)}
+.avatar-service-fine{color:var(--muted,#a5a2b5);font-size:11px;line-height:1.7;margin-top:17px;max-width:420px}
+.avatar-service-demo{max-width:440px;width:100%;justify-self:end}.avatar-service-under{text-align:center;font-size:11px;color:var(--muted,#a5a2b5);margin-top:14px}
+@media(max-width:900px){.avatar-service-grid{gap:36px;grid-template-columns:1fr 1fr}.avatar-service-copy h2{font-size:40px}}
+@media(max-width:680px){.avatar-service-grid{grid-template-columns:1fr;gap:32px}.avatar-service-demo{justify-self:center;max-width:440px}.avatar-service-copy h2{font-size:42px}.avatar-service-kicker{margin-bottom:20px}}
