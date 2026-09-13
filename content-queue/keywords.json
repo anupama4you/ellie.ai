@@ -300,7 +300,9 @@
       "keyword": "customer service automation for small business Australia",
       "intent": "commercial - broader automation",
       "audience": "owners exploring automation generally",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-13",
+      "slug": "customer-service-automation-small-business-australia"
     },
     {
       "keyword": "what happens when customers reach voicemail",
