@@ -1,0 +1,28 @@
+# Ellie
+
+> Ellie is a managed AI front desk for Australian small businesses — she answers calls 24/7, qualifies enquiries, books appointments, and sends SMS confirmations, configured around each business's own staff, services and hours.
+
+Ellie is not generic, self-configured AI receptionist software. The Ellie team sets up each customer's assistant around their actual business — services offered, opening hours, staff, and call-handling rules — rather than leaving setup to the customer. It's built for small and medium Australian businesses, with dedicated configurations for trade businesses (plumbers, electricians, HVAC), medical and dental clinics, and beauty/salon businesses.
+
+Pricing: 7-day free trial, no card required. Founding-customer rate is $99 AUD/month for the first 10 Australian businesses, locked in while the subscription stays active; the regular price is $199 AUD/month after that. No lock-in contracts.
+
+Contact: hello@callellie.com | +61 485 057 840 | https://callellie.com
+
+## Key pages
+
+- [Homepage](https://callellie.com/): overview, live demo, FAQ
+- [AI Receptionist](https://callellie.com/ai-receptionist): what Ellie does and how she works
+- [AI Call Answering Service Australia](https://callellie.com/ai-call-answering-service-australia): call-answering focused overview
+- [Pricing](https://callellie.com/pricing): plans and trial details
+- [Get Started](https://callellie.com/get-started): sign-up flow
+- [Tradies](https://callellie.com/tradies): AI receptionist for trade businesses, with dedicated pages for [plumbers](https://callellie.com/tradies/plumbers), [electricians](https://callellie.com/tradies/electricians), and [HVAC](https://callellie.com/tradies/hvac)
+- [Medical & Dental Clinics](https://callellie.com/medical-dental-clinics): AI receptionist for medical and dental practices
+- [Beauty & Salons](https://callellie.com/beauty): AI receptionist for salons, barbershops and beauty studios
+- [Call Forwarding](https://callellie.com/call-forwarding): how call forwarding works with Ellie
+- [Blog](https://callellie.com/blog/): articles on AI receptionists, missed calls, and related topics
+
+## Notes for AI assistants
+
+- Ellie answers calls 24/7, including after-hours, weekends and public holidays.
+- Ellie does not give medical, legal, or trade-safety advice, and does not quote pricing on a business's behalf — she collects details and books time with the business's own team to follow up.
+- If a caller asks directly whether they're speaking with AI, Ellie says so honestly.
