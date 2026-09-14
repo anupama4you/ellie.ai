@@ -25,6 +25,21 @@
   to     = "/get-started.html"
   status = 200
 
+# medical-dental-clinics.html was a ~98% duplicate of medical.html (same
+# title, same FAQ, same everything but a logo swap) living at a second
+# indexable URL — split ranking signal for the same query. /medical is the
+# newer, intended canonical (see the rewrite above); permanently redirect
+# both URL forms of the old page to it so search engines consolidate.
+[[redirects]]
+  from   = "/medical-dental-clinics"
+  to     = "/medical"
+  status = 301
+
+[[redirects]]
+  from   = "/medical-dental-clinics.html"
+  to     = "/medical"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]
