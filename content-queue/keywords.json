@@ -315,6 +315,36 @@
       "intent": "transactional - ready to try",
       "audience": "high intent buyers looking to test",
       "published": false
+    },
+    {
+      "keyword": "emergency call handling for tradies after hours",
+      "intent": "commercial - urgency and escalation handling",
+      "audience": "trade business owners worried about missing emergency jobs",
+      "published": false
+    },
+    {
+      "keyword": "AI receptionist for HVAC businesses Australia",
+      "intent": "commercial - trade specific",
+      "audience": "HVAC and air conditioning business owners",
+      "published": false
+    },
+    {
+      "keyword": "does an AI receptionist understand tradie jargon",
+      "intent": "informational - objection handling",
+      "audience": "sceptical trade business owners worried about accuracy",
+      "published": false
+    },
+    {
+      "keyword": "AI receptionist for plumbers cost Australia",
+      "intent": "commercial - cost research before buying",
+      "audience": "plumbing business owners comparing options",
+      "published": false
+    },
+    {
+      "keyword": "AI receptionist for builders Australia",
+      "intent": "commercial - trade specific",
+      "audience": "building and construction business owners",
+      "published": false
     }
   ]
 }
