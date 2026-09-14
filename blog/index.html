@@ -31,6 +31,23 @@
       <p class="sub">Practical guides for Australian business owners on phone answering, bookings and growth — from the team behind Ellie.</p>
     </div>
 
+    <div class="callback-box">
+      <div class="callback-copy">
+        <h3>Rather talk it through?</h3>
+        <p>Leave your number and someone from our team will call you back.</p>
+      </div>
+      <form class="callback-form" id="callback-form" name="blog-callback-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="blog-callback-request">
+        <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+        <input type="text" class="callback-input" name="name" placeholder="Your name" autocomplete="name" required>
+        <input type="text" class="callback-input" name="business_name" placeholder="Business name" autocomplete="organization" required>
+        <input type="tel" class="callback-input" name="phone" placeholder="Mobile number" autocomplete="tel" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678" required>
+        <button type="submit" class="callback-submit">Request a callback</button>
+        <p class="callback-note">We'll only use this to call you back — no spam.</p>
+        <p class="callback-status" id="callback-status" hidden></p>
+      </form>
+    </div>
+
     <div class="blog-controls">
       <input type="search" id="blog-search" class="search-input" placeholder="Search articles…" aria-label="Search articles">
       <div class="filter-scroll">
@@ -146,6 +163,42 @@
         currentPage = 1;
         applyFilters();
       }, 150);
+    });
+
+    // Submit the callback-request form to Netlify Forms via fetch so the
+    // visitor stays on the blog instead of being sent to a generic Netlify
+    // success page.
+    const callbackForm = document.getElementById('callback-form');
+    const callbackStatus = document.getElementById('callback-status');
+    function encodeFormData(data) {
+      return Object.keys(data)
+        .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&');
+    }
+    callbackForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const submitBtn = callbackForm.querySelector('.callback-submit');
+      submitBtn.disabled = true;
+      const payload = Object.fromEntries(new FormData(callbackForm).entries());
+      fetch('/blog/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeFormData(payload),
+      })
+        .then(() => {
+          callbackForm.reset();
+          callbackStatus.textContent = "Thanks — we'll call you back shortly.";
+          callbackStatus.className = 'callback-status success';
+          callbackStatus.hidden = false;
+        })
+        .catch(() => {
+          callbackStatus.textContent = "Something went wrong — call us directly on 0485 057 840 instead.";
+          callbackStatus.className = 'callback-status error';
+          callbackStatus.hidden = false;
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+        });
     });
   </script>
 </body>

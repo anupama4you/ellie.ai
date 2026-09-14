@@ -202,6 +202,60 @@ article strong { color: #fff; }
 }
 .cta-box a:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(167,139,250,.5); }
 
+/* ── Request a callback (blog index) ─────────────────────── */
+.callback-box {
+  margin-bottom: 40px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.callback-copy { flex: 1 1 260px; min-width: 220px; }
+.callback-copy h3 { font-size: 19px; color: #fff; font-weight: 800; margin-bottom: 6px; }
+.callback-copy p { color: var(--muted); font-size: 14px; }
+.callback-form { flex: 1 1 380px; display: flex; flex-wrap: wrap; gap: 10px; }
+.callback-input {
+  flex: 1 1 150px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  min-width: 0;
+}
+.callback-input::placeholder { color: var(--muted); }
+.callback-input:focus { outline: none; border-color: var(--violet); box-shadow: 0 0 0 3px rgba(167,139,250,.15); }
+.callback-submit {
+  flex: 1 1 100%;
+  background: linear-gradient(90deg, var(--violet), var(--rose));
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.callback-submit:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -8px rgba(167,139,250,.5); }
+.callback-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.callback-note { flex: 1 1 100%; color: var(--muted); font-size: 12px; margin-top: -2px; }
+.callback-status { flex: 1 1 100%; font-size: 14px; font-weight: 600; }
+.callback-status.success { color: #34d399; }
+.callback-status.error { color: #f87171; }
+
+@media (max-width: 640px) {
+  .callback-box { padding: 22px 20px; gap: 18px; }
+  .callback-form { flex: 1 1 100%; }
+}
+
 /* ── Back to top ──────────────────────────────────────────── */
 .back-to-top {
   position: fixed;
