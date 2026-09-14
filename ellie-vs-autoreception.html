@@ -32,8 +32,7 @@ h3{margin-top:1.5em}
 .eyebrow{color:#2dd4bf;font-weight:800;letter-spacing:.03em}
 .cta{display:inline-block;margin:22px 10px 0 0;padding:13px 20px;border-radius:10px;background:#0d9488;color:#fff;text-decoration:none;font-weight:700}
 .card{margin-top:30px;padding:26px;border:1px solid #263043;border-radius:16px;background:#0b1220}
-.nav{margin-bottom:40px}
-.nav a{margin-right:18px}
+.nav{margin-bottom:40px;display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px}.nav a{margin-right:0;white-space:nowrap}.nav-brand{display:flex;align-items:center;margin-right:4px}.nav-brand img{height:24px;display:block}
 img.shot{border-radius:14px;width:100%;display:block}
 table.cmp{width:100%;border-collapse:collapse;margin-top:8px;font-size:.95rem}
 table.cmp th,table.cmp td{padding:13px 14px;text-align:left;border-bottom:1px solid #263043;vertical-align:top}
@@ -47,7 +46,7 @@ table.cmp td.brand{font-weight:700;color:#fff}
 <main>
 
 <nav class="nav">
-  <a href="/">Ellie</a>
+  <a href="/" class="nav-brand" aria-label="Ellie — home"><img src="/assets/ellie/logo.png" alt="Ellie" height="24"></a>
   <a href="/ai-receptionist">AI receptionist</a>
   <a href="/tradies">Tradies</a>
   <a href="/pricing">Pricing</a>
