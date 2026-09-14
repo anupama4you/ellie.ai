@@ -5590,6 +5590,22 @@
       </div>
 
       <p class="trial-trust-line">🇦🇺 Founding offer: <b>$99/month</b> for the first 10 businesses &nbsp;&middot;&nbsp; No credit card required</p>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:22px 0 16px;color:var(--muted);font-size:.85rem;">
+        <span style="flex:1;height:1px;background:var(--border);"></span>
+        Rather talk it through?
+        <span style="flex:1;height:1px;background:var(--border);"></span>
+      </div>
+      <form id="home-callback-form" name="home-callback-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:flex;flex-direction:column;gap:10px;">
+        <input type="hidden" name="form-name" value="home-callback-request">
+        <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+        <input type="text" class="trial-input" name="name" placeholder="Your name" autocomplete="name" required>
+        <input type="text" class="trial-input" name="business_name" placeholder="Business name" autocomplete="organization" required>
+        <input type="tel" class="trial-input" name="phone" placeholder="Mobile number" autocomplete="tel" title="Enter an Australian phone number, e.g. 0412 345 678 or +61 412 345 678" required>
+        <button type="submit" class="btn-ghost book-call-btn" style="width:100%;border:none;background:var(--violet-d);color:var(--violet);cursor:pointer;font-family:inherit;font-size:1rem;font-weight:700;padding:15px 24px;border-radius:10px;">Request a callback</button>
+        <p style="font-size:.8rem;color:var(--muted);margin:0;">We'll only use this to call you back — no spam.</p>
+        <p id="home-callback-status" style="font-size:.9rem;font-weight:600;margin:0;" hidden></p>
+      </form>
     </div>
   </div>
 </section>
@@ -5840,6 +5856,47 @@
   <input type="hidden" name="phone">
   <input type="hidden" name="notes">
 </form>
+
+<script>
+  // Submits the #book section's callback-request form to Netlify Forms via
+  // fetch so the visitor stays on the page instead of being sent to a
+  // generic Netlify success page — same pattern as blog/index.html's form.
+  (function () {
+    var form = document.getElementById('home-callback-form');
+    if (!form) return;
+    var status = document.getElementById('home-callback-status');
+    function encodeFormData(data) {
+      return Object.keys(data)
+        .map(function (key) { return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]); })
+        .join('&');
+    }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      var payload = Object.fromEntries(new FormData(form).entries());
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeFormData(payload),
+      })
+        .then(function () {
+          form.reset();
+          status.textContent = "Thanks — we'll call you back shortly.";
+          status.style.color = '#34d399';
+          status.hidden = false;
+        })
+        .catch(function () {
+          status.textContent = 'Something went wrong — call us directly on 0485 057 840 instead.';
+          status.style.color = '#f87171';
+          status.hidden = false;
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+        });
+    });
+  })();
+</script>
 
 </body>
 </html>
