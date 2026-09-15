@@ -308,7 +308,9 @@
       "keyword": "what happens when customers reach voicemail",
       "intent": "informational - caller behaviour",
       "audience": "owners relying on voicemail",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-15",
+      "slug": "what-happens-when-customers-reach-voicemail"
     },
     {
       "keyword": "AI receptionist free trial Australia",
