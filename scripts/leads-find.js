@@ -81,7 +81,7 @@ function draftSms(name, types) {
   const focus = smsVariant(types);
   const messages = {
     jobs: "Hey, wanna be the only business in your area taking job calls after 5pm? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
-    bookings: "Hey, wanna be the only business in your area taking bookings after 5pm? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
+    bookings: "Hey, wanna be the only business in your area taking bookings after 5pm? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her.",
     appointments: "Hey, wanna take appointment calls after 5pm while others are closed? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
     enquiries: "Hey, wanna take property enquiries after 5pm while others are closed? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
     clients: "Hey, wanna take client calls after 5pm while others are closed? Ellie answers 24/7. Don't believe me? Call 0485 057 840 and test her. Reply STOP",
