@@ -316,7 +316,9 @@
       "keyword": "AI receptionist free trial Australia",
       "intent": "transactional - ready to try",
       "audience": "high intent buyers looking to test",
-      "published": false
+      "published": true,
+      "publishedDate": "2026-09-17",
+      "slug": "ai-receptionist-free-trial-australia"
     },
     {
       "keyword": "emergency call handling for tradies after hours",
