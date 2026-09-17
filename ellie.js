@@ -1658,7 +1658,7 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
     heroWaveform.appendChild(frag);
   }
 
-  // ── Pricing / founding offer view tracking ────────────────
+  // ── Pricing section view tracking ─────────────────────────
   const pricingSec = document.getElementById('pricing');
   if (pricingSec) {
     let pricingSeen = false;

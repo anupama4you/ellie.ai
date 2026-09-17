@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Simple, honest pricing for Ellie, your AI front desk. Every plan includes a 7-day free trial and hands-on setup — we build your Ellie with you, never an automated wizard. Compare plans starting from $99/month.">
+  <meta name="description" content="Simple, honest pricing for Ellie, your AI front desk. Every plan includes a 7-day free trial and hands-on setup — we build your Ellie with you, never an automated wizard. Plans from $99/month, scaled by call and SMS volume.">
   <title>Pricing | Ellie AI Front Desk</title>
   <link rel="canonical" href="https://callellie.com/pricing">
 
@@ -61,21 +61,28 @@
             "name": "Starter",
             "price": "99",
             "priceCurrency": "AUD",
-            "description": "150 call minutes/month, 24/7 answering, dashboard & recordings, booking & SMS, 1 calendar, email support. 7-day free trial, no credit card required."
+            "description": "150 inbound minutes/month, 30 outbound minutes/month, 150 SMS/month. 24/7 call answering, lead qualification and message-taking — no appointment booking. 7-day free trial, no credit card required."
           },
           {
             "@type": "Offer",
             "name": "Growth",
-            "price": "199",
+            "price": "269",
             "priceCurrency": "AUD",
-            "description": "400 call minutes/month, multiple calendars, multi-staff routing, smart routing, custom call flows, priority support. 7-day free trial, no credit card required."
+            "description": "400 inbound minutes/month, 75 outbound minutes/month, 400 SMS/month. Everything in Starter plus live appointment booking, rescheduling, multi-staff routing and custom call flows. 7-day free trial, no credit card required."
           },
           {
             "@type": "Offer",
             "name": "Business",
-            "price": "399",
+            "price": "499",
             "priceCurrency": "AUD",
-            "description": "1,000 call minutes/month, CRM/PMS integrations, multi-location support, priority support with onboarding. 7-day free trial, no credit card required."
+            "description": "1,000 inbound minutes/month, 150 outbound minutes/month, 1,000 SMS/month. Same features as Growth, higher volume. 7-day free trial, no credit card required."
+          },
+          {
+            "@type": "Offer",
+            "name": "Scale",
+            "price": "899",
+            "priceCurrency": "AUD",
+            "description": "2,500 inbound minutes/month, 300 outbound minutes/month, 2,500 SMS/month. Same features as Growth and Business, for high-volume businesses. 7-day free trial, no credit card required."
           }
         ]
       },
@@ -85,7 +92,7 @@
           {
             "@type": "Question",
             "name": "Is the 7-day free trial really on every plan?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Starter, Growth and Business all include a full 7-day free trial with no credit card required, so you can hear Ellie handle real calls before you pay anything." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Starter, Growth, Business and Scale all include a full 7-day free trial with no credit card required, so you can hear Ellie handle real calls before you pay anything." }
           },
           {
             "@type": "Question",
@@ -94,8 +101,8 @@
           },
           {
             "@type": "Question",
-            "name": "What happens if I go over my included calls?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Included call volume is set to comfortably cover most businesses on that plan. If you're consistently going over, we'll reach out and right-size your plan with you rather than surprise-billing you." }
+            "name": "What happens if I go over my included minutes or SMS?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Ellie keeps answering — there's no cutoff. Extra usage is simply billed at $0.50 per inbound minute, $0.60 per outbound minute and $0.10 per SMS beyond what your plan includes." }
           },
           {
             "@type": "Question",
@@ -111,6 +118,21 @@
             "@type": "Question",
             "name": "How does Ellie compare to a traditional answering service?",
             "acceptedAnswer": { "@type": "Answer", "text": "Traditional answering services often start around $250-$350/month for a limited block of minutes and put you through a generic script. Ellie starts at $99/month, is built around your specific business, and answers instantly, 24/7." }
+          },
+          {
+            "@type": "Question",
+            "name": "What's the difference between Starter and the other plans?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Starter is AI call answering and lead capture — Ellie answers, qualifies the enquiry, takes a message and notifies your team, but doesn't touch your calendar. Growth, Business and Scale are the complete Ellie receptionist, including live appointment booking, rescheduling and cancellations. Growth, Business and Scale share the same features; the only difference between them is how much call, SMS and outbound volume is included." }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you support businesses with multiple locations?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes, through a custom Multi-Location plan rather than a fixed per-location price — talk to us so we can price it around your branches, phone numbers and routing needs." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can Ellie integrate with our CRM, PMS or other business software?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Google Calendar, Outlook and Gmail come standard on Growth, Business and Scale. Deeper integrations — ServiceM8, simPRO, Cliniko, Xero, HubSpot, other CRM/ERP systems or custom APIs — are handled under a custom Enterprise plan, priced around the specific integration and implementation work involved." }
           }
         ]
       }
@@ -587,32 +609,6 @@
       50%      { transform: translateX(4px); }
     }
     .hero-actions { display: none; }
-    /* ── Founding offer tag, attached to the headline — quiet status-badge style,
-       matching the brand violet palette instead of a shouty orange/amber alert ── */
-    .hero-offer-tag {
-      display: inline-flex; align-items: center; gap: 11px;
-      background: var(--violet-d); border: 1px solid var(--violet-b);
-      color: var(--violet); font-size: 1.05rem; font-weight: 600;
-      padding: 10px 10px 10px 18px; border-radius: 999px;
-      margin-bottom: 1.3rem; text-decoration: none; white-space: nowrap;
-      animation: heroFadeUp .6s .0s ease both;
-      transition: background .2s, border-color .2s;
-    }
-    .hero-offer-tag:hover { background: var(--violet-b); }
-    .hero-offer-tag__spark {
-      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
-      background: var(--green); box-shadow: 0 0 0 0 rgba(34,197,94,.55);
-      animation: offerDotPulse 2.2s ease-in-out infinite;
-    }
-    .hero-offer-tag__limited {
-      background: var(--violet); color: #fff;
-      font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
-      padding: 5px 11px; border-radius: 999px;
-    }
-    @keyframes offerDotPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,.55); }
-      50%      { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
-    }
     .hero-h1 {
       font-size: clamp(2.9rem, 6vw, 5.4rem); font-weight: 800; letter-spacing: -.03em;
       color: #fff; margin-bottom: 1.3rem; text-align: center; max-width: 1020px;
@@ -2301,12 +2297,6 @@
       .hero { min-height: 100dvh; padding-top: 0; align-items: stretch; }
       .hero-in { flex: 1; padding: 80px 20px 24px; gap: 0; display: flex; flex-direction: column; justify-content: center; }
 
-      .hero-offer-tag {
-        white-space: nowrap; font-size: .62rem;
-        padding: 5px 9px; gap: 5px; margin-left: auto; margin-right: auto;
-      }
-      .hero-offer-tag__spark { width: 5px; height: 5px; }
-      .hero-offer-tag__limited { font-size: .52rem; padding: 2px 6px; }
       .hero-h1 {
         text-align: center;
         font-size: 3.1rem; line-height: 1.06;
@@ -2969,14 +2959,7 @@
     @media (max-width: 860px) { .blog-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { .blog-grid { grid-template-columns: 1fr; } }
 
-    /* ── FOUNDING OFFER + PRICING ── */
-    .founding-sec { background: var(--bg3); padding: 92px 0; position: relative; overflow: hidden; }
-    .founding-sec::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse 60% 60% at 50% 30%, rgba(167,139,250,.12) 0%, transparent 70%);
-    }
-    .founding-hd { max-width: 640px; margin: 0 auto 2.6rem; text-align: center; }
-    .founding-hd .sec-tag { justify-content: center; }
+    /* ── PRICING ── */
     .pricing-card {
       max-width: 440px; margin: 0 auto; position: relative; z-index: 1;
       background: var(--bg4); border: 1px solid var(--violet-b); border-radius: 22px;
@@ -3005,9 +2988,9 @@
       display: flex; align-items: center; justify-content: center; width: 100%;
       background: linear-gradient(135deg, var(--violet), var(--rose)); color: #fff;
       font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem;
-      padding: 15px 24px; border-radius: 10px; box-shadow: 0 0 28px rgba(167,139,250,.35);
+      padding: 15px 20px; border-radius: 10px; box-shadow: 0 0 28px rgba(167,139,250,.35);
       transition: transform .2s, box-shadow .2s; margin-bottom: 10px;
-      white-space: nowrap;
+      text-align: center; line-height: 1.3;
     }
     .pricing-cta:hover { transform: translateY(-2px); box-shadow: 0 0 44px rgba(167,139,250,.5); }
     .pricing-fine { font-size: .76rem; color: var(--muted); }
@@ -3026,19 +3009,34 @@
     /* ── PRICING GRID ── */
     .pricing-grid-sec { padding: 24px 0 92px; position: relative; }
     .pricing-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
-      max-width: 1180px; margin: 0 auto; align-items: stretch;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+      max-width: 1440px; margin: 0 auto; align-items: stretch;
     }
     .pricing-grid .pricing-card {
-      max-width: none; margin: 0; height: 100%;
+      max-width: none; margin: 0; height: 100%; min-width: 0;
       display: flex; flex-direction: column;
+      padding: 34px 26px;
     }
     .pricing-grid .pricing-features { flex: 1; }
     .pricing-card--featured { border-color: var(--violet); box-shadow: 0 0 90px rgba(167,139,250,.22); transform: scale(1.035); }
-    @media (max-width: 980px) {
-      .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+    .pricing-features li.is-excluded { color: var(--muted); }
+    .pricing-features li.is-excluded svg { color: #ef4444; }
+    @media (max-width: 1180px) {
+      .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 720px; }
       .pricing-card--featured { transform: none; }
     }
+    @media (max-width: 560px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+    }
+
+    /* ── ENTERPRISE BANNER ── */
+    .pricing-enterprise {
+      max-width: 1440px; margin: 22px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+      background: var(--bg4); border: 1px solid var(--border); border-radius: 18px; padding: 26px 32px;
+    }
+    .pricing-enterprise h3 { font-size: 1.05rem; color: var(--text); margin-bottom: 4px; }
+    .pricing-enterprise p { font-size: .88rem; color: var(--muted); max-width: 560px; margin: 0; }
+    .pricing-enterprise .btn-ghost { flex-shrink: 0; }
 
     /* ── WHY WE'RE DIFFERENT ── */
     .pricing-manual-sec { background: var(--bg3); padding: 76px 0; }
@@ -3062,21 +3060,6 @@
     .pricing-compare-sec { padding: 76px 0; }
     .pricing-compare-hd { max-width: 620px; margin: 0 auto 2.4rem; text-align: center; }
     .pricing-compare-hd .sec-tag { justify-content: center; margin: 0 auto 1.1rem; }
-    .pricing-compare-row {
-      display: flex; align-items: center; justify-content: center; gap: 28px;
-      max-width: 760px; margin: 0 auto; flex-wrap: wrap;
-    }
-    .pricing-compare-card {
-      flex: 1; min-width: 240px; background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 18px; padding: 28px 26px; text-align: center;
-    }
-    .pricing-compare-card--ellie { border-color: var(--violet-b); box-shadow: 0 0 50px rgba(167,139,250,.12); }
-    .pricing-compare-label { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-    .pricing-compare-card--ellie .pricing-compare-label { color: var(--violet); }
-    .pricing-compare-val { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-    .pricing-compare-desc { font-size: .82rem; color: var(--muted); line-height: 1.6; }
-    .pricing-compare-vs { font-size: .8rem; color: var(--muted); font-weight: 700; flex-shrink: 0; }
-    @media (max-width: 640px) { .pricing-compare-vs { display: none; } }
 
     /* ── ROADMAP ── */
     .roadmap-sec { background: var(--bg); padding: 76px 0; }
@@ -3830,16 +3813,18 @@
         <div class="pricing-price">
           <span class="pricing-price-new">$99<span>/month</span></span>
         </div>
-        <p class="pricing-note">For solo operators and small teams getting started with AI call answering.</p>
+        <p class="pricing-note">Best for small businesses that mainly need every call answered.</p>
         <ul class="pricing-features">
-          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>150 call minutes/month<span class="pricing-features-note">Around 50–75 typical calls</span></span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 24/7 AI call answering</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Dashboard &amp; call recordings</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Appointment booking &amp; SMS</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 1 calendar integration</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Email support</li>
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>150 inbound minutes/month<span class="pricing-features-note">Around 50–75 typical calls</span></span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 30 outbound minutes/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 150 SMS/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Answers calls 24/7, handles general enquiries</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Qualifies leads, captures caller details</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Notifies your team, no missed message</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Call recordings, transcripts &amp; summaries</li>
+          <li class="is-excluded"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> No appointment booking, rescheduling or cancellations</li>
         </ul>
-        <a href="#book" class="pricing-cta" data-track="pricing_starter_cta_clicked">Build My Ellie | Free for 7 Days</a>
+        <a href="#book" class="pricing-cta" data-track="pricing_starter_cta_clicked">Start Free Trial</a>
         <p class="pricing-fine">$0 today · No setup fee · Cancel anytime</p>
       </div>
 
@@ -3847,39 +3832,69 @@
         <span class="pricing-badge">Most Popular</span>
         <h3 class="pricing-name">Growth</h3>
         <div class="pricing-price">
-          <span class="pricing-price-new">$199<span>/month</span></span>
+          <span class="pricing-price-new">$269<span>/month</span></span>
         </div>
-        <p class="pricing-note">For busier businesses with multiple staff, services or locations to route calls to.</p>
+        <p class="pricing-note">Best for businesses wanting Ellie to operate as a complete AI receptionist.</p>
         <ul class="pricing-features">
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>400 inbound minutes/month<span class="pricing-features-note">Around 130–200 typical calls</span></span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 75 outbound minutes/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 400 SMS/month</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Starter, plus:</li>
-          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>400 call minutes/month<span class="pricing-features-note">Around 130–200 typical calls</span></span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multiple calendar integrations</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-staff &amp; smart call routing</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Custom call flows</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Live appointment booking, rescheduling &amp; cancellations</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-staff booking, routing &amp; availability checks</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Booking confirmations &amp; custom call flows</li>
         </ul>
-        <a href="#book" class="pricing-cta" data-track="pricing_growth_cta_clicked">Build My Ellie | Free for 7 Days</a>
+        <a href="#book" class="pricing-cta" data-track="pricing_growth_cta_clicked">Start Free Trial</a>
         <p class="pricing-fine">$0 today · No setup fee · Cancel anytime</p>
       </div>
 
       <div class="pricing-card reveal">
         <h3 class="pricing-name">Business</h3>
         <div class="pricing-price">
-          <span class="pricing-price-new">$399<span>/month</span></span>
+          <span class="pricing-price-new">$499<span>/month</span></span>
         </div>
-        <p class="pricing-note">For multi-location or high-volume businesses that need Ellie built into their systems.</p>
+        <p class="pricing-note">For established businesses with higher call volumes.</p>
         <ul class="pricing-features">
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Growth, plus:</li>
-          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>1,000 call minutes/month<span class="pricing-features-note">Around 330–500 typical calls</span></span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-location support</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> CRM/PMS integrations</li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Priority support &amp; dedicated onboarding</li>
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>1,000 inbound minutes/month<span class="pricing-features-note">Around 330–500 typical calls</span></span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 150 outbound minutes/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 1,000 SMS/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> All Growth features — same Ellie, more volume</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Full appointment management</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-staff routing &amp; custom call flows</li>
         </ul>
-        <a href="#book" class="pricing-cta" data-track="pricing_business_cta_clicked">Build My Ellie | Free for 7 Days</a>
+        <a href="#book" class="pricing-cta" data-track="pricing_business_cta_clicked">Start Free Trial</a>
+        <p class="pricing-fine">$0 today · No setup fee · Cancel anytime</p>
+      </div>
+
+      <div class="pricing-card reveal">
+        <h3 class="pricing-name">Scale</h3>
+        <div class="pricing-price">
+          <span class="pricing-price-new">$899<span>/month</span></span>
+        </div>
+        <p class="pricing-note">For high-volume businesses where Ellie handles a significant share of the front desk.</p>
+        <ul class="pricing-features">
+          <li class="has-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> <span>2,500 inbound minutes/month<span class="pricing-features-note">Around 830–1,250 typical calls</span></span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 300 outbound minutes/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 2,500 SMS/month</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> All Growth &amp; Business features — same Ellie, highest volume</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Full appointment management</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-staff routing &amp; custom call flows</li>
+        </ul>
+        <a href="#book" class="pricing-cta" data-track="pricing_scale_cta_clicked">Start Free Trial</a>
         <p class="pricing-fine">$0 today · No setup fee · Cancel anytime</p>
       </div>
 
     </div>
+
+    <div class="pricing-enterprise reveal">
+      <div>
+        <h3>Enterprise — Let's talk</h3>
+        <p>Multi-location businesses, custom CRM/PMS integrations (ServiceM8, simPRO, Cliniko, Xero, HubSpot and more) or complex routing — priced around your setup, not forced into a per-location or per-integration formula.</p>
+      </div>
+      <a href="#book" class="btn-ghost">Talk to us</a>
+    </div>
+
+    <p class="pricing-fine" style="text-align:center;margin-top:1.8rem;">Extra usage beyond your plan: $0.50/inbound min · $0.60/outbound min · $0.10/SMS — Ellie keeps answering, no automatic cutoff.</p>
   </div>
 </section>
 
@@ -3899,55 +3914,71 @@
               <th>Starter</th>
               <th class="ct-ellie"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-2px;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Growth</th>
               <th>Business</th>
+              <th>Scale</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Price</td>
               <td>A$99/mo</td>
-              <td class="ct-ellie">A$199/mo</td>
-              <td>A$399/mo</td>
+              <td class="ct-ellie">A$269/mo</td>
+              <td>A$499/mo</td>
+              <td>A$899/mo</td>
             </tr>
             <tr>
-              <td>Call minutes</td>
+              <td>Inbound minutes</td>
               <td>150<span class="ct-note">~50–75 calls</span></td>
               <td class="ct-ellie">400<span class="ct-note">~130–200 calls</span></td>
               <td>1,000<span class="ct-note">~330–500 calls</span></td>
+              <td>2,500<span class="ct-note">~830–1,250 calls</span></td>
+            </tr>
+            <tr>
+              <td>Outbound minutes</td>
+              <td>30</td>
+              <td class="ct-ellie">75</td>
+              <td>150</td>
+              <td>300</td>
+            </tr>
+            <tr>
+              <td>SMS</td>
+              <td>150</td>
+              <td class="ct-ellie">400</td>
+              <td>1,000</td>
+              <td>2,500</td>
             </tr>
             <tr>
               <td>24/7 answering</td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
               <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
             </tr>
             <tr>
-              <td>Dashboard + recordings</td>
+              <td>Lead qualification + messages</td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
               <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
             </tr>
             <tr>
-              <td>Booking + SMS</td>
+              <td>Recordings, transcripts + summaries</td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
               <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
             </tr>
             <tr>
-              <td>Calendars</td>
-              <td>1</td>
-              <td class="ct-ellie">Multiple</td>
-              <td>Multiple</td>
-            </tr>
-            <tr>
-              <td>Multi-staff</td>
+              <td>Appointment booking</td>
               <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
               <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
             </tr>
             <tr>
-              <td>Smart routing</td>
+              <td>Multi-staff routing</td>
               <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
               <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
             </tr>
             <tr>
@@ -3955,24 +3986,22 @@
               <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
               <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
               <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
             </tr>
             <tr>
               <td>CRM/PMS integrations</td>
-              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
-              <td class="ct-ellie"><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
-              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td colspan="4" style="text-align:center;color:var(--muted);">Enterprise only — <a href="#book" style="color:var(--violet);">talk to us</a></td>
             </tr>
             <tr>
               <td>Multi-location</td>
-              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
-              <td class="ct-ellie"><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
-              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td colspan="4" style="text-align:center;color:var(--muted);">Enterprise only — <a href="#book" style="color:var(--violet);">talk to us</a></td>
             </tr>
             <tr>
               <td>Support</td>
               <td>Email</td>
               <td class="ct-ellie">Priority</td>
-              <td>Priority + onboarding</td>
+              <td>Priority</td>
+              <td>Priority</td>
             </tr>
           </tbody>
         </table>
@@ -4014,7 +4043,7 @@
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
         <h3>7 days free, on every plan</h3>
-        <p>Starter, Growth or Business — you get a full week of Ellie handling real calls before you pay a cent. No credit card required.</p>
+        <p>Starter, Growth, Business or Scale — you get a full week of Ellie handling real calls before you pay a cent. No credit card required.</p>
       </div>
     </div>
   </div>
@@ -4025,21 +4054,64 @@
   <div class="container">
     <div class="pricing-compare-hd reveal">
       <div class="sec-tag">The Market</div>
-      <h2 class="sec-h2">What answering services <span class="h2-grad">usually cost.</span></h2>
-      <p class="sec-p" style="margin:0 auto;text-align:center;">Traditional answering services charge a lot for a fraction of the coverage — and you still get a script, not a system built around your business.</p>
+      <h2 class="sec-h2">What covering your phones <span class="h2-grad">usually costs.</span></h2>
+      <p class="sec-p" style="margin:0 auto;text-align:center;">Price is only part of it — here's how each option actually performs when a customer calls.</p>
     </div>
-    <div class="pricing-compare-row">
-      <div class="pricing-compare-card reveal">
-        <div class="pricing-compare-label">Traditional answering service</div>
-        <div class="pricing-compare-val">$250–$350<span style="font-size:1rem;font-weight:600;color:var(--muted);">/mo</span></div>
-        <div class="pricing-compare-desc">For a limited block of minutes, generic scripts and human agents who don't know your business.</div>
+    <div class="compare-table-wrap reveal">
+      <div class="compare-table-card">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>In-house receptionist</th>
+              <th>"Press 1" IVR menu</th>
+              <th class="ct-ellie"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-2px;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Ellie</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cost</td>
+              <td>$75,000+/yr</td>
+              <td>$20–$50/mo</td>
+              <td class="ct-ellie">From $99/mo</td>
+            </tr>
+            <tr>
+              <td>Available nights &amp; weekends</td>
+              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
+            </tr>
+            <tr>
+              <td>Actually answers &amp; helps the caller</td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+              <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
+            </tr>
+            <tr>
+              <td>Books the appointment</td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+              <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
+            </tr>
+            <tr>
+              <td>Never sick, never turns over</td>
+              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
+            </tr>
+            <tr>
+              <td>Built around your specific business</td>
+              <td><span class="ct-icon ct-icon--yes">✓</span></td>
+              <td><span class="ct-icon ct-icon--no"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+              <td class="ct-ellie"><span class="ct-icon ct-icon--ellie">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="pricing-compare-vs">VS</div>
-      <div class="pricing-compare-card pricing-compare-card--ellie reveal">
-        <div class="pricing-compare-label">Ellie</div>
-        <div class="pricing-compare-val">From $99<span style="font-size:1rem;font-weight:600;color:var(--muted);">/mo</span></div>
-        <div class="pricing-compare-desc">Answers instantly, 24/7, built around your actual services, staff and hours — set up by a real person, not a script.</div>
-      </div>
+      <p class="compare-swipe-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 3 12l6 6"/><path d="M15 6l6 6-6 6"/></svg>
+        Swipe to see the full comparison
+      </p>
     </div>
   </div>
 </section>
@@ -4054,10 +4126,17 @@
     <div class="faq-list">
       <div class="faq-item reveal">
         <button class="faq-q" aria-expanded="false">
+          What's the difference between Starter and the other plans?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Starter is AI call answering and lead capture — Ellie answers, qualifies the enquiry, takes a message and notifies your team, but doesn't touch your calendar. Growth, Business and Scale are the complete Ellie receptionist, including live appointment booking, rescheduling and cancellations. Growth, Business and Scale share the same features; the only difference between them is how much call, SMS and outbound volume is included.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">
           Is the 7-day free trial really on every plan?
           <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
         </button>
-        <div class="faq-a"><p>Yes. Starter, Growth and Business all include a full 7-day free trial with no credit card required, so you can hear Ellie handle real calls before you pay anything.</p></div>
+        <div class="faq-a"><p>Yes. Starter, Growth, Business and Scale all include a full 7-day free trial with no credit card required, so you can hear Ellie handle real calls before you pay anything.</p></div>
       </div>
       <div class="faq-item reveal">
         <button class="faq-q" aria-expanded="false">
@@ -4068,10 +4147,10 @@
       </div>
       <div class="faq-item reveal">
         <button class="faq-q" aria-expanded="false">
-          What happens if I go over my included calls?
+          What happens if I go over my included minutes or SMS?
           <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
         </button>
-        <div class="faq-a"><p>Included call volume is set to comfortably cover most businesses on that plan. If you're consistently going over, we'll reach out and right-size your plan with you rather than surprise-billing you.</p></div>
+        <div class="faq-a"><p>Ellie keeps answering — there's no cutoff. Extra usage is simply billed at $0.50 per inbound minute, $0.60 per outbound minute and $0.10 per SMS beyond what your plan includes.</p></div>
       </div>
       <div class="faq-item reveal">
         <button class="faq-q" aria-expanded="false">
@@ -4086,6 +4165,20 @@
           <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="faq-a"><p>No. Setup is free on every plan, including the hands-on configuration work our team does with you.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">
+          Do you support businesses with multiple locations?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Yes, through a custom Multi-Location plan rather than a fixed per-location price — <a href="#book">talk to us</a> so we can price it around your branches, phone numbers and routing needs.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">
+          Can Ellie integrate with our CRM, PMS or other business software?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Google Calendar, Outlook and Gmail come standard on Growth, Business and Scale. Deeper integrations — ServiceM8, simPRO, Cliniko, Xero, HubSpot, other CRM/ERP systems or custom APIs — are handled under a custom Enterprise plan, priced around the specific integration and implementation work involved.</p></div>
       </div>
       <div class="faq-item reveal">
         <button class="faq-q" aria-expanded="false">

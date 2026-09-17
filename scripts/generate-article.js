@@ -51,7 +51,7 @@ FACTS ABOUT ELLIE (use naturally, never fabricate others):
 - AI receptionist that answers business calls 24/7
 - Books appointments and sends SMS confirmations automatically
 - Used by 200+ Australian businesses
-- Pricing starts from $199 AUD per month
+- Pricing starts from $99 AUD per month
 - Free 7 day trial, no credit card required
 - Set up within 24 hours
 - Live demo at callellie.com: enter your website, Ellie learns your business, generate and test her yourself

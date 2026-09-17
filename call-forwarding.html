@@ -483,32 +483,6 @@
       50%      { transform: translateX(4px); }
     }
     .hero-actions { display: none; }
-    /* ── Founding offer tag, attached to the headline — quiet status-badge style,
-       matching the brand violet palette instead of a shouty orange/amber alert ── */
-    .hero-offer-tag {
-      display: inline-flex; align-items: center; gap: 11px;
-      background: var(--violet-d); border: 1px solid var(--violet-b);
-      color: var(--violet); font-size: 1.05rem; font-weight: 600;
-      padding: 10px 10px 10px 18px; border-radius: 999px;
-      margin-bottom: 1.3rem; text-decoration: none; white-space: nowrap;
-      animation: heroFadeUp .6s .0s ease both;
-      transition: background .2s, border-color .2s;
-    }
-    .hero-offer-tag:hover { background: var(--violet-b); }
-    .hero-offer-tag__spark {
-      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
-      background: var(--green); box-shadow: 0 0 0 0 rgba(34,197,94,.55);
-      animation: offerDotPulse 2.2s ease-in-out infinite;
-    }
-    .hero-offer-tag__limited {
-      background: var(--violet); color: #fff;
-      font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
-      padding: 5px 11px; border-radius: 999px;
-    }
-    @keyframes offerDotPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,.55); }
-      50%      { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
-    }
     .hero-h1 {
       font-size: clamp(2.9rem, 6vw, 5.4rem); font-weight: 800; letter-spacing: -.03em;
       color: #fff; margin-bottom: 1.3rem; text-align: center; max-width: 1020px;
@@ -2197,12 +2171,6 @@
       .hero { min-height: 100dvh; padding-top: 0; align-items: stretch; }
       .hero-in { flex: 1; padding: 80px 20px 24px; gap: 0; display: flex; flex-direction: column; justify-content: center; }
 
-      .hero-offer-tag {
-        white-space: nowrap; font-size: .62rem;
-        padding: 5px 9px; gap: 5px; margin-left: auto; margin-right: auto;
-      }
-      .hero-offer-tag__spark { width: 5px; height: 5px; }
-      .hero-offer-tag__limited { font-size: .52rem; padding: 2px 6px; }
       .hero-h1 {
         text-align: center;
         font-size: 3.1rem; line-height: 1.06;
@@ -2865,14 +2833,7 @@
     @media (max-width: 860px) { .blog-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { .blog-grid { grid-template-columns: 1fr; } }
 
-    /* ── FOUNDING OFFER + PRICING ── */
-    .founding-sec { background: var(--bg3); padding: 92px 0; position: relative; overflow: hidden; }
-    .founding-sec::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse 60% 60% at 50% 30%, rgba(167,139,250,.12) 0%, transparent 70%);
-    }
-    .founding-hd { max-width: 640px; margin: 0 auto 2.6rem; text-align: center; }
-    .founding-hd .sec-tag { justify-content: center; }
+    /* ── PRICING ── */
     .pricing-card {
       max-width: 440px; margin: 0 auto; position: relative; z-index: 1;
       background: var(--bg4); border: 1px solid var(--violet-b); border-radius: 22px;
