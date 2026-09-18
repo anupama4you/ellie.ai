@@ -102,15 +102,21 @@
 
   if (heroLiveBtn && heroCallStatus) {
     let heroVapi = null;
+    let heroAttempt = null;
 
     function heroCallReset() {
+      if (window.__ellieCallOwner === heroAttempt) window.__ellieCallOwner = null;
+      heroAttempt = null;
       if (heroVapi) { try { heroVapi.stop(); } catch (_) {} heroVapi = null; }
       heroCallStatus.style.display = 'none';
       if (heroCallControls) heroCallControls.style.display = '';
     }
 
     heroLiveBtn.addEventListener('click', async () => {
-      if (heroVapi) return; // already on a call
+      if (heroVapi || heroAttempt) return;
+      if (window.__ellieCallOwner) { alert('Please end your other Ellie call first.'); return; }
+      const attempt = heroAttempt = {};
+      window.__ellieCallOwner = attempt;
       if (heroCallControls) heroCallControls.style.display = 'none';
       heroCallStatus.style.display = 'flex';
       heroCallStatusText.textContent = 'Calling Ellie…';
@@ -134,20 +140,25 @@
         const { publicKey } = await cfgRes.json();
 
         await vapiSdkReady;
+        if (heroAttempt !== attempt) return;
         const VapiClass = (typeof Vapi === 'function') ? Vapi : Vapi.default;
         const vapi = new VapiClass(publicKey);
         heroVapi = vapi;
+        const on = (event, handler) => vapi.on(event, (...args) => {
+          if (heroAttempt === attempt) handler(...args);
+        });
 
-        vapi.on('call-start',   () => { heroCallStatusText.textContent = 'Connected'; });
-        vapi.on('call-end',     () => { track('hero_speak_to_ellie_completed', {}); heroCallReset(); });
-        vapi.on('speech-start', () => { heroCallStatusText.textContent = 'Ellie is speaking…'; });
-        vapi.on('speech-end',   () => { heroCallStatusText.textContent = 'Listening…'; });
-        vapi.on('error', (err) => { console.error('Hero call error', err); heroCallReset(); });
+        on('call-start',   () => { heroCallStatusText.textContent = 'Connected'; });
+        on('call-end',     () => { track('hero_speak_to_ellie_completed', {}); heroCallReset(); });
+        on('speech-start', () => { heroCallStatusText.textContent = 'Ellie is speaking…'; });
+        on('speech-end',   () => { heroCallStatusText.textContent = 'Listening…'; });
+        on('error', (err) => { console.error('Hero call error', err); heroCallReset(); });
 
-        vapi.start(HERO_ENQUIRIES_ASSISTANT_ID);
+        await vapi.start(HERO_ENQUIRIES_ASSISTANT_ID);
+        if (heroAttempt !== attempt) { try { await vapi.stop(); } catch (_) {} }
       } catch (err) {
         console.error('Hero call start error', err);
-        heroCallReset();
+        if (heroAttempt === attempt) heroCallReset();
       }
     });
 
@@ -599,8 +610,11 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
   }
 
   let vapiInstance = null;
+  let demoAttempt = null;
 
   function resetDemo() {
+    if (window.__ellieCallOwner === demoAttempt) window.__ellieCallOwner = null;
+    demoAttempt = null;
     clearAllTimeouts();
     clearInterval(timerInterval);
     stopRing();
@@ -677,6 +691,9 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
 
   async function startDemo(options = {}) {
     if (demoActive) return;
+    if (window.__ellieCallOwner) { alert('Please end your other Ellie call first.'); return; }
+    const attempt = demoAttempt = {};
+    window.__ellieCallOwner = attempt;
     track('demo_call_initiated', {});
     demoActive = true;
     btns.className = 'phone-btns phone-btns-active';
@@ -726,12 +743,16 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       }
 
       await vapiSdkReady;
+      if (demoAttempt !== attempt) return;
       const VapiClass = (typeof Vapi === 'function') ? Vapi : Vapi.default;
       const vapi = new VapiClass(publicKey);
       vapiInstance = vapi;
+      const on = (event, handler) => vapi.on(event, (...args) => {
+        if (demoAttempt === attempt) handler(...args);
+      });
 
       // ── UI events ──────────────────────────────────────────
-      vapi.on('call-start', () => {
+      on('call-start', () => {
         stopRing();
         document.getElementById('call-btn-wrap')?.classList.remove('ready');
         setStatus('Connected', true);
@@ -743,7 +764,10 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         }, 1000);
       });
 
-      vapi.on('call-end', () => {
+      on('call-end', () => {
+        if (demoAttempt !== attempt) return;
+        if (window.__ellieCallOwner === attempt) window.__ellieCallOwner = null;
+        demoAttempt = null;
         track('demo_call_completed', { duration_seconds: timerSecs });
         clearInterval(timerInterval);
         setStatus('Call ended', false);
@@ -756,25 +780,25 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
         vapiInstance = null;
       });
 
-      vapi.on('speech-start', () => {
+      on('speech-start', () => {
         setWave(true);
         setAvatarState('speaking');
         setStatus('Ellie is speaking…', true);
       });
 
-      vapi.on('speech-end', () => {
+      on('speech-end', () => {
         setWave(false);
         setAvatarState('idle');
         setStatus('Listening…', true);
       });
 
-      vapi.on('message', (msg) => {
+      on('message', (msg) => {
         if (msg.type === 'transcript' && msg.transcriptType === 'final' && msg.transcript?.trim()) {
           addBubble(msg.role === 'assistant' ? 'ellie' : 'caller', msg.transcript.trim());
         }
       });
 
-      vapi.on('error', (err) => {
+      on('error', (err) => {
         console.error('VAPI error', err);
         stopRing();
         setStatus('Could not connect', false);
@@ -785,13 +809,15 @@ Keep responses under 45 words unless the caller asks for more detail. Never make
       // If a pre-built assistantId exists use it with overrides,
       // otherwise pass the full config as a transient assistant.
       if (assistantId) {
-        vapi.start(assistantId, assistantOverrides);
+        await vapi.start(assistantId, assistantOverrides);
       } else {
-        vapi.start(assistantOverrides);
+        await vapi.start(assistantOverrides);
       }
+      if (demoAttempt !== attempt) { try { await vapi.stop(); } catch (_) {} }
 
     } catch (err) {
       console.error('Demo start error', err);
+      if (demoAttempt !== attempt) return;
       setStatus('Connection failed', false);
       resetDemo();
     }
